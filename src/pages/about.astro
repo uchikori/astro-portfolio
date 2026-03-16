@@ -1,0 +1,163 @@
+---
+import Base from "../layout/Base.astro";
+---
+
+<script slot="head" src="https://cdn.tailwindcss.com"></script>
+<style slot="head">
+  :root {
+    --bg-dark: #1a1c2c;
+    --accent-orange: #ff6b35;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: white;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200vh;
+  }
+
+  /* Grid Layout の肝となる部分 
+    */
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(10, 70px);
+    gap: 32px;
+    max-width: 1760px;
+    width: 91.66%;
+    margin: auto;
+    position: relative;
+  }
+
+  /* 左側の人物写真 */
+  .person-img {
+    grid-column: 1 / 5; /* 1列目から5列目まで */
+    grid-row: 2 / 10; /* 2行目から9行目まで */
+    z-index: 2;
+    box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+  }
+
+  .person-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%);
+  }
+
+  /* 中央（背景寄り）の3Dモデル画像 */
+  .model-img {
+    grid-column: 3 / 10; /* 4列目から10列目まで（人物と重なる） */
+    grid-row: 1 / 8; /* 1行目から7行目まで */
+    z-index: 1;
+    opacity: 0.8;
+    background: #333; /* 画像がない場合のフォールバック */
+  }
+
+  .model-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ABOUT テキスト */
+  .about-title {
+    grid-column: 7 / 9;
+    grid-row: 6;
+    z-index: 3;
+    font-size: 4rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    align-self: end;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* 説明文テキスト */
+  .description {
+    grid-column: 7 / 11;
+    grid-row: 7 / 8;
+    z-index: 3;
+    padding-top: 20px;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: #ccc;
+  }
+
+  /* 背景の薄いテキスト装飾（UCHIWA...） */
+  .bg-text {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 8rem;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.03);
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 0;
+  }
+
+  /* モバイル対応 */
+  @media (max-width: 768px) {
+    .grid-container {
+      display: flex;
+      flex-direction: column;
+      grid-template-rows: auto;
+    }
+    .person-img,
+    .model-img,
+    .about-title,
+    .description {
+      grid-column: auto;
+      grid-row: auto;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .about-title {
+      font-size: 2.5rem;
+    }
+  }
+</style>
+
+<Base title="About Section - Grid Layout">
+  <div class="grid-container">
+    <!-- 背後の装飾文字 -->
+    <div class="bg-text">UCHIWA</div>
+
+    <!-- 左側の人物画像 -->
+    <div class="person-img">
+      <img
+        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop"
+        alt="Person"
+        onerror="this.src='https://via.placeholder.com/500x700?text=Person+Image'"
+      />
+    </div>
+
+    <!-- 重なる3D/制作物画像 -->
+    <div class="model-img">
+      <img
+        src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1000&auto=format&fit=crop"
+        alt="3D Model"
+        onerror="this.src='https://via.placeholder.com/800x600?text=Work+Image'"
+      />
+    </div>
+
+    <!-- タイトル -->
+    <h2 class="about-title">ABOUT</h2>
+
+    <!-- 説明文 -->
+    <div class="description">
+      <p>北海道札幌市の個人事業のWebデザイナー。</p>
+      <p>
+        「UCHIWA Creative
+        Studio」という屋号で道内・道外問わず、全国のお客様のWebサイト作りに携わらせて頂いております。
+      </p>
+    </div>
+  </div>
+</Base>
