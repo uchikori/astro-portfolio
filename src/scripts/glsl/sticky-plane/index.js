@@ -1,0 +1,48 @@
+import { Float32BufferAttribute, PlaneGeometry } from "three/webgpu";
+import { Ob } from "../Ob";
+import Fragment from "./fragment.js";
+import Vertex from "./vertex.js";
+import { utils } from "../../helper";
+import { attribute } from "three/tsl";
+
+export default class extends Ob {
+  setupGeometry() {
+    const wSeg = 30,
+      hSeg = 30;
+    const geometry = new PlaneGeometry(
+      this.rect.width,
+      this.rect.height,
+      wSeg,
+      hSeg,
+    );
+
+    // 対角線上に詰められた遅延時間用の頂点データ
+    const delayVertices = utils.getDiagonalVertices(hSeg, wSeg, getValue, 0);
+
+    // 0~1までの値をstep毎に返す
+    function getValue(previousValue, currentIndex) {
+      let step = 1 / (hSeg + 1) / (wSeg + 1);
+      return previousValue + step;
+    }
+
+    geometry.setAttribute(
+      "aDelay",
+      new Float32BufferAttribute(delayVertices, 1),
+    );
+
+    return geometry;
+  }
+
+  setupOptions() {
+    const options = super.setupOptions();
+    options.vDelay = attribute("aDelay");
+    return options;
+  }
+
+  setupVertex(options) {
+    return Vertex(options);
+  }
+  setupFragment(options) {
+    return Fragment(options);
+  }
+}

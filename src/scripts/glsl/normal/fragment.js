@@ -25,8 +25,8 @@ export default function Fragment(opt) {
     const tex2 = texture(uniforms.uTexes.tex2, clipUv);
 
     // どちらか存在する方をサンプル
-    // const color = mix(tex1, tex2, step(0.5, clipUv.x));
-    const color = tex1;
+    const color = mix(tex1, tex2, step(uniforms.uEdge, clipUv.x));
+    // const color = tex1;
     return color;
   })();
 }

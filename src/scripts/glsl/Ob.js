@@ -8,10 +8,7 @@ import {
 import loader from "../component/loader";
 import world from "./world";
 import { utils, viewport } from "../helper";
-import Fragment from "./normal/fragment";
-import Vertex from "./normal/vertex";
-import FragmentGray from "./gray/fragment";
-import VertexGray from "./gray/vertex";
+import gsap from "gsap";
 
 class Ob {
   static async init({ el, type }) {
@@ -28,63 +25,84 @@ class Ob {
     return o;
   }
   constructor({ texes, el, type }) {
-    this.texes = texes;
-    //WebGLのHTML要素の座標を取得
-    this.rect = el.getBoundingClientRect();
-
-    //modelを取得
-    this.models = loader.getModelByElement(el);
-
-    // レンダーターゲット情報を初期化(モデルが一つもない場合はnullが格納されている)
-    this.targetInfo = world.renderTargetManager.initRenderTarget(
-      el,
-      this.models,
-      world.camera,
-      this.rect,
-    );
-
-    this.material = this.setupMaterial();
-    this.geometry = this.setupGeometry();
-
-    //uv座標
-    this.vUv = uv();
-
-    //uniformsの定義
-    this.uniforms = this.setupUniforms();
-    this.uniforms = this.setupTexes(this.uniforms);
-    this.uniforms = this.setupResolution(this.uniforms);
-
-    // レンダーターゲットがある場合はテクスチャ処理をスキップ
-    if (!this.targetInfo) {
-      //シャーダー計算に引数として渡すオプション
-      // uTexes を展開してトップレベルの uniform にする
-      const options = {
-        vUv: this.vUv,
-        uniforms: this.uniforms,
-      };
-
-      //Vertexシェーダー計算
-      this.vertex = this.setupVertex(options);
-      //fragmentシェーダー計算
-      this.fragment = this.setupFragment(options);
-
-      this.material.positionNode = this.vertex;
-      this.material.colorNode = this.fragment;
-    }
-
-    this.mesh = this.setupMesh();
-    this.mesh.position.z = 0;
-
-    this.initialSize = { width: this.rect.width, height: this.rect.height };
     this.DOM = {
       el,
     };
-    this.options = this.targetInfo
-      ? null
-      : { vUv: this.vUv, uniforms: this.uniforms };
+    this.texes = texes ?? [];
 
-    this.disableOriginalElem();
+    // メッシュ作成前の処理
+    this.beforeCreateMesh();
+
+    //WebGLのHTML要素の座標を取得
+    this.rect = el.getBoundingClientRect();
+
+    if (!this.rect.width || !this.rect.height) {
+      if (window.debug) {
+        console.log("要素に1px以上の幅と高さを設定してください:", this.DOM.el);
+      }
+      return {};
+    }
+
+    try {
+      //modelを取得
+      this.models = loader.getModelByElement(el);
+
+      // レンダーターゲット情報を初期化(モデルが一つもない場合はnullが格納されている)
+      this.targetInfo = world.renderTargetManager.initRenderTarget(
+        el,
+        this.models,
+        world.camera,
+        this.rect,
+      );
+
+      this.material = this.setupMaterial();
+      this.geometry = this.setupGeometry();
+
+      this.defines = this.setupDefines();
+
+      //uv座標
+      this.vUv = uv();
+
+      //uniformsの定義
+      this.uniforms = this.setupUniforms();
+      this.uniforms = this.setupTexes(this.uniforms);
+      this.uniforms = this.setupResolution(this.uniforms);
+
+      // レンダーターゲットがある場合はテクスチャ処理をスキップ
+      if (!this.targetInfo) {
+        //シャーダー計算に引数として渡すオプション
+        const options = this.setupOptions();
+
+        //Vertexシェーダー計算
+        this.vertex = this.setupVertex(options);
+        //fragmentシェーダー計算
+        this.fragment = this.setupFragment(options);
+
+        this.material.positionNode = this.vertex;
+        this.material.colorNode = this.fragment;
+      }
+
+      this.mesh = this.setupMesh();
+
+      this.initialSize = { width: this.rect.width, height: this.rect.height };
+
+      this.options = this.targetInfo
+        ? null
+        : { vUv: this.vUv, uniforms: this.uniforms };
+
+      this.disableOriginalElem();
+
+      // メッシュにマーカーを付与
+      this.mesh.__marker = type;
+    } catch (e) {
+      if (window.debug) {
+        console.log(e);
+      }
+      return {};
+    }
   }
+
+  beforeCreateMesh() {}
 
   setupGeometry() {
     return new PlaneGeometry(this.rect.width, this.rect.height, 1, 1);
@@ -100,7 +118,8 @@ class Ob {
       });
     } else {
       this.material = new MeshBasicNodeMaterial({
-        color: 0xff0000,
+        transparent: true,
+        alphaTest: 0.5,
       });
     }
 
@@ -111,11 +130,26 @@ class Ob {
     return new Mesh(this.geometry, this.material);
   }
 
+  setupDefines() {
+    return {
+      PI: Math.PI,
+    };
+  }
+
   setupUniforms() {
     return {
       uMouse: uniform(vec2(0.5, 0.5)),
       uHover: uniform(0.0),
       uTexes: {},
+      uTick: uniform(0),
+      uProgress: uniform(0),
+    };
+  }
+
+  setupOptions() {
+    return {
+      vUv: this.vUv,
+      uniforms: this.uniforms,
     };
   }
 
@@ -124,6 +158,7 @@ class Ob {
       //uTexesにkeyをプロパティ名としてそれぞれのtexture格納
       uniforms.uTexes[key] = tex;
     });
+
     return uniforms;
   }
 
@@ -221,7 +256,43 @@ class Ob {
     // mesh.position.x = x;
   }
 
-  render() {}
+  render(tick) {
+    this.uniforms.uTick = tick;
+  }
+
+  async afterInit() {
+    this.pauseVideo();
+    setTimeout(() => {
+      this.playVideo();
+    }, 4000);
+  }
+
+  async playVideo(texId = "tex1") {
+    await this.uniforms.uTexes[texId]?.source.data.play?.();
+  }
+
+  pauseVideo(texId = "tex1") {
+    this.uniforms.uTexes[texId]?.source.data.pause?.();
+  }
+
+  debug(folder) {
+    folder
+      .add(this.uniforms.uProgress, "value", 0, 1, 0.01)
+      .name("Progress")
+      .listen();
+
+    const datData = { next: !!this.uniforms.uProgress.value };
+    folder
+      .add(datData, "next")
+      .name("Next")
+      .onChange(() => {
+        gsap.to(this.uniforms.uProgress, {
+          value: +datData.next,
+          duration: 2,
+          ease: "power2.inOut",
+        });
+      });
+  }
 }
 
 export { Ob };

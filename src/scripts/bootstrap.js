@@ -1,13 +1,25 @@
 import world from "./glsl/world";
-import { viewport } from "./helper";
+import { viewport, gui } from "./helper";
 import scroller from "./component/scroller";
 import mouse from "./component/mouse";
 import loader from "./component/loader";
 
-//WebGLオブジェクトを格納するためのオブジェクト
-const canvas = document.getElementById("canvas");
+window.debug = enableDebugMode(1);
+
+// デバッグモード:1=有効,0=無効
+function enableDebugMode(debug) {
+  return debug && import.meta.env.DEV;
+}
 
 export async function init() {
+  //WebGLオブジェクトを格納するためのオブジェクト
+  const canvas = document.getElementById("canvas");
+
+  // デバッグモードの場合
+  if (window.debug) {
+    await gui.init();
+  }
+
   if (navigator.gpu === undefined) {
     console.log("WebGPU is not available");
   } else {
@@ -41,17 +53,6 @@ export async function init() {
     } else if (currentVal > 0.5) {
       statusLabel.textContent = "Processing Assets";
     }
-
-    // if (currentVal >= 1) {
-    //   statusLabel.textContent = "Ready";
-    //   statusLabel.classList.add("hl_isCompleted");
-
-    //   setTimeout(() => {
-    //     loading.classList.add("hl_isHidden");
-    //   }, 500);
-    // }
-
-    console.log(progress, total);
   });
   await loader.loadAllAssets();
 
@@ -63,4 +64,22 @@ export async function init() {
   world.render();
 
   loader.letsBegin();
+
+  // デバッグモードの場合
+  if (window.debug) {
+    gui.add(world.addOrbitControlGUI);
+    // guiにコールバック関数を登録
+    gui.add((lilGUI) => {
+      // world.osの各オブジェクトのdebugメソッドを呼び出す
+      world.os.forEach((o) => {
+        if (!o.debug) return;
+        // data-webgl属性を取得
+        const type = o.DOM.el.dataset.webgl;
+        // typeをフォルダ名にしてdebugメソッドを呼び出す
+        const folder = lilGUI.addFolder(type);
+        folder.close();
+        o.debug(folder);
+      });
+    });
+  }
 }

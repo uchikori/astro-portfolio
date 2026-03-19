@@ -10,7 +10,7 @@ import {
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { PointLight, AmbientLight, DirectionalLight } from "three/webgpu";
 import { RGBAFormat } from "three";
-import GUI from "lil-gui";
+import { gui } from "../helper";
 
 /**
  * レンダーターゲットマネージャー
@@ -231,12 +231,19 @@ class RenderTargetManager {
   }
 
   gui(targetInfo) {
-    const gui = new GUI();
+    // const gui = new GUI();
 
-    const folder = gui.addFolder("RenderTarget");
-    folder.add(targetInfo.camera.position, "x", -10, 10).step(0.01);
-    folder.add(targetInfo.camera.position, "y", -10, 10).step(0.01);
-    folder.add(targetInfo.camera.position, "z", -10, 10).step(0.01);
+    // const folder = gui.addFolder("RenderTarget");
+    // folder.add(targetInfo.camera.position, "x", -10, 10).step(0.01);
+    // folder.add(targetInfo.camera.position, "y", -10, 10).step(0.01);
+    // folder.add(targetInfo.camera.position, "z", -10, 10).step(0.01);
+
+    gui.add((lilGUI) => {
+      const folder = lilGUI.addFolder("RenderTargetCamera");
+      folder.add(targetInfo.camera.position, "x", -10, 10).step(0.01);
+      folder.add(targetInfo.camera.position, "y", -10, 10).step(0.01);
+      folder.add(targetInfo.camera.position, "z", -10, 10).step(0.01);
+    });
   }
 }
 

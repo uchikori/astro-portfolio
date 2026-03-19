@@ -7,16 +7,14 @@ import {
   Raycaster,
   Vector2,
   Clock,
+  AxesHelper,
 } from "three/webgpu";
-import loader from "../component/loader";
 import RenderTargetManager from "../component/renderTargetManager";
-import { Ob } from "./Ob";
-import normal from "./normal";
-import gray from "./gray";
 
 //Worldオブジェクト
 const world = {
   os: [],
+  addOrbitControlGUI,
   init,
   adjustWorldPosition,
   render,
@@ -25,6 +23,7 @@ const world = {
   pointer: new Vector2(),
   clock: new Clock(),
   renderTargetManager: null, // レンダーターゲットマネージャー
+  tick: 0,
 };
 
 async function init(canvas, viewport) {
@@ -52,7 +51,7 @@ async function init(canvas, viewport) {
   world.camera = _setupPerspectiveCamera(viewport);
 
   //メッシュオブジェクトの初期化
-  _initObjects(viewport);
+  await _initObjects(viewport);
 }
 
 //カメラの設定
@@ -75,14 +74,11 @@ async function _initObjects(viewport) {
     const type = el.dataset.webgl;
 
     // Obの初期化メソッド
-    let o = null;
-    // data-webgl=の値によって読み込むシェーダー処理を分ける
-    if (type === "gray") {
-      o = await gray.init({ el, type });
-    } else {
-      o = await normal.init({ el, type });
-    }
-    // const o = await Ob.init({ el, type });
+    const o = await import(`./${type}/index.js`).then(({ default: Ob }) => {
+      return Ob.init({ el, type });
+    });
+
+    if (!o.mesh) return;
 
     world.scene.add(o.mesh);
     world.os.push(o);
@@ -93,6 +89,13 @@ async function _initObjects(viewport) {
   await Promise.all(prms);
 
   adjustWorldPosition(viewport);
+
+  // 初期化後の処理
+  const afterPrms = world.os.map((o) => {
+    return o.afterInit();
+  });
+
+  await Promise.all(afterPrms);
 }
 
 //メッシュの位置とサイズとカメラ設定の変更
@@ -143,6 +146,8 @@ function raycast() {
     //optionsからuHoverとuMouseを分割代入
     const { uniforms } = options;
 
+    // if(!uniforms) continue;
+
     const { uHover, uMouse } = uniforms;
 
     // 交差したメッシュオブジェクトとoのmeshが同一なら
@@ -163,6 +168,8 @@ function raycast() {
 function render() {
   requestAnimationFrame(render);
 
+  world.tick++;
+
   const delta = world.clock.getDelta();
 
   // アニメーションの更新
@@ -182,7 +189,7 @@ function render() {
   for (let i = world.os.length - 1; i >= 0; i--) {
     const o = world.os[i];
     o.scroll();
-    o.render();
+    o.render(world.tick);
   }
 
   // OrbitControlsの更新
@@ -197,6 +204,50 @@ function dispose() {
 
   // 他のリソースのクリーンアップ
   world.os.length = 0;
+}
+
+let axisHelper = null;
+function addOrbitControlGUI(lilGUI) {
+  //OrbitControlの有効化を切り替える
+  const isActive = { value: false };
+
+  //GUIの追加
+  lilGUI
+    .add(isActive, "value")
+    .name("OrbitControl")
+    .onChange(() => {
+      //isActive.valueがtrueならOrbitControlを追加
+      if (isActive.value) {
+        axisHelper = new AxesHelper(1000);
+        world.scene.add(axisHelper);
+        _attachOrbitControl();
+      } else {
+        //isActive.valueがfalseならOrbitControlを削除
+        world.scene.remove(axisHelper);
+        axisHelper.dispose();
+        _detachOrbitControl();
+      }
+    });
+}
+
+let orbitControl;
+
+//OrbitControlの追加
+function _attachOrbitControl() {
+  import("three/examples/jsm/controls/OrbitControls.js").then(
+    ({ OrbitControls }) => {
+      //OrbitControlのインスタンス化
+      orbitControl = new OrbitControls(world.camera, world.renderer.domElement);
+      // canvasのz-indexを1に設定(-1のままだとマウスでドラッグできないため)
+      world.renderer.domElement.style.zIndex = 1;
+    },
+  );
+}
+//OrbitControlの削除
+function _detachOrbitControl() {
+  orbitControl?.dispose();
+  // canvasのz-indexを-1に設定(OrbitControlを無効化するため)
+  world.renderer.domElement.style.zIndex = -1;
 }
 
 export default world;

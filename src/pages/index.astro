@@ -8,19 +8,48 @@ import Kv from "../components/kv.astro";
     <div id="smooth-content">
       <!-- <Kv /> -->
       <div class="wrap">
-        <video class="video" data-webgl data-tex-1="/movie/beach.mp4"></video>
+        <div>
+          <h2>sticky-plane</h2>
+          <img
+            data-webgl="sticky-plane"
+            data-tex-1="/img/slider/slider_1.jpg"
+          />
+        </div>
+        <div>
+          <h2>twist-plane</h2>
+          <img data-webgl="twist-plane" data-tex-1="/img/slider/slider_1.jpg" />
+        </div>
+
+        <div>
+          <h2>noise-slide</h2>
+          <img
+            data-webgl="noise-slide"
+            data-tex-1="/img/slider/slider_1.jpg"
+            data-tex-2="/img/slider/slider_2.jpg"
+          />
+        </div>
+
+        <div>
+          <h2>displace-slide</h2>
+          <img
+            data-webgl="displace-slide"
+            data-tex-1="/img/slider/slider_1.jpg"
+            data-tex-2="/img/slider/slider_2.jpg"
+            data-tex-disp="/img/disps/3.png"
+          />
+        </div>
+
         <video
           class="video"
-          data-webgl
-          data-tex-1="/movie/fresnel_back.webm"
-          data-tex-2="/movie/fresnel_back.mov"></video>
-        <div
-          id="div"
-          data-webgl
+          data-webgl="normal"
+          data-tex-1="/movie/beach.mp4"
+          data-tex-2="/movie/turtle.mp4"></video>
+        <img
+          data-webgl="normal"
           data-tex-1="/img/slider/slider_1.jpg"
           data-tex-2="/img/slider/slider_3.jpg"
-        >
-        </div>
+        />
+
         <img
           alt=""
           data-webgl="normal"
@@ -29,56 +58,45 @@ import Kv from "../components/kv.astro";
           width={1024}
           height={512}
         />
-        <img
-          alt=""
-          data-webgl="gray"
-          data-tex-1="/img/slider/slider_1.jpg"
-          data-tex-2="/img/slider/slider_2.jpg"
-          width={1024}
-          height={512}
-        />
-        <img
-          alt=""
-          data-webgl
-          data-tex-1="/img/slider/slider_1.jpg"
-          data-tex-2="/img/slider/slider_2.jpg"
-          width={1024}
-          height={512}
-        />
-        <div class="kickman" data-webgl data-model="/model/mixamo_kick.glb">
+
+        <div
+          class="kickman"
+          data-webgl="normal"
+          data-model="/model/mixamo_kick.glb"
+        >
         </div>
       </div>
     </div>
   </div>
-
-  <style lang="scss">
-    [data-webgl] {
-      // background: green;
-      opacity: 0;
-    }
-    .wrap {
-      padding: 100px 0;
-      display: flex;
-      flex-direction: column;
-      max-width: 900px;
-      gap: 300px;
-    }
-    .video {
-      width: 300px;
-      height: 300px;
-    }
-    #div {
-      width: 300px;
-      height: 300px;
-    }
-    img {
-      width: 80%;
-      height: auto;
-      /* bottom: 100px; */
-    }
-    .kickman {
-      width: 50%;
-      aspect-ratio: 1;
-    }
-  </style>
 </Base>
+
+<style lang="scss">
+  [data-webgl] {
+    // background: green;
+    opacity: 0;
+  }
+  .wrap {
+    padding: 100px 0;
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+    gap: 300px;
+  }
+  .video {
+    width: 300px;
+    height: 300px;
+  }
+  #div {
+    width: 300px;
+    height: 300px;
+  }
+  img {
+    width: 80%;
+    height: auto;
+    /* bottom: 100px; */
+  }
+  .kickman {
+    width: 50%;
+    aspect-ratio: 1;
+  }
+</style>
