@@ -1,7 +1,11 @@
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { LinearFilter, TextureLoader, SRGBColorSpace } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { VideoTexture } from "three/webgpu";
+import { INode } from "../helper";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const texLoader = new TextureLoader();
 const modelLoader = new GLTFLoader();
@@ -24,17 +28,17 @@ const loader = {
 const DOM = {};
 
 function init() {
-  DOM.globalContainer = document.querySelector("#globalContainer");
-  DOM.loader = document.querySelector("#loader");
-  DOM.loaderPercent = document.querySelector("#js_countNum");
-  DOM.progressCounter = document.querySelector("#js_progressCounter");
-  DOM.loaderWrapper = document.querySelector("#js_loaderWrapper");
-  DOM.progressBar = document.querySelector("#js_progressBar");
-  DOM.statusLabel = document.querySelector("#js_statusLabel");
+  DOM.globalContainer = INode.getElement("#globalContainer");
+  DOM.loader = INode.getElement("#loader");
+  DOM.loaderPercent = INode.getElement("#js_countNum");
+  DOM.progressCounter = INode.getElement("#js_progressCounter");
+  DOM.loaderWrapper = INode.getElement("#js_loaderWrapper");
+  DOM.progressBar = INode.getElement("#js_progressBar");
+  DOM.statusLabel = INode.getElement("#js_statusLabel");
 }
 
 async function loadAllAssets() {
-  const els = document.querySelectorAll("[data-webgl]");
+  const els = INode.qsAll("[data-webgl]");
 
   for (const el of els) {
     const data = el.dataset;
@@ -307,6 +311,9 @@ function loadingAnimationStart() {
     .to(DOM.globalContainer, {
       autoAlpha: 1,
       duration: 0,
+      onComplete: () => {
+        ScrollTrigger.refresh();
+      },
     })
     .to(DOM.loader, {
       autoAlpha: 0,

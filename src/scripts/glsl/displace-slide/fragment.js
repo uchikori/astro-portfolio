@@ -10,7 +10,7 @@ export default function fragment(options) {
   const { vUv, uniforms } = options;
 
   // 歪み用テクスチャ
-  const texDisp = texture(uniforms.uTexes.texDisp, vUv);
+  const texDisp = texture(uniforms.texDisp, vUv);
 
   // 歪み
   let disp = texDisp.r;
@@ -23,8 +23,8 @@ export default function fragment(options) {
   // 歪みをUVのy座標のみに適用(disp分だけ下にずらす)
   const dispUvMinus = vec2(vUv.x, sub(vUv.y, disp));
 
-  const texCurrent = texture(uniforms.uTexes.tex1, dispUvPlus);
-  const texnNext = texture(uniforms.uTexes.tex2, dispUvMinus);
+  const texCurrent = texture(uniforms.tex1, dispUvPlus);
+  const texnNext = texture(uniforms.tex2, dispUvMinus);
 
   const color = mix(texCurrent, texnNext, uniforms.uProgress);
 

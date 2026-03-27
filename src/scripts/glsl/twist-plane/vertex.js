@@ -34,7 +34,7 @@ export default function vertex(opt) {
     const progress = utils.cubicInOut(t);
 
     const pos = positionLocal.toVar();
-    pos.z.assign(add(pos.z, 100.0));
+    // pos.z.assign(add(pos.z, 100.0));
 
     //回転
     const axis = vec3(1.0, 1.0, 1.0);

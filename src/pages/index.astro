@@ -9,6 +9,33 @@ import Kv from "../components/kv.astro";
       <!-- <Kv /> -->
       <div class="wrap">
         <div>
+          <h2>plane-to-sphere</h2>
+          <img
+            data-webgl="plane-to-sphere"
+            data-tex-1="/img/slider/slider_1.jpg"
+          />
+        </div>
+        <div>
+          <h2>gray-pic</h2>
+          <img data-webgl="gray-pic" data-tex-1="/img/slider/slider_1.jpg" />
+        </div>
+        <div>
+          <h2>particle-slide</h2>
+          <div id="particle-slide">
+            <div
+              class="image"
+              data-webgl="particle-slide"
+              data-tex-1="/img/slider/slider_1.jpg"
+              data-tex-2="/img/slider/slider_2.jpg"
+              data-tex-3="/img/slider/slider_3.jpg"
+              data-tex-4="/img/slider/slider_4.jpg"
+              data-tex-5="/img/slider/slider_5.jpg"
+            >
+            </div>
+            <!-- insert img -->
+          </div>
+        </div>
+        <div>
           <h2>sticky-plane</h2>
           <img
             data-webgl="sticky-plane"
@@ -76,10 +103,11 @@ import Kv from "../components/kv.astro";
     opacity: 0;
   }
   .wrap {
-    padding: 100px 0;
+    padding: 100px 2rem;
     display: flex;
     flex-direction: column;
-    max-width: 900px;
+    max-width: 100%;
+    width: 900px;
     gap: 300px;
   }
   .video {
@@ -90,9 +118,16 @@ import Kv from "../components/kv.astro";
     width: 300px;
     height: 300px;
   }
-  img {
-    width: 80%;
+  .image {
+    width: 100%;
     height: auto;
+    aspect-ratio: 2/1;
+  }
+  img,
+  :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2/1;
     /* bottom: 100px; */
   }
   .kickman {

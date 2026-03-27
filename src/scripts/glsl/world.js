@@ -1,4 +1,4 @@
-import { utils } from "../helper";
+import { utils, INode } from "../helper";
 import mouse from "../component/mouse";
 import {
   WebGPURenderer,
@@ -8,8 +8,10 @@ import {
   Vector2,
   Clock,
   AxesHelper,
+  LinearSRGBColorSpace,
 } from "three/webgpu";
 import RenderTargetManager from "../component/renderTargetManager";
+import { Ob } from "./Ob";
 
 //Worldオブジェクト
 const world = {
@@ -19,6 +21,9 @@ const world = {
   adjustWorldPosition,
   render,
   dispose,
+  addObj,
+  removeObj,
+  getObjByEl,
   raycaster: new Raycaster(),
   pointer: new Vector2(),
   clock: new Clock(),
@@ -37,6 +42,8 @@ async function init(canvas, viewport) {
   world.renderer.setSize(viewport.width, viewport.height, false);
   world.renderer.setPixelRatio(viewport.devicePixelRatio);
   world.renderer.setClearColor(0x000000, 0);
+  //sRGBからLinearに変換
+  world.renderer.outputColorSpace = LinearSRGBColorSpace;
 
   //WebGPURendererの初期化
   await world.renderer.init();
@@ -67,26 +74,25 @@ function _setupPerspectiveCamera(viewport) {
 //メッシュオブジェクトの初期化
 async function _initObjects(viewport) {
   //WebGLのHTML要素を取得
-  const els = document.querySelectorAll("[data-webgl]");
+  const els = INode.qsAll("[data-webgl]");
 
   const prms = [...els].map(async (el) => {
     //WebGLのHTML要素のタイプを取得
-    const type = el.dataset.webgl;
+    const type = INode.getDS(el, "webgl");
 
     // Obの初期化メソッド
-    const o = await import(`./${type}/index.js`).then(({ default: Ob }) => {
+    return import(`./${type}/index.js`).then(({ default: Ob }) => {
       return Ob.init({ el, type });
     });
-
-    if (!o.mesh) return;
-
-    world.scene.add(o.mesh);
-    world.os.push(o);
-
-    return o;
   });
 
-  await Promise.all(prms);
+  // Obの初期化の完了を待機して
+  const _os = await Promise.all(prms); // prmsはelsと同一の順序の配列
+
+  _os.forEach((o) => {
+    if (!o.mesh) return;
+    addObj(o);
+  });
 
   adjustWorldPosition(viewport);
 
@@ -96,6 +102,46 @@ async function _initObjects(viewport) {
   });
 
   await Promise.all(afterPrms);
+}
+
+//メッシュオブジェクトの追加
+function addObj(o) {
+  world.scene.add(o.mesh);
+  world.os.push(o);
+}
+
+//メッシュオブジェクトの削除
+function removeObj(o, dispose = true) {
+  world.scene.remove(o.mesh);
+  // oがosの配列の何番目かを探す
+  const idx = world.os.indexOf(o);
+  // idxが-1でなければ（配列にoが存在すれば）
+  if (idx !== -1) {
+    // osの配列からoを削除
+    world.os.splice(idx, 1);
+  }
+
+  // disposeがtrueの場合
+  if (dispose) {
+    // メッシュのジオメトリとマテリアルを破棄
+    o.mesh.material.dispose();
+    o.mesh.geometry.dispose();
+  }
+}
+
+//DOM要素からオブジェクトを取得
+function getObjByEl(selector) {
+  if (selector instanceof Ob) {
+    return selector;
+  }
+  const targetEl = INode.getElement(selector);
+
+  // os配列からtargetElと一致するDOM要素を持つオブジェクトを探す
+  const o = world.os.find((o) => {
+    return o.DOM.el === targetEl;
+  });
+
+  return o;
 }
 
 //メッシュの位置とサイズとカメラ設定の変更

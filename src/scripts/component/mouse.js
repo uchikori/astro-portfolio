@@ -1,5 +1,5 @@
 import { Vector2 } from "three/webgpu";
-import { viewport } from "../helper";
+import { viewport, INode } from "../helper";
 
 const current = new Vector2();
 
@@ -30,7 +30,7 @@ function getClipPos() {
 
 // マウスイベントをバインド
 function _bindEvents() {
-  const globalContainer = document.getElementById("globalContainer");
+  const globalContainer = INode.getElement("#globalContainer");
   globalContainer.addEventListener("pointermove", (event) => {
     _updatePosition(event);
   });

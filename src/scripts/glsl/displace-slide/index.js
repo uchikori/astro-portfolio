@@ -6,22 +6,21 @@ import Fragment from "./fragment";
 import { uniform, vec2 } from "three/tsl";
 
 export default class extends Ob {
-  // setupTexes(uniforms) {
-  //   this.texes.forEach((tex, key) => {
-  //     const newTex = tex.clone();
-  //     newTex.wrapT = MirroredRepeatWrapping;
-  //     newTex.wrapS = MirroredRepeatWrapping;
-  //     uniforms[key] = newTex;
-  //   });
-  //   return uniforms;
-  // }
+  setupTexes(uniforms) {
+    this.texes.forEach((tex, key) => {
+      const newTex = tex.clone();
+      newTex.wrapT = MirroredRepeatWrapping;
+      newTex.wrapS = MirroredRepeatWrapping;
+      uniforms[key] = newTex;
+    });
+    return uniforms;
+  }
   setupUniforms() {
     const uniforms = super.setupUniforms();
     uniforms.uNoiseScale = uniform(vec2(2, 2));
     return uniforms;
   }
   setupVertex(options) {
-    console.log(this.uniforms);
     return Vertex(options);
   }
   setupFragment(options) {

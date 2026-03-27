@@ -1,8 +1,9 @@
 import world from "./glsl/world";
-import { viewport, gui } from "./helper";
+import { viewport, gui, INode } from "./helper";
 import scroller from "./component/scroller";
 import mouse from "./component/mouse";
 import loader from "./component/loader";
+import gsap from "gsap";
 
 window.debug = enableDebugMode(1);
 
@@ -13,7 +14,7 @@ function enableDebugMode(debug) {
 
 export async function init() {
   //WebGLオブジェクトを格納するためのオブジェクト
-  const canvas = document.getElementById("canvas");
+  const canvas = INode.getElement("#canvas");
 
   // デバッグモードの場合
   if (window.debug) {
@@ -29,15 +30,16 @@ export async function init() {
   //viewportを初期化
   viewport.init(canvas);
 
-  scroller.init();
+  //ScrollTriggerを初期化＆ScrollSmootherを受け取る
+  const smoother = scroller.init();
 
   loader.init();
 
   // ローダーアニメーションの追加
-  const loading = document.querySelector("#loader");
-  const loaderPercent = document.querySelector("#js_countNum");
-  const progressBar = document.querySelector("#js_progressBar");
-  const statusLabel = document.querySelector("#js_statusLabel");
+  const loading = INode.getElement("#loader");
+  const loaderPercent = INode.getElement("#js_countNum");
+  const progressBar = INode.getElement("#js_progressBar");
+  const statusLabel = INode.getElement("#js_statusLabel");
   loader.addProgressAction((progress, total) => {
     const currentVal = progress / total;
 
@@ -65,6 +67,18 @@ export async function init() {
 
   loader.letsBegin();
 
+  // setTimeout(() => {
+  //   const o = world.getObjByEl('[data-webgl="twist-plane"]');
+  //   gsap.to(o.uniforms.uProgress, {
+  //     value: 1,
+  //     duration: 1,
+  //     ease: "power2.out",
+  //     onComplete() {
+  //       world.removeObj(o);
+  //     },
+  //   });
+  // }, 3000);
+
   // デバッグモードの場合
   if (window.debug) {
     gui.add(world.addOrbitControlGUI);
@@ -74,7 +88,7 @@ export async function init() {
       world.os.forEach((o) => {
         if (!o.debug) return;
         // data-webgl属性を取得
-        const type = o.DOM.el.dataset.webgl;
+        const type = INode.getDS(o.DOM.el, "webgl");
         // typeをフォルダ名にしてdebugメソッドを呼び出す
         const folder = lilGUI.addFolder(type);
         folder.close();

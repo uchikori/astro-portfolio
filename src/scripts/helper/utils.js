@@ -32,15 +32,19 @@ import {
 import { Vector4 } from "three/webgpu";
 
 const utils = {
-  lerp,
+  backInOut,
+  coverUv,
+  cubicInOut,
+  exponentialOut,
   getResolutionUniform,
   getDiagonalVertices,
+  grayScale,
+  hsl2rgb,
+  lerp,
+  noise2,
   printMat,
-  backInOut,
-  cubicInOut,
   rotate2D,
   rotate3D,
-  noise2,
 };
 
 /**
@@ -188,32 +192,37 @@ function backInOut(t) {
  * @param {*} t - 時間
  * @returns
  */
-// function cubicInOut(t) {
-//   return Fn(() => {
-//     const value = float(0).toVar();
-//     If(lessThan(t, 0.5), () => {
-//       // value.assign(mul(4.0, mul(t, mul(t, t))));
-//       value.assign(mul(4.0, t, t, t));
-//     }).Else(() => {
-//       value.assign(add(mul(0.5, pow(sub(mul(2.0, t), 2.0), 3.0)), 1.0));
-//     });
-//     return value;
-//   })();
-// }
 function cubicInOut(t) {
   return Fn(() => {
-    // 共通で使用する (2t - 2) の部分
+    const value = float(0).toVar();
     const t2 = sub(mul(2.0, t), 2.0);
-
-    return select(
-      lessThan(t, 0.5),
-      // 前半: 4.0 * t * t * t
-      mul(4.0, t, t, t),
-      // 後半: 0.5 * (2t - 2)^3 + 1.0
-      // pow を使わずに mul で 3乗を計算（負の数対策）
-      add(mul(0.5, mul(t2, t2, t2)), 1.0),
-    );
+    If(lessThan(t, 0.5), () => {
+      // value.assign(mul(4.0, mul(t, mul(t, t))));
+      value.assign(mul(4.0, t, t, t));
+    }).Else(() => {
+      value.assign(add(mul(0.5, mul(t2, t2, t2)), 1.0));
+    });
+    return value;
   })();
+}
+// function cubicInOut(t) {
+//   return Fn(() => {
+//     // 共通で使用する (2t - 2) の部分
+//     const t2 = sub(mul(2.0, t), 2.0);
+
+//     return select(
+//       lessThan(t, 0.5),
+//       // 前半: 4.0 * t * t * t
+//       mul(4.0, t, t, t),
+//       // 後半: 0.5 * (2t - 2)^3 + 1.0
+//       // pow を使わずに mul で 3乗を計算（負の数対策）
+//       add(mul(0.5, mul(t2, t2, t2)), 1.0),
+//     );
+//   })();
+// }
+
+function exponentialOut(t) {
+  return select(equal(t, 1.0), t, sub(1.0, pow(2.0, mul(-10.0, t))));
 }
 
 /**
@@ -366,6 +375,92 @@ function noise2(v) {
 
   // Scale to [-1, 1] then remap to [0, 1]
   return float(130).mul(dot(m4_norm, g)).mul(0.5).add(0.5);
+}
+
+/**
+ * グレースケール
+ * @param {*} tex - テクスチャ
+ * @returns
+ */
+function grayScale(tex) {
+  return Fn(() => {
+    const gray = vec3(0.299, 0.587, 0.114);
+    const grayT = vec4(vec3(dot(tex.rbg, gray)), tex.a);
+    return grayT;
+  })();
+}
+
+/**
+ * アスペクト比を合わせたUVを返す
+ * @param {*} modUv - UV
+ * @param {*} resolution - 解像度
+ * @returns
+ */
+function coverUv(modUv, resolution) {
+  return Fn(() => {
+    return add(mul(sub(modUv, 0.5), resolution.zw), 0.5);
+  })();
+}
+
+function hue2rgb(f1, f2, hue) {
+  return Fn(() => {
+    const customHue = hue.toVar();
+    If(lessThan(customHue, 0.0), () => {
+      customHue.assign(customHue.add(1.0));
+    }).ElseIf(greaterThan(customHue, 1.0), () => {
+      customHue.assign(customHue.sub(1.0));
+    });
+
+    const res = float(0).toVar();
+
+    If(lessThan(mul(6.0, customHue), 1.0), () => {
+      res.assign(add(f1, mul(sub(f2, f1), 6.0, customHue)));
+    })
+      .ElseIf(lessThan(mul(2.0, customHue), 1.0), () => {
+        res.assign(f2);
+      })
+      .ElseIf(lessThan(mul(3.0, customHue), 2.0), () => {
+        res.assign(
+          add(f1, mul(sub(f2, f1), sub(div(2.0, 3.0), customHue), 6.0)),
+        );
+      })
+      .Else(() => {
+        res.assign(f1);
+      });
+
+    return res;
+  })();
+}
+
+function hsl2rgb(hsl) {
+  return Fn(() => {
+    const rgb = vec3(0).toVar();
+    const h = hsl.x;
+    const s = hsl.y;
+    const l = hsl.z;
+
+    If(equal(s, 0.0), () => {
+      rgb.assign(vec3(l, l, l));
+    }).Else(() => {
+      const f2 = float(0.0).toVar();
+
+      If(lessThan(l, 0.5), () => {
+        f2.assign(mul(l, add(1.0, s)));
+      }).Else(() => {
+        f2.assign(l.add(s).sub(mul(l, s)));
+      });
+
+      const f1 = l.mul(2.0).sub(f2);
+
+      const r = hue2rgb(f1, f2, h.add(div(1.0, 3.0)));
+      const g = hue2rgb(f1, f2, h);
+      const b = hue2rgb(f1, f2, h.sub(div(1.0, 3.0)));
+
+      rgb.assign(vec3(r, g, b));
+    });
+
+    return rgb;
+  })();
 }
 
 export { utils };

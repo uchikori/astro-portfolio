@@ -1,6 +1,7 @@
 import gsap from "gsap";
 import ScrollSmoother from "gsap/ScrollSmoother";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { INode } from "../helper";
 
 const scroller = {
   init,
@@ -10,7 +11,7 @@ function init() {
   gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
   // ScrollSmootherの初期化;
-  ScrollSmoother.create({
+  return ScrollSmoother.create({
     wrapper: "#smooth-wrapper",
     content: "#smooth-content",
     smooth: 1.5, // 滑らかさ（0-3推奨）
@@ -18,7 +19,7 @@ function init() {
     smoothTouch: 0.1, // モバイルでの滑らかさ
   });
 
-  const el = document.querySelector("[data-webgl]");
+  const el = INode.getElement("[data-webgl]");
 
   // const meshX = os[0].mesh.position.x;
   // const animation = {
@@ -45,8 +46,8 @@ function init() {
   /**
    * FVのビデオをスクロールで変化させる
    */
-  // const video = document.querySelector(".hero_kv");
-  // const videoContent = document.querySelector(".hero_kv video");
+  // const video = INode.getElement(".hero_kv");
+  // const videoContent = INode.getElement(".hero_kv video");
   // ScrollTrigger.create({
   //   trigger: ".hero",
   //   start: "top top",
