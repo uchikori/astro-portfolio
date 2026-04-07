@@ -1,10 +1,10 @@
 import gsap from "gsap";
 
-import { Ob } from "../Ob";
+import { Ob } from "../Ob.js";
 import Vertex from "./vertex.js";
 import Fragment from "./fragment.js";
 
-import { utils } from "../../helper";
+import { utils } from "../../helper/index.js";
 import {
   Float32BufferAttribute,
   InstancedBufferAttribute,
@@ -22,10 +22,16 @@ import {
   sub,
   add,
   abs,
+  vec3,
 } from "three/tsl";
+import { vec2 } from "three/tsl";
 
 export default class extends Ob {
   intensityVertices;
+
+  beforeCreateMesh() {
+    this.DOM.childMediaEls = [];
+  }
 
   setupGeometry() {
     const width = Math.floor(this.rect.width), //横幅を整数に丸める
@@ -142,12 +148,9 @@ export default class extends Ob {
     const aInstanceDelay = attribute("instanceDelay", "float");
     const aInstanceUV = attribute("instanceUV", "vec2");
 
-    const vProgress = sub(1.0, abs(mul(2.0, uProgress).sub(1.0)));
-
     options.aInstanceDelay = aInstanceDelay;
     options.aInstancePlanePosition = aInstancePlanePosition;
     options.aInstanceUV = aInstanceUV;
-    options.vProgress = vProgress;
 
     return options;
   }
@@ -158,6 +161,12 @@ export default class extends Ob {
     const size = this.rect.width / 300;
     //uniformsにuPointSizeを追加
     uniforms.uPointSize = uniform(size * 1.1);
+    //ノイズの速度
+    uniforms.uSpeed = uniform(0.05);
+    //ノイズの強さ
+    uniforms.uCnoise = uniform(vec3(0.005, 0, 0.01));
+    //ノイズの広がり
+    uniforms.uExpand = uniform(vec3(1, 1, 1));
     return uniforms;
   }
   setupVertex(options) {
@@ -218,7 +227,11 @@ export default class extends Ob {
       duration,
       ease: "none",
       onStart: () => {
-        this.DOM.el.nextElementSibling?.remove();
+        // this.DOM.el.nextElementSibling?.remove();
+        this.DOM.childMediaEls.forEach((el) => {
+          el.style.opacity = 0;
+          el.pause?.();
+        });
         this.mesh.visible = true;
       },
       onComplete: () => {
@@ -227,22 +240,48 @@ export default class extends Ob {
         // progressを0に戻す
         this.uniforms.uProgress.value = 0;
         // 次のテクスチャの画像要素を取得
-        const imgEl = nextTex.source.data;
-        // 親要素を取得
-        const parentElement = this.DOM.el.parentElement;
+        const activeEl = this.getChildMediaEl(_idx - 1);
+        activeEl.style.opacity = 1;
 
-        // 親要素に画像要素の複製を追加（他のコンポーネントと共有されている場合があるため）
-        parentElement.append(imgEl.cloneNode(true));
         // メッシュを非表示
         this.mesh.visible = false;
         // 実行中フラグを戻す
         this.running = false;
+
+        //動画が止まっていたら再生
+        if (activeEl.paused) {
+          activeEl.play?.();
+        }
       },
     });
   }
 
+  getChildMediaEl(idx) {
+    return this.DOM.childMediaEls[idx];
+  }
+
   afterInit() {
-    this.goTo(0, 0);
+    let isFirst = true;
+    this.texes.forEach((tex) => {
+      const mediaEl = tex.source.data.cloneNode(true);
+      //クラス名を追加
+      mediaEl.classList.add("js_particleChild");
+      // tex1以外は非表示にする
+      if (!isFirst) {
+        mediaEl.style.opacity = 0;
+      }
+      isFirst = false;
+      // 親要素を取得
+      const parentElement = this.DOM.el.parentElement;
+      // childMediaElsに追加
+      this.DOM.childMediaEls.push(mediaEl);
+      // 親要素に画像要素の複製を追加
+      parentElement.append(mediaEl);
+    });
+    // メッシュを1フレーム描画させてシェーダーのコンパイルを済ませてから非表示にする
+    requestAnimationFrame(() => {
+      this.mesh.visible = false;
+    });
   }
 
   resize() {
@@ -266,39 +305,36 @@ export default class extends Ob {
     attr.needsUpdate = true;
   }
   debug(folder) {
-    // folder.add(this.uniforms.uProgress, "value", 0, 1, 0.1).name("progress");
-    // const datObj = { next: !!this.uniforms.uProgress.value };
-    // folder
-    //   .add(datObj, "next")
-    //   .name("Animate")
-    //   .onChange(() => {
-    //     gsap.to(this.uniforms.uProgress, {
-    //       duration: 2,
-    //       value: datObj.next ? 1 : 0,
-    //       ease: "none",
-    //       onStart: () => {
-    //         //次の要素を削除
-    //         this.DOM.el.nextElementSibling?.remove();
-    //         this.mesh.visible = true;
-    //       },
-    //       onComplete: () => {
-    //         const imgEl =
-    //           this.uniforms.uTexes["tex" + (Number(datObj.next) + 1)].source
-    //             .data;
-    //         const parentElement = this.DOM.el.parentElement;
-    //         parentElement.append(imgEl);
-    //         this.mesh.visible = false;
-    //       },
-    //     });
-    //   });
+    folder.add(this.uniforms.uProgress, "value", 0, 1, 0.1).name("progress");
 
     const sliderIdx = { value: 0 };
     folder
-      .add(sliderIdx, "value", 0, 12, 1)
+      .add(sliderIdx, "value", -12, 12, 1)
       .name("goTo")
       .listen()
       .onChange(() => {
         this.goTo(sliderIdx.value);
       });
+
+    // curl-noise/index.js
+
+    folder.add(this.uniforms.uSpeed, "value", 0, 0.1, 0.001).name("speed");
+
+    // Vector3 の場合は .value.x / .value.y / .value.z を操作する
+    folder
+      .add(this.uniforms.uCnoise.value, "x", 0, 0.01, 0.001)
+      .name("cnoiseX");
+    folder
+      .add(this.uniforms.uCnoise.value, "y", 0, 0.01, 0.001)
+      .name("cnoiseY");
+    folder
+      .add(this.uniforms.uCnoise.value, "z", 0, 0.01, 0.001)
+      .name("cnoiseZ");
+
+    // uExpand も vec3 なので同様に .value.x などを指定する必要があります
+    // もし全体の大きさを一括で変えたい場合は .value の x, y, z 全体を操作するか、
+    // もしくは x だけをGUIに出して反映させる形になります
+    folder.add(this.uniforms.uExpand.value, "x", 0, 10, 1).name("expandX");
+    folder.add(this.uniforms.uExpand.value, "y", 0, 10, 1).name("expandY");
   }
 }

@@ -1,12 +1,20 @@
+@use "./foundation";
+@use "./global";
+@use "./layout";
+@use "./module";
+@use "./utility";
+@use "./page";
+@use "./program";
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-#particle-slide {
+.bl_particleSlide {
   position: relative;
 }
-#particle-slide > img {
+.js_particleChild {
   position: absolute;
   width: 100%;
   height: 100%;

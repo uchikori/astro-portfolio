@@ -257,7 +257,7 @@ class Ob {
   }
 
   render(tick) {
-    this.uniforms.uTick = tick;
+    this.uniforms.uTick.value = tick;
   }
 
   async afterInit() {
