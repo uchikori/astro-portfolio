@@ -29,12 +29,12 @@ const DOM = {};
 
 function init() {
   DOM.globalContainer = INode.getElement("#globalContainer");
-  DOM.loader = INode.getElement("#loader");
-  DOM.loaderPercent = INode.getElement("#js_countNum");
-  DOM.progressCounter = INode.getElement("#js_progressCounter");
-  DOM.loaderWrapper = INode.getElement("#js_loaderWrapper");
-  DOM.progressBar = INode.getElement("#js_progressBar");
-  DOM.statusLabel = INode.getElement("#js_statusLabel");
+  DOM.loader = INode.getElement(".js_loader");
+  DOM.loaderPercent = INode.getElement(".js_countNum");
+  DOM.progressCounter = INode.getElement(".js_progressCounter");
+  DOM.loaderWrapper = INode.getElement(".js_loaderBar");
+  DOM.progressBar = INode.getElement(".js_progressBar");
+  DOM.statusLabel = INode.getElement(".js_statusLabel");
 }
 
 async function loadAllAssets() {

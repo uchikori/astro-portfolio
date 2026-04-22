@@ -1,0 +1,143 @@
+---
+import Nav from "./Nav.astro";
+---
+
+<section class="bl_reflect">
+  <div class="bl_reflect_inner">
+    <div class="bl_reflect_holder">
+      <div
+        class="bl_reflect_slider"
+        data-webgl="slider-reflect"
+        data-tex-1="/img/slider/slider_1.jpg"
+        data-tex-2="/img/slider/slider_4.jpg"
+        data-tex-3="/img/slider/slider_3.jpg"
+        data-tex-4="/movie/beach.mp4"
+        data-tex-5="/img/slider/slider_2.jpg"
+      >
+      </div>
+      <!-- /.bl_reflect_slider -->
+    </div>
+    <!-- /.bl_reflect_holder -->
+    <div class="bl_reflect_content">
+      <ul class="bl_reflect_ul">
+        <li class="bl_reflect_li">
+          <h3 class="bl_reflect_headline">正規化</h3>
+          <p class="bl_reflect_text">
+            正規化とはデータを一定のルールに基づいて、利用しやすい形に変形すること。WebGLにおいては正規化によってベクトルの長さを１にしたり、ある変数の取りうる値の範囲を-1
+            ~ 1にします。
+          </p>
+        </li>
+        <li class="bl_reflect_li">
+          <h3 class="bl_reflect_headline">座標</h3>
+          <p class="bl_reflect_text">
+            座標とは空間内の点の位置を一意に指定するための数の組みで、WebGLにおいては頂点やテクスチャ画像の位置を指定するために使用されます。
+          </p>
+        </li>
+        <li class="bl_reflect_li">
+          <h3 class="bl_reflect_headline">ベクトル</h3>
+          <p class="bl_reflect_text">
+            数学、物理学においてベクトルは大きさと方向を持つ量で、幾何学的に矢印としてイメージされます。WebGLにおいては頂点の座標やカメラや光の向きの表現に利用されます。
+          </p>
+        </li>
+        <li class="bl_reflect_li">
+          <h3 class="bl_reflect_headline">線形補間</h3>
+          <p class="bl_reflect_text">
+            線形補間とは、既知の2点の間に存在する値を線形である1次関数を用いて近似的に求める手法です。WebGLでは各フラグメントには線形補間された値が渡ってきます。
+          </p>
+        </li>
+        <li class="bl_reflect_li">
+          <h3 class="bl_reflect_headline">行列</h3>
+          <p class="bl_reflect_text">
+            行列とは数や記号を縦と横に矩形に配列したものです。WebGLにおいては頂点の座標を表すベクトルと掛け合わせることで、ベクトルの回転や長さの変更を行うことができます。
+          </p>
+        </li>
+      </ul>
+    </div>
+    <!-- /.bl_reflect_content -->
+    <Nav align="left" />
+  </div>
+  <!-- /.bl_reflect_inner -->
+</section>
+<!-- /.bl_reflect -->
+
+<style lang="scss">
+  /**
+   * reflect
+   */
+  .bl_reflect {
+    height: 100svh;
+    display: flex;
+    align-items: flex-start;
+    padding: 4em 1em;
+    text-align: left;
+    position: relative;
+    &_inner {
+      width: 100%;
+    }
+    // holder
+    &_holder {
+      position: relative;
+      margin-inline: auto;
+      font-size: 22px;
+      width: 24em;
+      height: 18em;
+      text-align: center;
+      margin-top: 3em;
+    }
+    &_slider {
+      width: 100%;
+      aspect-ratio: 7/4;
+    }
+
+    //content
+    &_content {
+      font-size: 20px;
+      color: white;
+      line-height: 1;
+      margin-top: 1em;
+      position: absolute;
+      padding: 1rem 2rem;
+      width: 30em;
+      right: 0;
+      bottom: 0;
+      text-align: right;
+    }
+    &_ul {
+      position: relative;
+      min-height: 248px;
+      counter-reset: number;
+      width: 100%;
+      list-style: none;
+      transition: transform 0.3s ease-in-out;
+    }
+    &_li {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      &:first-child {
+        opacity: 1;
+      }
+    }
+    &_headline {
+      font-size: 48px;
+      margin-bottom: 0.5em;
+      font-weight: 700;
+      &::before {
+        font-size: 1.6em;
+        content: "0" counter(number) " ";
+        counter-increment: number;
+      }
+    }
+    &_text {
+      font-size: 20px;
+      text-align: justify;
+      line-height: 1.5;
+      width: 100%;
+      margin: auto;
+    }
+  }
+</style>

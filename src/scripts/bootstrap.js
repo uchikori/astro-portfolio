@@ -4,6 +4,13 @@ import scroller from "./component/scroller";
 import mouse from "./component/mouse";
 import loader from "./component/loader";
 import gsap from "gsap";
+import {
+  mountNavBtnHandler,
+  mountReflectBtnHandler,
+  mountScrollHandler,
+} from "./component/slide-hundler";
+import { initRipplePass } from "./glsl/ripple";
+import { initMouseParticles } from "./glsl/mouse-particles";
 
 window.debug = enableDebugMode(1);
 
@@ -36,10 +43,10 @@ export async function init() {
   loader.init();
 
   // ローダーアニメーションの追加
-  const loading = INode.getElement("#loader");
-  const loaderPercent = INode.getElement("#js_countNum");
-  const progressBar = INode.getElement("#js_progressBar");
-  const statusLabel = INode.getElement("#js_statusLabel");
+  const loading = INode.getElement(".js_loader");
+  const loaderPercent = INode.getElement(".js_countNum");
+  const progressBar = INode.getElement(".js_progressBar");
+  const statusLabel = INode.getElement(".js_statusLabel");
   loader.addProgressAction((progress, total) => {
     const currentVal = progress / total;
 
@@ -61,7 +68,34 @@ export async function init() {
   // Worldを初期化
   await world.init(canvas, viewport);
 
+  mountNavBtnHandler(
+    ".bl_fv_slider",
+    ".bl_fv .js_navBtn__prev",
+    ".bl_fv .js_navBtn__next",
+    ".bl_fv_shader",
+  );
+
+  // mountReflectBtnHandler(
+  //   ".bl_reflect_slider",
+  //   ".bl_reflect .js_navBtn__prev",
+  //   ".bl_reflect .js_navBtn__next",
+  //   ".bl_reflect_ul",
+  // );
+
+  mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
+
   mouse.init();
+
+  world.addRenderAction(() => {
+    mouse.render();
+    world.raycast();
+  });
+
+  //リプルパスを初期化(ポストプロセスエフェクト)
+  await initRipplePass(world, mouse);
+
+  //マウスパーティクルを初期化
+  await initMouseParticles(world, mouse);
 
   world.render();
 

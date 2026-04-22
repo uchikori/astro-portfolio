@@ -29,7 +29,7 @@ import {
   equals,
   select,
 } from "three/tsl";
-import { Vector4 } from "three/webgpu";
+import { Quaternion, Vector3, Vector4 } from "three/webgpu";
 
 const utils = {
   backInOut,
@@ -48,6 +48,7 @@ const utils = {
   rotate2D,
   rotate3D,
   parabora,
+  pointTo,
 };
 
 /**
@@ -57,10 +58,10 @@ const utils = {
  * @param {*} n - 補間率
  * @returns
  */
-function lerp(a, b, n) {
+function lerp(a, b, n, limit = 0.001) {
   let current = a * (1 - n) + b * n;
-  //終了値との差が0.001以下の場合は終了値を代入
-  if (Math.abs(b - current) < 0.001) current = b;
+  //終了値との差がlimit以下の場合は終了値を代入
+  if (Math.abs(b - current) < limit) current = b;
   return current;
 }
 
@@ -366,10 +367,7 @@ function noise2(v) {
 
     // Normalise gradients
     m.mulAssign(
-      sub(
-        1.79284291400159,
-        mul(0.85373472095314, add(mul(a0, a0), mul(h, h))),
-      ),
+      sub(1.79284291400159, mul(0.85373472095314, add(mul(a0, a0), mul(h, h)))),
     );
 
     // Final noise value at P
@@ -696,9 +694,52 @@ function hsl2rgb(hsl) {
   })();
 }
 
+/**
+ * 放物線
+ * @param {*} x
+ * @param {*} k
+ * @returns
+ */
 function parabora(x, k) {
   return Fn(() => {
     return pow(mul(4.0, mul(x, sub(1.0, x))), k);
   })();
+}
+
+/**
+ * メッシュを指定方向に向ける関数
+ * クォータニオンを使用して回転を計算
+ * @param {Object} _mesh - 回転対象のメッシュ
+ * @param {Object} originalDir - 元の方向ベクトル
+ * @param {Object} targetDir - 目標方向ベクトル
+ */
+function pointTo(_mesh, originalDir, targetDir) {
+  // 回転軸の計算
+  const _originalDir = new Vector3(
+    originalDir.x,
+    originalDir.y,
+    originalDir.z,
+  ).normalize();
+  // console.log(_originalDir);
+  const _targetDir = new Vector3(
+    targetDir.x,
+    targetDir.y,
+    targetDir.z,
+  ).normalize();
+  // console.log(_targetDir);
+
+  // 2つのベクトルの外積を計算して回転軸を得る
+  const dir = new Vector3().crossVectors(_originalDir, _targetDir).normalize();
+
+  // 回転角の計算
+  const dot = _originalDir.dot(_targetDir); //内積 |a||b|cosθより|a|と|b|がnormalize()により1なのでdot=cosθとなる
+  const rad = Math.acos(dot); //回転させるべき角度 acos=>cosθ=xのときθを返す
+
+  // クォータニオンの作成
+  const q = new Quaternion();
+  q.setFromAxisAngle(dir, rad);
+
+  // メッシュを回転
+  _mesh.rotation.setFromQuaternion(q);
 }
 export { utils };

@@ -9,9 +9,11 @@ import {
   Clock,
   AxesHelper,
   LinearSRGBColorSpace,
+  PostProcessing,
 } from "three/webgpu";
 import RenderTargetManager from "../component/renderTargetManager";
 import { Ob } from "./Ob";
+import { pass } from "three/tsl";
 
 //Worldオブジェクト
 const world = {
@@ -20,6 +22,7 @@ const world = {
   init,
   adjustWorldPosition,
   render,
+  raycast,
   dispose,
   addObj,
   removeObj,
@@ -29,6 +32,14 @@ const world = {
   clock: new Clock(),
   renderTargetManager: null, // レンダーターゲットマネージャー
   tick: 0,
+  _effectFns: [], // エフェクト関数のリスト
+  _updateFns: [], // 毎フレーム更新する関数のリスト
+  addPass,
+  removePass,
+  updatePostProcessing,
+  renderActions: new Set(),
+  addRenderAction,
+  removeRenderAction,
 };
 
 async function init(canvas, viewport) {
@@ -57,7 +68,12 @@ async function init(canvas, viewport) {
   //カメラを作成
   world.camera = _setupPerspectiveCamera(viewport);
 
-  //メッシュオブジェクトの初期化
+  // ポストプロセスの初期化
+  world.postProcessing = new PostProcessing(world.renderer);
+  const scenePass = pass(world.scene, world.camera);
+  world.scenePassColor = scenePass.getTextureNode("output");
+
+  // メッシュオブジェクトの初期化
   await _initObjects(viewport);
 }
 
@@ -224,12 +240,25 @@ function render() {
   // レンダーターゲットの描画
   world.renderTargetManager.renderAll();
 
+  // 登録された更新関数をすべて実行
+  // for (const fn of world._updateFns) {
+  //   fn(world.renderer, world.tick, delta);
+  // }
+
+  // レンダリングアクションを実行
+  for (const fn of world.renderActions) {
+    fn(world.renderer, world.tick, delta);
+  }
+
   // メインシーンの描画
   world.renderer.setRenderTarget(null);
-  world.renderer.render(world.scene, world.camera);
+  // world.renderer.render(world.scene, world.camera);
+
+  //ポストプロセスを適用して描画
+  world.postProcessing.render();
 
   //レイキャスティング
-  raycast();
+  // raycast();
 
   //スクロール処理
   for (let i = world.os.length - 1; i >= 0; i--) {
@@ -294,6 +323,73 @@ function _detachOrbitControl() {
   orbitControl?.dispose();
   // canvasのz-indexを-1に設定(OrbitControlを無効化するため)
   world.renderer.domElement.style.zIndex = -1;
+}
+
+/**
+ * ポストプロセスにエフェクト関数を追加
+ * @param {*} effectFn
+ * @returns
+ */
+function addPass(effectFn) {
+  //関数以外ならエラー
+  if (typeof effectFn !== "function") {
+    console.error("addPass: effectFn must be a function");
+    return;
+  }
+  //配列にエフェクト関数を追加
+  world._effectFns.push(effectFn);
+  //ポストプロセスを更新
+  updatePostProcessing();
+}
+
+/**
+ * ポストプロセスからエフェクト関数を削除
+ * @param {*} effectFn
+ */
+function removePass(effectFn) {
+  //配列からエフェクト関数を削除
+  world._effectFns = world._effectFns.filter((fn) => fn !== effectFn);
+  //ポストプロセスを更新
+  updatePostProcessing();
+}
+
+/**
+ * ポストプロセスの更新
+ * @returns
+ */
+function updatePostProcessing() {
+  //ポストプロセスがなければ終了
+  if (!world.postProcessing) return;
+
+  // scenePassColorを初期値に設定
+  let node = world.scenePassColor;
+
+  // 登録されているエフェクトを順番に適用
+  for (const effectFn of world._effectFns) {
+    node = effectFn(node);
+  }
+
+  // ポストプロセスの出力ノードを更新
+  world.postProcessing.outputNode = node;
+  // ポストプロセスを更新
+  world.postProcessing.needsUpdate = true;
+}
+
+/**
+ * レンダリングアクションを追加
+ * @param {*} callback
+ */
+function addRenderAction(callback) {
+  if (typeof callback !== "function") return;
+  world.renderActions.add(callback);
+}
+
+/**
+ * レンダリングアクションを削除
+ * @param {*} callback
+ */
+function removeRenderAction(callback) {
+  world.renderActions.delete(callback);
 }
 
 export default world;

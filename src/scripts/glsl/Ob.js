@@ -30,9 +30,6 @@ class Ob {
     };
     this.texes = texes ?? [];
 
-    // メッシュ作成前の処理
-    this.beforeCreateMesh();
-
     //WebGLのHTML要素の座標を取得
     this.rect = el.getBoundingClientRect();
 
@@ -47,13 +44,20 @@ class Ob {
       //modelを取得
       this.models = loader.getModelByElement(el);
 
+      // レンダーターゲット用のマテリアルを設定（必要に応じてオーバーライド）
+      this.renderTargetMaterial = this.setupRenderTargetMaterial();
+
       // レンダーターゲット情報を初期化(モデルが一つもない場合はnullが格納されている)
       this.targetInfo = world.renderTargetManager.initRenderTarget(
         el,
         this.models,
         world.camera,
         this.rect,
+        this.renderTargetMaterial,
       );
+
+      // メッシュ作成前の処理
+      this.beforeCreateMesh();
 
       this.material = this.setupMaterial();
       this.geometry = this.setupGeometry();
@@ -104,6 +108,10 @@ class Ob {
 
   beforeCreateMesh() {}
 
+  setupRenderTargetMaterial() {
+    return null;
+  }
+
   setupGeometry() {
     return new PlaneGeometry(this.rect.width, this.rect.height, 1, 1);
   }
@@ -119,7 +127,6 @@ class Ob {
     } else {
       this.material = new MeshBasicNodeMaterial({
         transparent: true,
-        alphaTest: 0.5,
       });
     }
 
@@ -260,12 +267,7 @@ class Ob {
     this.uniforms.uTick.value = tick;
   }
 
-  async afterInit() {
-    this.pauseVideo();
-    setTimeout(() => {
-      this.playVideo();
-    }, 4000);
-  }
+  async afterInit() {}
 
   async playVideo(texId = "tex1") {
     await this.uniforms.uTexes[texId]?.source.data.play?.();

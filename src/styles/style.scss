@@ -6,11 +6,6 @@
 @use "./page";
 @use "./program";
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 .bl_particleSlide {
   position: relative;
 }
@@ -20,4 +15,10 @@
   height: 100%;
   top: 0;
   left: 0;
+}
+
+.bl_reflect {
+  .bl_nav {
+    text-align: left;
+  }
 }

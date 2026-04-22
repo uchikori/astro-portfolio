@@ -2,28 +2,34 @@
 
 ---
 
-<div id="loader" class="loader un_loadingOverlay">
-  <div class="un_loadingOverlay_glowEffect"></div>
-  <div class="loader_inner">
+<div id="loader" class="bl_loader js_loader">
+  <div class="bl_loader_glow"></div>
+  <div class="bl_loader_inner">
     <!-- Module: カウンター -->
-    <div id="js_progressCounter" class="m_progressCounter">
-      <span id="js_countNum" class="m_progressCounter_displayNumber">0</span>
-      <span class="m_progressCounter_unitSymbol">%</span>
+    <div id="js_progressCounter" class="bl_progressCounter js_progressCounter">
+      <span id="js_countNum" class="bl_progressCounter_num js_countNum">0</span>
+      <span class="bl_progressCounter_unit">%</span>
     </div>
-    <!-- Module: ローダー (構造継承) -->
-    <div id="js_loaderWrapper" class="m_loaderWrapper">
-      <div class="m_loaderWrapper_innerTrack">
-        <div id="js_progressBar" class="m_loaderWrapper_progressRect"></div>
+    <!-- /.bl_progressCounter -->
+
+    <!-- Module: ローダー構造 -->
+    <div id="js_loaderWrapper" class="bl_loaderBar js_loaderBar">
+      <div class="bl_loaderBar_track">
+        <div id="js_progressBar" class="bl_loaderBar_progress js_progressBar"></div>
       </div>
-      <div id="js_statusLabel" class="m_loaderWrapper_statusMessage">
+      <!-- /.bl_loaderBar_track -->
+      <div id="js_statusLabel" class="bl_loaderBar_status js_statusLabel">
         System Loading
       </div>
     </div>
+    <!-- /.bl_loaderBar -->
   </div>
+  <!-- /.bl_loader_inner -->
 </div>
+<!-- /.bl_loader -->
 
 <style lang="scss">
-  .un_loadingOverlay {
+  .bl_loader {
     position: fixed;
     top: 0;
     left: 0;
@@ -37,7 +43,7 @@
     background: #110028;
     opacity: 1;
     visibility: visible;
-    &_glowEffect {
+    &_glow {
       position: absolute;
       width: 500px;
       height: 500px;
@@ -49,25 +55,26 @@
       z-index: -1;
     }
   }
+
   /* カウンター表示 */
-  .m_progressCounter {
+  .bl_progressCounter {
     color: #ffffff;
     margin-bottom: 30px;
     text-align: center;
     transform: translateX(0);
-    &_displayNumber {
+    &_num {
       font-size: 6rem;
       font-weight: 900;
       letter-spacing: -2px;
       line-height: 1;
     }
-    &__unitSymbol {
+    &_unit {
       font-size: 1.5rem;
       color: #475569;
       margin-left: 5px;
     }
 
-    .hl_isHidden & {
+    .is_hidden & {
       transform: translateX(100%);
       opacity: 0;
       transition:
@@ -77,13 +84,13 @@
   }
 
   /* ローダー構造 */
-  .m_loaderWrapper {
+  .bl_loaderBar {
     width: 280px;
     display: flex;
     flex-direction: column;
     align-items: center;
     transform: translateX(0);
-    &_innerTrack {
+    &_track {
       position: relative;
       width: 100%;
       height: 4px;
@@ -91,7 +98,7 @@
       border-radius: 10px;
       overflow: hidden;
     }
-    &_progressRect {
+    &_progress {
       position: absolute;
       top: 0;
       left: 0;
@@ -101,7 +108,7 @@
       box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
       transition: width 0.15s ease-out;
     }
-    &_statusMessage {
+    &_status {
       margin-top: 20px;
       font-size: 0.75rem;
       color: #64748b;
@@ -109,7 +116,7 @@
       letter-spacing: 0.25em;
     }
 
-    .hl_isHidden & {
+    .is_hidden & {
       transform: translateX(-100%);
       opacity: 0;
       transition:
@@ -119,15 +126,15 @@
   }
 
   /* ==========================================================================
-    Helper (h_xxx)
-========================================================================== */
-  .hl_isHidden {
+    State (is_xxx)
+  ========================================================================== */
+  .is_hidden {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
   }
 
-  .hl_isCompleted {
+  .is_completed {
     color: #10b981 !important;
   }
 </style>

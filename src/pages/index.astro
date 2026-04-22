@@ -1,115 +1,109 @@
 ---
 import Base from "../layout/Base.astro";
 import Kv from "../components/kv.astro";
+import Fv from "../components/Fv.astro";
+import Reflect from "../components/Reflect.astro";
 ---
 
-<Base title="Astro">
-  <div id="smooth-wrapper">
-    <div id="smooth-content">
-      <!-- <Kv /> -->
-      <div class="wrap">
-        <div>
-          <h2>distortion-text</h2>
-          <h2 class="el_sectionTitle">
-            <span
-              class="el_sectionTitle_text"
-              data-webgl="distortion-text"
-              data-tex-1="/img/headline/VISION.png">VISION</span
-            >
-          </h2>
-        </div>
-        <div>
-          <h2>curl-noise</h2>
-          <div class="bl_particleSlide">
-            <div
-              class="image"
-              data-webgl="curl-noise"
-              data-tex-1="/img/slider/slider_1.jpg"
-              data-tex-2="/movie/beach.mp4"
-            >
-            </div>
-            <!-- insert img -->
-          </div>
-        </div>
-        <div>
-          <h2>plane-to-sphere</h2>
-          <img
-            data-webgl="plane-to-sphere"
-            data-tex-1="/img/slider/slider_1.jpg"
-          />
-        </div>
-        <div>
-          <h2>gray-pic</h2>
-          <img data-webgl="gray-pic" data-tex-1="/img/slider/slider_1.jpg" />
-        </div>
-        <div>
-          <h2>particle-slide</h2>
-          <div class="bl_particleSlide">
-            <div
-              class="image"
-              data-webgl="particle-slide"
-              data-tex-1="/img/slider/slider_1.jpg"
-              data-tex-2="/img/slider/slider_2.jpg"
-              data-tex-3="/img/slider/slider_3.jpg"
-              data-tex-4="/img/slider/slider_4.jpg"
-              data-tex-5="/img/slider/slider_5.jpg"
-            >
-            </div>
-            <!-- insert img -->
-          </div>
-        </div>
-        <div>
-          <h2>sticky-plane</h2>
-          <img
-            data-webgl="sticky-plane"
-            data-tex-1="/img/slider/slider_1.jpg"
-          />
-        </div>
-        <div>
-          <h2>twist-plane</h2>
-          <img data-webgl="twist-plane" data-tex-1="/img/slider/slider_1.jpg" />
-        </div>
-        <div>
-          <h2>noise-slide</h2>
-          <img
-            data-webgl="noise-slide"
-            data-tex-1="/img/slider/slider_1.jpg"
-            data-tex-2="/img/slider/slider_2.jpg"
-          />
-        </div>
-        <div>
-          <h2>displace-slide</h2>
-          <img
-            data-webgl="displace-slide"
-            data-tex-1="/img/slider/slider_1.jpg"
-            data-tex-2="/img/slider/slider_2.jpg"
-            data-tex-disp="/img/disps/3.png"
-          />
-        </div>
+<Base title="Astro-home">
+  <!-- <Kv /> -->
+  <div class="ly_wrapper">
+    <Fv />
+    <Reflect />
+    <!-- <div>
+      <h2>distortion-text</h2>
+      <h2 class="el_sectionTitle">
+        <span
+          class="el_sectionTitle_text"
+          data-webgl="distortion-text"
+          data-tex-1="/img/headline/VISION.png">VISION</span
+        >
+      </h2>
+    </div>
+    <div>
+      <h2>curl-noise</h2>
+      <div class="bl_particleSlide">
         <div
-          class="kickman"
-          data-webgl="normal"
-          data-model="/model/mixamo_kick.glb"
+          class="image"
+          data-webgl="curl-noise"
+          data-tex-1="/img/slider/slider_1.jpg"
+          data-tex-2="/movie/beach.mp4"
         >
         </div>
       </div>
     </div>
+    <div>
+      <h2>plane-to-sphere</h2>
+      <img data-webgl="plane-to-sphere" data-tex-1="/img/slider/slider_1.jpg" />
+    </div>
+    <div>
+      <h2>gray-pic</h2>
+      <img data-webgl="gray-pic" data-tex-1="/img/slider/slider_1.jpg" />
+    </div>
+    <div>
+      <h2>particle-slide</h2>
+      <div class="bl_particleSlide">
+        <div
+          class="image"
+          data-webgl="particle-slide"
+          data-tex-1="/img/slider/slider_1.jpg"
+          data-tex-2="/img/slider/slider_2.jpg"
+          data-tex-3="/img/slider/slider_3.jpg"
+          data-tex-4="/img/slider/slider_4.jpg"
+          data-tex-5="/img/slider/slider_5.jpg"
+        >
+        </div>
+      </div>
+    </div>
+    <div>
+      <h2>sticky-plane</h2>
+      <img data-webgl="sticky-plane" data-tex-1="/img/slider/slider_1.jpg" />
+    </div>
+    <div>
+      <h2>twist-plane</h2>
+      <img data-webgl="twist-plane" data-tex-1="/img/slider/slider_1.jpg" />
+    </div>
+    <div>
+      <h2>noise-slide</h2>
+      <img
+        data-webgl="noise-slide"
+        data-tex-1="/img/slider/slider_1.jpg"
+        data-tex-2="/img/slider/slider_2.jpg"
+      />
+    </div>
+    <div>
+      <h2>displace-slide</h2>
+      <img
+        data-webgl="displace-slide"
+        data-tex-1="/img/slider/slider_1.jpg"
+        data-tex-2="/img/slider/slider_2.jpg"
+        data-tex-disp="/img/disps/3.png"
+      />
+    </div>
+    <div
+      class="kickman"
+      data-webgl="normal"
+      data-model="/model/mixamo_walk.glb"
+      data-render-material="toon"
+    >
+    </div> -->
   </div>
 </Base>
 
 <style lang="scss">
+  .ly_wrapper {
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 300px;
+    height: 500svh;
+  }
   [data-webgl] {
     // background: green;
     opacity: 0;
   }
-  .wrap {
-    padding: 100px 2rem;
-    display: flex;
-    flex-direction: column;
-    max-width: 100%;
-    width: 900px;
-    gap: 300px;
-  }
+
   .video {
     width: 300px;
     height: 300px;
@@ -123,15 +117,16 @@ import Kv from "../components/kv.astro";
     height: auto;
     aspect-ratio: 2/1;
   }
-  img,
-  :global(img) {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 2/1;
-    /* bottom: 100px; */
-  }
+  // img,
+  // :global(img) {
+  //   width: 100%;
+  //   height: auto;
+  //   aspect-ratio: 2/1;
+  //   /* bottom: 100px; */
+  // }
   .kickman {
     width: 50%;
     aspect-ratio: 1;
+    margin-inline: auto;
   }
 </style>

@@ -1,0 +1,88 @@
+---
+import Nav from "./Nav.astro";
+---
+
+<section class="bl_fv">
+  <section class="bl_fv_content">
+    <div
+      class="bl_fv_shader"
+      data-webgl="slider-wave"
+      data-radius-scale="1.0"
+      data-tex-1="/img/headline/fv__headline.png"
+      data-tex-2="/img/headline/fv_slider_text_1.png"
+      data-tex-3="/img/headline/fv_slider_text_2.png"
+      data-tex-4="/img/headline/fv_slider_text_3.png"
+      data-tex-5="/img/headline/fv_slider_text_4.png"
+    >
+    </div>
+  </section>
+  <!-- /.bl_fv_content -->
+  <div class="bl_fv_main">
+    <div class="bl_fv_holder">
+      <div
+        class="bl_fv_slider"
+        data-webgl="slider-world"
+        data-radius-scale="1.0"
+        data-tex-1="/movie/beach.mp4"
+        data-tex-2="/img/slider/slider_1.jpg"
+        data-tex-3="/movie/turtle.mp4"
+        data-tex-4="/img/slider/slider_3.jpg"
+        data-tex-5="/img/slider/slider_4.jpg"
+      >
+      </div>
+      <!-- /.bl_fv_slider -->
+    </div>
+    <!-- /.bl_fv_mainHolder -->
+  </div>
+  <!-- /.bl_fv_main -->
+  <Nav align="right" />
+
+  <!-- /.bl_fv -->
+</section>
+
+<style lang="scss">
+  /**
+   * fv
+   */
+  .bl_fv {
+    position: relative;
+    height: 100svh;
+    &_content {
+      position: absolute;
+      top: auto;
+      transform: none;
+      bottom: 5%;
+      left: 0;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      margin: 0 auto;
+    }
+    &_shader {
+      display: block;
+      margin-left: -0.03em;
+      pointer-events: none;
+      width: 100%;
+      aspect-ratio: 1;
+    }
+    &_main {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100svh;
+      display: flex;
+      align-items: center;
+    }
+    &_holder {
+      position: relative;
+      width: 60%;
+      max-width: unset;
+      margin-inline: auto;
+    }
+    &_slider {
+      aspect-ratio: 16/9;
+    }
+  }
+</style>

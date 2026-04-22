@@ -6,6 +6,9 @@ import {
   AnimationMixer,
   MathUtils,
   Color,
+  PointLightHelper,
+  SpotLight,
+  SpotLightHelper,
 } from "three/webgpu";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { PointLight, AmbientLight, DirectionalLight } from "three/webgpu";
@@ -28,9 +31,11 @@ class RenderTargetManager {
    * @param {HTMLElement} el - HTML要素
    * @param {Map} models - モデルデータ
    * @param {Object} worldCamera - メインカメラ
+   * @param {DOMRect} rect - 要素のサイズ情報
+   * @param {Material} overrideMaterial - モデルに適用する描画用マテリアル（任意）
    * @returns {Object} レンダーターゲット情報
    */
-  initRenderTarget(el, models, worldCamera, rect) {
+  initRenderTarget(el, models, worldCamera, rect, overrideMaterial = null) {
     // モデルが一つもない場合はnullを返す
     if (models.size === 0) return null;
 
@@ -62,18 +67,12 @@ class RenderTargetManager {
     // カメラを作成
     targetInfo.camera = worldCamera.clone();
     targetInfo.camera.aspect = 1;
-    // メインカメラの near/far (2D 用の大きい値) を引き継ぐと、
-    // モデルを近距離に置いたとき近クリップで全部切れて「真っ黒」になりやすいので上書きする
-    // targetInfo.camera.near = 0.01;
-    // targetInfo.camera.far = 1000;
-    // targetInfo.camera.fov = 75;
-    // targetInfo.camera.updateProjectionMatrix();
 
     // OrbitControlsを先に設定（モデルの center を target に合わせるため）
     this._setupControls(targetInfo, el);
 
     // モデルをシーンに追加
-    this._addModelsToScene(targetInfo, models);
+    this._addModelsToScene(targetInfo, models, overrideMaterial);
 
     // ライトを設定
     this._setupLights(targetInfo.scene);
@@ -89,10 +88,24 @@ class RenderTargetManager {
    * モデルをシーンに追加
    * @private
    */
-  _addModelsToScene(targetInfo, models) {
+  _addModelsToScene(targetInfo, models, overrideMaterial) {
     models.forEach((gltf, key) => {
       if (gltf && gltf.scene) {
         const model = gltf.scene;
+
+        // 指定されたマテリアルがある場合は全メッシュに適用
+        if (overrideMaterial) {
+          model.traverse((child) => {
+            if (child.isMesh) {
+              // 関数として渡された場合は元のマテリアルを引き継げるようにする
+              if (typeof overrideMaterial === "function") {
+                child.material = overrideMaterial(child.material);
+              } else {
+                child.material = overrideMaterial;
+              }
+            }
+          });
+        }
 
         // モデルのサイズを計算してカメラ位置を調整
         const box = new Box3().setFromObject(model);
@@ -137,17 +150,33 @@ class RenderTargetManager {
    * @private
    */
   _setupLights(scene) {
-    const light1 = new PointLight(0xffffff, 5, 0);
-    light1.position.set(-0.5, 2.1, 0.5);
-    scene.add(light1);
+    // const light1 = new PointLight(0xffffff, 1, 0);
+    // light1.position.set(-0.5, 2.1, 0.5);
+    // scene.add(light1);
 
-    const light2 = new PointLight(0xffffff, 5, 0);
-    light2.position.set(0.5, 0, 1);
+    // const light1Helper = new PointLightHelper(light1, 1);
+    // scene.add(light1Helper);
+
+    const light2 = new PointLight(0xffffff, 1, 0);
+    light2.position.set(0.5, 0.6, 1);
     scene.add(light2);
 
-    const light3 = new PointLight(0xffffff, 5, 0);
-    light3.position.set(-10, -20, -10);
-    scene.add(light3);
+    const light2Helper = new PointLightHelper(light2, 1);
+    scene.add(light2Helper);
+
+    // const light3 = new PointLight(0xffffff, 1, 0);
+    // light3.position.set(-10, -20, -10);
+    // scene.add(light3);
+
+    // const light3Helper = new PointLightHelper(light3, 1);
+    // scene.add(light3Helper);
+
+    const spotLight = new SpotLight(0xffffff, 1.2, 0);
+    spotLight.position.set(-0.5, 2.1, 0.5);
+    scene.add(spotLight);
+
+    const spotLightHelper = new SpotLightHelper(spotLight, 1);
+    scene.add(spotLightHelper);
 
     const ambientLight = new AmbientLight(0xffffff, 1);
     scene.add(ambientLight);
@@ -155,6 +184,12 @@ class RenderTargetManager {
     const dirLight = new DirectionalLight(0xffffff, 1);
     dirLight.position.set(0, 0, 0);
     scene.add(dirLight);
+
+    // this.light1 = light1;
+    // this.light2 = light2;
+    // this.light3 = light3;
+    // this.ambientLight = ambientLight;
+    // this.dirLight = dirLight;
   }
 
   /**
@@ -231,18 +266,32 @@ class RenderTargetManager {
   }
 
   gui(targetInfo) {
-    // const gui = new GUI();
-
-    // const folder = gui.addFolder("RenderTarget");
-    // folder.add(targetInfo.camera.position, "x", -10, 10).step(0.01);
-    // folder.add(targetInfo.camera.position, "y", -10, 10).step(0.01);
-    // folder.add(targetInfo.camera.position, "z", -10, 10).step(0.01);
-
     gui.add((lilGUI) => {
-      const folder = lilGUI.addFolder("RenderTargetCamera");
-      folder.add(targetInfo.camera.position, "x", -10, 10).step(0.01);
-      folder.add(targetInfo.camera.position, "y", -10, 10).step(0.01);
-      folder.add(targetInfo.camera.position, "z", -10, 10).step(0.01);
+      const folder = lilGUI.addFolder("RenderTarget");
+      folder
+        .add(targetInfo.camera.position, "x", -10, 10)
+        .step(0.01)
+        .name("cameraX");
+      folder
+        .add(targetInfo.camera.position, "y", -10, 10)
+        .step(0.01)
+        .name("cameraY");
+      folder
+        .add(targetInfo.camera.position, "z", -10, 10)
+        .step(0.01)
+        .name("cameraZ");
+      // folder.add(this.light1, "intensity", 0, 10).step(0.01).name("light1");
+      // folder.add(this.light2, "intensity", 0, 10).step(0.01).name("light2");
+      // folder.add(this.light3, "intensity", 0, 10).step(0.01).name("light3");
+      // folder.add(this.light1.position, "x", -10, 10).step(0.01).name("light1X");
+      // folder.add(this.light1.position, "y", -10, 10).step(0.01).name("light1Y");
+      // folder.add(this.light1.position, "z", -10, 10).step(0.01).name("light1Z");
+      // folder.add(this.light2.position, "x", -10, 10).step(0.01).name("light2X");
+      // folder.add(this.light2.position, "y", -10, 10).step(0.01).name("light2Y");
+      // folder.add(this.light2.position, "z", -10, 10).step(0.01).name("light2Z");
+      // folder.add(this.light3.position, "x", -10, 10).step(0.01).name("light3X");
+      // folder.add(this.light3.position, "y", -10, 10).step(0.01).name("light3Y");
+      // folder.add(this.light3.position, "z", -10, 10).step(0.01).name("light3Z");
     });
   }
 }

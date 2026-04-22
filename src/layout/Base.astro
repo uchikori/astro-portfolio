@@ -26,62 +26,38 @@ import Loader from "../components/Loader.astro";
       type="font/woff2"
       crossorigin
     />
+    <!-- Google Fonts の読み込みを追加 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
     <slot name="head" />
   </head>
   <body>
     <Loader />
     <div id="globalContainer">
-      <slot />
+      <div id="smooth-wrapper">
+        <div id="smooth-content">
+          <slot />
+        </div>
+      </div>
       <canvas id="canvas"></canvas>
+      <!-- <svg
+        class="el_mousePointer"
+        width="400"
+        height="400"
+        preserveAspectRatio="xMidYMid meet"
+        viewBox="0 0 200 400"
+        style="background:white;"
+      >
+        <rect width="400" height="400" x="0" y="0" stroke="red" stroke-width="4"
+        ></rect>
+        <circle cx="100" cy="100" r="100" fill="red"></circle>
+        <circle cx="200" cy="200" r="100" fill="purple"></circle>
+      </svg> -->
     </div>
   </body>
 </html>
-
-<style lang="scss">
-  /* Orbitron Medium */
-  @font-face {
-    font-family: "Orbitron";
-    src: url("/fonts/Orbitron-Medium.woff2") format("woff2");
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-    unicode-range: U+0020-007F;
-  }
-
-  /* Orbitron Bold */
-  @font-face {
-    font-family: "Orbitron";
-    src: url("/fonts/Orbitron-Bold.woff2") format("woff2");
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-    unicode-range: U+0020-007F;
-  }
-  body {
-    margin: 0;
-    background-color: #434243;
-    font-family:
-      "Orbitron",
-      "Noto Sans JP",
-      system-ui,
-      -apple-system,
-      "Segoe UI",
-      sans-serif;
-  }
-
-  #globalContainer {
-    position: relative;
-    overflow-x: hidden;
-    visibility: hidden;
-    z-index: 0;
-  }
-
-  #canvas {
-    height: 100svh;
-    width: 100vw;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-  }
-</style>
