@@ -12,7 +12,19 @@ import {
   OrthographicCamera,
   RenderTarget,
 } from "three/webgpu";
-import { Fn, vec4, uv, vec3, add, time, float, attribute, texture } from "three/tsl";
+import {
+  Fn,
+  vec4,
+  uv,
+  vec3,
+  add,
+  time,
+  float,
+  attribute,
+  texture,
+} from "three/tsl";
+
+import { viewport } from "../../helper";
 
 class ParticleSystem {
   constructor(count = 500) {
@@ -45,7 +57,10 @@ class ParticleSystem {
     this.mesh.instanceMatrix.setUsage(DynamicDrawUsage);
 
     this.alphas = new Float32Array(count);
-    this.geometry.setAttribute("aAlpha", new InstancedBufferAttribute(this.alphas, 1));
+    this.geometry.setAttribute(
+      "aAlpha",
+      new InstancedBufferAttribute(this.alphas, 1),
+    );
 
     this.particles = [];
     for (let i = 0; i < count; i++) {
@@ -79,7 +94,9 @@ class ParticleSystem {
       p.velocity.set(Math.cos(angle) * speed, Math.sin(angle) * speed, 0);
 
       // ホバー時は寿命を少し延ばす
-      p.maxLife = isHover ? Math.random() * 0.5 + 0.4 : Math.random() * 0.3 + 0.3;
+      p.maxLife = isHover
+        ? Math.random() * 0.5 + 0.4
+        : Math.random() * 0.3 + 0.3;
       p.life = p.maxLife;
 
       // ホバー時はサイズを大きく
@@ -125,17 +142,23 @@ class ParticleSystem {
 
 async function initMouseParticles(world, mouseObj) {
   const scene = new Scene();
+
+  const vp = {
+    width: viewport.width / 2,
+    height: viewport.height / 2,
+  };
+
   const camera = new OrthographicCamera(
-    -window.innerWidth / 2,
-    window.innerWidth / 2,
-    window.innerHeight / 2,
-    -window.innerHeight / 2,
+    -viewport.width / 2,
+    viewport.width / 2,
+    viewport.height / 2,
+    -viewport.height / 2,
     -100,
-    100
+    100,
   );
   camera.position.z = 10;
 
-  const rt = new RenderTarget(window.innerWidth, window.innerHeight);
+  const rt = new RenderTarget(vp.width, vp.height);
   const particles = new ParticleSystem(800); // 密度を上げるため数を増加
   scene.add(particles.mesh);
 
@@ -144,8 +167,8 @@ async function initMouseParticles(world, mouseObj) {
   const targetPos = { x: 0, y: 0 };
 
   mouseObj.addMouseMoveAction((mouse, event) => {
-    targetPos.x = event.clientX - window.innerWidth / 2;
-    targetPos.y = -event.clientY + window.innerHeight / 2;
+    targetPos.x = event.clientX - viewport.width / 2;
+    targetPos.y = -event.clientY + viewport.height / 2;
   });
 
   // レンダリング処理

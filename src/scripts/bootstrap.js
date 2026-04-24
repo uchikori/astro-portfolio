@@ -86,6 +86,7 @@ export async function init() {
 
   mouse.init();
 
+  // レンダリングループでの更新処理を追加
   world.addRenderAction(() => {
     mouse.render();
     world.raycast();

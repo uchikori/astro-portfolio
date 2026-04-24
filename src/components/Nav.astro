@@ -4,10 +4,10 @@ const { align = "right" } = Astro.props;
 ---
 
 <div class:list={["bl_nav", { "is-left": align === "left" }]}>
-  <button class="el_navBtn el_navBtn__prev js_navBtn__prev">
+  <button class="el_navBtn el_navBtn__prev js_navBtn__prev" data-mouse="stuck">
     <img src="/img/slide-nav.svg" alt="前へ" />
   </button>
-  <button class="el_navBtn el_navBtn__next js_navBtn__next">
+  <button class="el_navBtn el_navBtn__next js_navBtn__next" data-mouse="stuck">
     <img src="/img/slide-nav.svg" alt="次へ" />
   </button>
 </div>

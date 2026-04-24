@@ -227,11 +227,15 @@ function raycast() {
   });
 }
 
+/**
+ * requestAnimationFrameを繰り返し呼び出す関数
+ */
 function render() {
   requestAnimationFrame(render);
 
   world.tick++;
 
+  // 経過時間を取得
   const delta = world.clock.getDelta();
 
   // アニメーションの更新
@@ -239,11 +243,6 @@ function render() {
 
   // レンダーターゲットの描画
   world.renderTargetManager.renderAll();
-
-  // 登録された更新関数をすべて実行
-  // for (const fn of world._updateFns) {
-  //   fn(world.renderer, world.tick, delta);
-  // }
 
   // レンダリングアクションを実行
   for (const fn of world.renderActions) {
