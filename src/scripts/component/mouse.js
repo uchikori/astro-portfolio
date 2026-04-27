@@ -1,5 +1,5 @@
 import { Vector2 } from "three/webgpu";
-import { viewport, INode } from "../helper";
+import { viewport, INode, utils } from "../helper";
 import { handlers } from "./mouse-animation";
 
 //現在位置
@@ -17,6 +17,7 @@ const distortion = { level: 500, max: 0.4 };
 const mouseMoveActions = new Set();
 
 const mouse = {
+  DOM,
   current,
   target,
   delta,
@@ -29,9 +30,16 @@ const mouse = {
   tick: 0,
   render,
   speed: 0.2,
+  shouldTrackMousePos: true,
+  setTarget,
+  startTrackMousePos,
+  stopTrackMousePos,
+  makeVisible,
+  isUpdate,
+  resize,
 };
 
-function init() {
+function init(hideDefaultCursor = false, applyStyle = true) {
   // マウスの初期設定
   const initial = (mouse.initial = {
     x: viewport.width / 2,
@@ -49,6 +57,11 @@ function init() {
   Object.assign(target, initial);
   Object.assign(delta, { x: 0, y: 0, scale: 1, fillOpacity: 0 });
 
+  // タッチデバイスの場合はデフォルトカーソルを表示
+  mouse.hideDefaultCursor = utils.isTouchDevices ? false : hideDefaultCursor;
+  // タッチデバイスの場合はスタイルを適用しない
+  mouse.applyStyle = utils.isTouchDevices ? false : applyStyle;
+
   // DOMオブジェクトにsvgプロパティとしてsvgタグを設定
   DOM.svg = _createCustomCursor();
   DOM.svg.style.mixBlendMode = initial.mixBlendeMode;
@@ -59,9 +72,19 @@ function init() {
 
   // グローバルコンテナを取得
   DOM.globalContainer = INode.getElement("#globalContainer");
-  //グローバルコンテナにsvg要素を追加
-  DOM.globalContainer.append(DOM.svg);
 
+  // タッチデバイスじゃない場合のみ、スタイルを適用
+  if (mouse.applyStyle) {
+    //グローバルコンテナにsvg要素を追加
+    DOM.globalContainer.append(DOM.svg);
+  }
+
+  // タッチデバイスじゃない場合のみ、デフォルトカーソルを非表示
+  if (mouse.hideDefaultCursor) {
+    document.body.style.cursor = "none";
+  }
+
+  // マウスを適用するDOM要素を取得
   DOM.transforms = INode.qsAll("[data-mouse]");
 
   _bindEvents();
@@ -104,6 +127,7 @@ function _updateValue() {
  * マウスのスタイルを更新する
  */
 function _updateStyle() {
+  if (!isUpdate()) return;
   DOM.innerCircle.setAttribute("cx", target.x);
   DOM.innerCircle.setAttribute("cy", target.y);
   DOM.outerCircle.setAttribute("cx", current.x);
@@ -188,18 +212,24 @@ function getMapPos(width, height) {
 }
 
 function render() {
+  if (utils.isTouchDevices) return;
   _updateStyle();
+
+  if (!mouse.applyStyle) return;
   _updateValue();
 }
 
 // マウスイベントをバインド
 function _bindEvents() {
   const globalContainer = INode.getElement("#globalContainer");
-  globalContainer.addEventListener("pointermove", (event) => {
-    _updatePosition(event);
 
+  globalContainer.addEventListener("pointermove", (event) => {
     //登録されている全てのマウスアクションを実行
     mouseMoveActions.forEach((action) => action?.(mouse, event));
+
+    if (mouse.shouldTrackMousePos) {
+      _updatePosition(event);
+    }
   });
 
   // data-mouse属性の要素のマウスイベントをループ処理
@@ -210,23 +240,19 @@ function _bindEvents() {
     if (!handler) return;
 
     Object.entries(handler).forEach(([mouseType, action]) => {
-      console.log(mouseType, action);
-    });
-
-    el.addEventListener("pointerenter", (event) => {
-      const el = event.currentTarget;
-      const scale = INode.getDS(el, "mouseScale");
-
-      target.scale = Number(scale);
-      target.fillOpacity = 1;
-    });
-
-    el.addEventListener("pointerleave", (event) => {
-      const el = event.currentTarget;
-      target.scale = mouse.initial.scale;
-      target.fillOpacity = mouse.initial.fillOpacity;
+      el.addEventListener(`pointer${mouseType}`, (event) => {
+        action(mouse, event);
+      });
     });
   });
+}
+
+/**
+ * @desc マウスターゲットの位置座標を設定
+ * @param {Object} newTarget - 新しいターゲットのプロパティ
+ */
+function setTarget(newTarget) {
+  Object.assign(target, newTarget);
 }
 
 // マウスアクションを追加
@@ -237,6 +263,51 @@ function addMouseMoveAction(callback) {
 // マウスアクションを削除
 function removeMouseMoveAction(callback) {
   mouseMoveActions.delete(callback);
+}
+
+// マウスの追従を開始
+function startTrackMousePos() {
+  mouse.shouldTrackMousePos = true;
+}
+
+// マウスの追従を停止
+function stopTrackMousePos() {
+  mouse.shouldTrackMousePos = false;
+}
+
+function resize() {
+  // スタイルが適用されている場合のみ、リサイズ処理を行う
+  if (!mouse.applyStyle) return;
+
+  // svg要素のサイズとビューポートを更新
+  DOM.svg.setAttribute("width", viewport.width);
+  DOM.svg.setAttribute("height", viewport.height);
+  DOM.svg.setAttribute("viewBox", `0 0 ${viewport.width} ${viewport.height}`);
+}
+
+// 2023/11 currentとtargetの値の差が0.0001以上の場合trueを返すように修正
+function isUpdate() {
+  return (
+    Math.abs(current.x - target.x) > 1e-4 ||
+    Math.abs(current.y - target.y) > 1e-4
+  );
+}
+
+/**
+ * アニメーション
+ * @desc マウスを徐々に表示
+ */
+function makeVisible() {
+  const interval = setInterval(() => {
+    //スタイルが適用されていない場合はアニメーションを終了
+    if (!mouse.applyStyle) return clearInterval(interval);
+    //アップデートされていない場合はアニメーションを終了
+    if (!isUpdate()) return;
+    // svg要素の不透明度を1にする
+    DOM.svg.style.opacity = 1;
+    // インターバルを終了
+    clearInterval(interval);
+  }, 200);
 }
 
 export default mouse;

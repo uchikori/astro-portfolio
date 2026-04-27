@@ -1,0 +1,35 @@
+---
+import Hamburger from "./Hamburger.astro";
+import Menu from "./Menu.astro";
+---
+
+<div id="asides" class="ly_aside_wrapper">
+  <aside class="ly_aside">
+    <div class="ly_aside_inner">
+      <Hamburger />
+    </div>
+  </aside>
+  <Menu />
+</div>
+
+<style lang="scss">
+  .ly_aside {
+    position: fixed;
+    z-index: 999;
+    top: 0px;
+    right: 0px;
+    color: #dadada;
+    height: 100svh;
+    pointer-events: none;
+    &_wrapper {
+      position: relative;
+      z-index: 10;
+      font-size: 14px;
+    }
+    &_inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>

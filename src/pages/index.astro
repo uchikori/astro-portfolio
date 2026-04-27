@@ -10,7 +10,7 @@ import Reflect from "../components/Reflect.astro";
   <div class="ly_wrapper">
     <Fv />
     <Reflect />
-    <!-- <div>
+    <div>
       <h2>distortion-text</h2>
       <h2 class="el_sectionTitle">
         <span
@@ -86,7 +86,7 @@ import Reflect from "../components/Reflect.astro";
       data-model="/model/mixamo_walk.glb"
       data-render-material="toon"
     >
-    </div> -->
+    </div>
   </div>
 </Base>
 
@@ -97,7 +97,10 @@ import Reflect from "../components/Reflect.astro";
     flex-direction: column;
     width: 100%;
     gap: 300px;
-    height: 500svh;
+    & > div {
+      width: 100%;
+      max-width: 1000px;
+    }
   }
   [data-webgl] {
     // background: green;

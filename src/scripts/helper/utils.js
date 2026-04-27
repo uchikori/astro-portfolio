@@ -31,25 +31,10 @@ import {
 } from "three/tsl";
 import { Quaternion, Vector3, Vector4 } from "three/webgpu";
 
-const utils = {
-  backInOut,
-  coverUv,
-  cubicInOut,
-  exponentialOut,
-  getResolutionUniform,
-  getDiagonalVertices,
-  grayScale,
-  hsl2rgb,
-  lerp,
-  curlNoise,
-  noise2,
-  noise3,
-  printMat,
-  rotate2D,
-  rotate3D,
-  parabora,
-  pointTo,
-};
+const isTouchDevices = Boolean(
+  "ontouchstart" in window ||
+    (window.DocumentTouch && document instanceof DocumentTouch),
+);
 
 /**
  * 線形補間
@@ -742,4 +727,25 @@ function pointTo(_mesh, originalDir, targetDir) {
   // メッシュを回転
   _mesh.rotation.setFromQuaternion(q);
 }
+
+const utils = {
+  backInOut,
+  coverUv,
+  cubicInOut,
+  exponentialOut,
+  getResolutionUniform,
+  getDiagonalVertices,
+  grayScale,
+  hsl2rgb,
+  lerp,
+  curlNoise,
+  noise2,
+  noise3,
+  printMat,
+  rotate2D,
+  rotate3D,
+  parabora,
+  pointTo,
+  isTouchDevices,
+};
 export { utils };

@@ -27,11 +27,15 @@ import {
 export default class extends Ob {
   intensityVertices;
 
+  beforeCreateMesh() {
+    this.DOM.childMediaEls = [];
+  }
+
   setupGeometry() {
     const width = Math.floor(this.rect.width), //横幅を整数に丸める
       height = Math.floor(this.rect.height), //高さを整数に丸める
-      wSeg = width / 2, //横方向のセグメント数
-      hSeg = height / 2; //縦方向のセグメント数
+      wSeg = Math.floor(width / 2), //横方向のセグメント数
+      hSeg = Math.floor(height / 2); //縦方向のセグメント数
 
     const plane = new PlaneGeometry(width, height, wSeg, hSeg);
 
@@ -218,7 +222,12 @@ export default class extends Ob {
       duration,
       ease: "none",
       onStart: () => {
-        this.DOM.el.nextElementSibling?.remove();
+        // this.DOM.el.nextElementSibling?.remove();
+        this.DOM.childMediaEls.forEach((el) => {
+          el.style.opacity = 0;
+          el.pause?.();
+        });
+        this.mesh.visible = true;
         this.mesh.visible = true;
       },
       onComplete: () => {
@@ -226,13 +235,15 @@ export default class extends Ob {
         this.uniforms.texCurrent = this.uniforms.texNext;
         // progressを0に戻す
         this.uniforms.uProgress.value = 0;
-        // 次のテクスチャの画像要素を取得
-        const imgEl = nextTex.source.data;
-        // 親要素を取得
-        const parentElement = this.DOM.el.parentElement;
+        // // 次のテクスチャの画像要素を取得
+        // const imgEl = nextTex.source.data;
+        // // 親要素を取得
+        // const parentElement = this.DOM.el.parentElement;
 
+        const activeEl = this.getChildMediaEl(_idx - 1);
+        activeEl.style.opacity = 1;
         // 親要素に画像要素の複製を追加（他のコンポーネントと共有されている場合があるため）
-        parentElement.append(imgEl.cloneNode(true));
+        // parentElement.append(imgEl.cloneNode(true));
         // メッシュを非表示
         this.mesh.visible = false;
         // 実行中フラグを戻す
@@ -241,8 +252,33 @@ export default class extends Ob {
     });
   }
 
+  getChildMediaEl(idx) {
+    return this.DOM.childMediaEls[idx];
+  }
+
   afterInit() {
-    this.goTo(0, 0);
+    // this.goTo(0, 0);
+    let isFirst = true;
+    this.texes.forEach((tex) => {
+      const mediaEl = tex.source.data.cloneNode(true);
+      //クラス名を追加
+      mediaEl.classList.add("js_particleChild");
+      // tex1以外は非表示にする
+      if (!isFirst) {
+        mediaEl.style.opacity = 0;
+      }
+      isFirst = false;
+      // 親要素を取得
+      const parentElement = this.DOM.el.parentElement;
+      // childMediaElsに追加
+      this.DOM.childMediaEls.push(mediaEl);
+      // 親要素に画像要素の複製を追加
+      parentElement.append(mediaEl);
+    });
+    // メッシュを1フレーム描画させてシェーダーのコンパイルを済ませてから非表示にする
+    requestAnimationFrame(() => {
+      this.mesh.visible = false;
+    });
   }
 
   resize() {

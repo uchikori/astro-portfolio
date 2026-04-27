@@ -257,7 +257,7 @@ function render() {
   world.postProcessing.render();
 
   //レイキャスティング
-  // raycast();
+  raycast();
 
   //スクロール処理
   for (let i = world.os.length - 1; i >= 0; i--) {

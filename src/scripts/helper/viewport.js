@@ -2,9 +2,13 @@ import world from "../glsl/world";
 
 const viewport = {
   init,
+  isMobile,
+  addResizeAction,
+  removeResizeAction,
 };
 
 const DOM = {};
+const actions = new Set();
 
 // viewport.initが既に一度でも実行されたかどうか
 let initialized = false;
@@ -73,6 +77,18 @@ function _onResize() {
   // viewportの更新
   update();
   // 更新されたviewportを使ってメッシュの位置とサイズとカメラを更新
-  world.adjustWorldPosition(viewport);
+  actions.forEach((action) => action(viewport));
+}
+
+function isMobile() {
+  return viewport.width < 1280;
+}
+
+function addResizeAction(callback) {
+  actions.add(callback);
+}
+
+function removeResizeAction(callback) {
+  actions.delete(callback);
 }
 export { viewport };

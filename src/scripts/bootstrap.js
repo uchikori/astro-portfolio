@@ -12,7 +12,7 @@ import {
 import { initRipplePass } from "./glsl/ripple";
 import { initMouseParticles } from "./glsl/mouse-particles";
 
-window.debug = enableDebugMode(1);
+window.debug = enableDebugMode(0);
 
 // デバッグモード:1=有効,0=無効
 function enableDebugMode(debug) {
@@ -75,16 +75,22 @@ export async function init() {
     ".bl_fv_shader",
   );
 
-  // mountReflectBtnHandler(
-  //   ".bl_reflect_slider",
-  //   ".bl_reflect .js_navBtn__prev",
-  //   ".bl_reflect .js_navBtn__next",
-  //   ".bl_reflect_ul",
-  // );
+  mountReflectBtnHandler(
+    ".bl_reflect_slider",
+    ".bl_reflect .js_navBtn__prev",
+    ".bl_reflect .js_navBtn__next",
+    ".bl_reflect_ul",
+  );
 
-  mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
+  // mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
 
-  mouse.init();
+  mouse.init(false, true);
+
+  viewport.addResizeAction(() => {
+    world.adjustWorldPosition(viewport);
+
+    mouse.resize();
+  });
 
   // レンダリングループでの更新処理を追加
   world.addRenderAction(() => {
@@ -96,11 +102,15 @@ export async function init() {
   await initRipplePass(world, mouse);
 
   //マウスパーティクルを初期化
-  await initMouseParticles(world, mouse);
+  // await initMouseParticles(world, mouse);
 
   world.render();
 
   loader.letsBegin();
+
+  setTimeout(() => {
+    mouse.makeVisible();
+  }, 1000);
 
   // setTimeout(() => {
   //   const o = world.getObjByEl('[data-webgl="twist-plane"]');

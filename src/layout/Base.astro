@@ -2,6 +2,8 @@
 const { title = "Astro" } = Astro.props;
 import "../styles/style.scss";
 import Loader from "../components/Loader.astro";
+import Aside from "../components/Aside.astro";
+import Menu from "../components/Menu.astro";
 ---
 
 <html lang="ja">
@@ -39,25 +41,20 @@ import Loader from "../components/Loader.astro";
   <body>
     <Loader />
     <div id="globalContainer">
+      <Aside />
       <div id="smooth-wrapper">
         <div id="smooth-content">
           <slot />
         </div>
       </div>
       <canvas id="canvas"></canvas>
-      <!-- <svg
-        class="el_mousePointer"
-        width="400"
-        height="400"
-        preserveAspectRatio="xMidYMid meet"
-        viewBox="0 0 200 400"
-        style="background:white;"
-      >
-        <rect width="400" height="400" x="0" y="0" stroke="red" stroke-width="4"
-        ></rect>
-        <circle cx="100" cy="100" r="100" fill="red"></circle>
-        <circle cx="200" cy="200" r="100" fill="purple"></circle>
-      </svg> -->
     </div>
   </body>
 </html>
+
+<style lang="scss">
+  .ly_asides {
+    position: relative;
+    z-index: 10;
+  }
+</style>
