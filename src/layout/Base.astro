@@ -3,7 +3,6 @@ const { title = "Astro" } = Astro.props;
 import "../styles/style.scss";
 import Loader from "../components/Loader.astro";
 import Aside from "../components/Aside.astro";
-import Menu from "../components/Menu.astro";
 ---
 
 <html lang="ja">
@@ -53,3 +52,28 @@ import Menu from "../components/Menu.astro";
     </div>
   </body>
 </html>
+
+<style lang="scss">
+  @use "../styles/global/variables" as *;
+
+  body {
+    background-color: #434243;
+    font-family: $base-font;
+  }
+
+  #globalContainer {
+    position: relative;
+    overflow-x: hidden;
+    visibility: hidden;
+    z-index: 0;
+  }
+
+  #canvas {
+    height: 100svh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+</style>

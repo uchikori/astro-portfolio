@@ -20,10 +20,12 @@
   unicode-range: U+0020-007F;
 }
 
-$c-black: #000000;
+$c-black: #333333;
 $c-white: #ffffff;
-$c-gray: #868686;
+$c-dark: #110028;
+$c-gray: #d9d9d9;
 $c-gray-2: #d9d9d9;
+$c-orange: #ed9723;
 
 $default-min-bp: 375px;
 $default-max-bp: 1280px;
