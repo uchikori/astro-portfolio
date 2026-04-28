@@ -11,6 +11,7 @@ import {
 } from "./component/slide-hundler";
 import { initRipplePass } from "./glsl/ripple";
 import { initMouseParticles } from "./glsl/mouse-particles";
+import menu from "./component/menu";
 
 window.debug = enableDebugMode(0);
 
@@ -103,6 +104,8 @@ export async function init() {
 
   //マウスパーティクルを初期化
   // await initMouseParticles(world, mouse);
+
+  menu.init(world, smoother);
 
   world.render();
 

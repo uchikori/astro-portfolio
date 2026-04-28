@@ -2,16 +2,20 @@
 
 ---
 
-<button class="ly_aside_btn bl_hamburger" aria-labbl="メニューを開く">
+<button
+  class="ly_aside_btn bl_hamburger js_hamburger"
+  data-mouse="stuck"
+  aria-labbl="メニューを開く"
+>
   <span class="bl_hamburger_inner">
-    <span class="bl_hamburger_wrap">
-      <span class="bl_hamburger_bar"></span>
+    <span class="bl_hamburger_wrap js_hamburger_wrap">
+      <span class="bl_hamburger_bar js_hamburger_bar"></span>
     </span>
-    <span class="bl_hamburger_wrap">
-      <span class="bl_hamburger_bar"></span>
+    <span class="bl_hamburger_wrap js_hamburger_wrap">
+      <span class="bl_hamburger_bar js_hamburger_bar"></span>
     </span>
-    <span class="bl_hamburger_wrap">
-      <span class="bl_hamburger_bar"></span>
+    <span class="bl_hamburger_wrap js_hamburger_wrap">
+      <span class="bl_hamburger_bar js_hamburger_bar"></span>
     </span>
   </span>
 </button>
@@ -35,7 +39,6 @@
       display: block;
       width: 2em;
       height: 1px;
-      background-color: red;
     }
     &_wrap {
       position: absolute;

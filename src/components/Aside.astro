@@ -3,7 +3,7 @@ import Hamburger from "./Hamburger.astro";
 import Menu from "./Menu.astro";
 ---
 
-<div id="asides" class="ly_aside_wrapper">
+<div id="asides" class="ly_aside_wrapper" style="mix-blend-mode: difference;">
   <aside class="ly_aside">
     <div class="ly_aside_inner">
       <Hamburger />
@@ -21,6 +21,7 @@ import Menu from "./Menu.astro";
     color: #dadada;
     height: 100svh;
     pointer-events: none;
+    mix-blend-mode: difference;
     &_wrapper {
       position: relative;
       z-index: 10;

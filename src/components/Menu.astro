@@ -6,20 +6,41 @@
   <div class="bl_menu_inner">
     <nav class="bl_menu_nav">
       <ul class="bl_menu_ul">
-        <li class="bl_menu_li">
-          <a href="/" class="bl_menu_link">HOME</a>
+        <li class="bl_menu_li" data-mouse="highlight" data-mouse-scale="3">
+          <a href="/" class="bl_menu_link"
+            ><span data-text="HOME">HOME</span> <span>ホーム</span></a
+          >
         </li>
-        <li class="bl_menu_li">
-          <a href="/" class="bl_menu_link">VISION</a>
+        <li class="bl_menu_li" data-mouse="highlight" data-mouse-scale="3">
+          <a href="/" class="bl_menu_link"
+            ><span data-text="ABOUT">ABOUT</span> <span>UCHIWAについて</span></a
+          >
         </li>
-        <li class="bl_menu_li">
-          <a href="/" class="bl_menu_link">DIVERSE</a>
+        <li class="bl_menu_li" data-mouse="highlight" data-mouse-scale="3">
+          <a href="/" class="bl_menu_link"
+            ><span data-text="SERVICE">SERVICE</span> <span>事業内容</span></a
+          >
         </li>
-        <li class="bl_menu_li">
-          <a href="/" class="bl_menu_link">SKILL</a>
+        <li class="bl_menu_li" data-mouse="highlight" data-mouse-scale="3">
+          <a href="/" class="bl_menu_link"
+            ><span data-text="PRICE">PRICE</span> <span>料金</span></a
+          >
         </li>
-        <li class="bl_menu_li">
-          <a href="/" class="bl_menu_link">GRAPHIC</a>
+        <li class="bl_menu_li" data-mouse="highlight" data-mouse-scale="3">
+          <a href="/" class="bl_menu_link"
+            ><span data-text="WORKS">WORKS</span> <span>制作実績</span></a
+          >
+        </li>
+        <li class="bl_menu_li" data-mouse="highlight" data-mouse-scale="3">
+          <a href="/" class="bl_menu_link"
+            ><span data-text="BLOG">BLOG</span> <span>ブログ</span></a
+          >
+        </li>
+        <li class="bl_menu_li" data-mouse="highlight" data-mouse-scale="3">
+          <a href="/" class="bl_menu_link"
+            ><span data-text="CONTACT">CONTACT</span>
+            <span>お問い合わせ</span></a
+          >
         </li>
       </ul>
     </nav>
@@ -29,7 +50,7 @@
 <style lang="scss">
   .bl_menu {
     position: fixed;
-    z-index: 10;
+    z-index: 100;
     top: 0;
     left: 0;
     width: 100%;
@@ -38,23 +59,37 @@
     overflow: hidden;
     display: flex;
     align-items: center;
+    pointer-events: none;
 
     clip-path: circle(0px at calc(100% - 2.5em) 2.5em);
-    transition: clip-path 0.4s ease 0.4s;
+    transition:
+      clip-path 0.4s ease 0.4s,
+      pointer-events 0s 0.8s;
 
     &_inner {
-      font-size: 96px;
+      font-size: 32px;
       font-weight: 700;
       width: 100%;
-      margin: 2em;
+      max-width: 90%;
+      margin-inline: auto;
       display: flex;
       justify-content: space-between;
     }
 
+    &_nav {
+      width: 100%;
+    }
+
+    &_ul {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+    }
+
     &_li {
       list-style: none;
-      // opacity: 0;
-      // transform: scaleY(0);
+      opacity: 0;
+      transform: scaleY(0);
       transform-origin: bottom;
       transition:
         transform 0.2s,
@@ -62,32 +97,94 @@
     }
 
     & a {
-      display: block;
+      width: 100%;
+      display: grid;
+      // デフォルト（PC）は2列。7emで固定することで英語ラベルの頭が揃います。
+      grid-template-columns: repeat(auto-fit, minmax(7em, 1fr));
       color: black;
       text-decoration: none;
       transition: transform 0.4s ease;
+
+      & > span:first-child {
+        display: block;
+        position: relative;
+
+        @media (hover: hover) {
+          overflow: hidden;
+          white-space: nowrap;
+
+          &::after {
+            content: attr(data-text) "\a0\a0\a0" attr(data-text) "\a0\a0\a0"
+              attr(data-text) "\a0\a0\a0" attr(data-text) "\a0\a0\a0";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: max-content;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+          }
+        }
+      }
+
+      @media (hover: hover) {
+        &:hover > span:first-child {
+          color: transparent;
+
+          &::after {
+            opacity: 1;
+            color: black;
+            animation: marquee 3s linear infinite;
+          }
+        }
+      }
+
+      & > span:nth-child(2) {
+        font-size: 0.5em;
+        display: flex;
+        align-items: center;
+        flex: 1 1 auto;
+        gap: 12px;
+
+        &:before {
+          content: "";
+          width: 1em;
+          height: 1px;
+          background-color: currentColor;
+          display: inline-block;
+          opacity: 0.6;
+        }
+      }
     }
 
     &_li:hover a {
       color: #868686;
       transform: translateX(5%);
     }
-  }
 
-  .menu-open {
-    .bl_menu {
+    :global(.js_menu_open) & {
+      pointer-events: auto;
       clip-path: circle(140% at calc(100% - 2.5em) 2.5em);
-      transition: clip-path 1s cubic-bezier(1, 0, 1, 0) 0.1s;
+      transition: clip-path 0.4s cubic-bezier(1, 0, 1, 0) 0.1s;
 
       &_li {
         opacity: 1;
         transform: scaleY(1);
-        @for $i from 1 through 5 {
+        @for $i from 1 through 7 {
           &:nth-child(#{$i}) {
-            transition-delay: calc(0.6s + 0.1s * $i);
+            transition-delay: calc(0.6s + 0.07s * $i);
           }
         }
       }
+    }
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-25%);
     }
   }
 </style>

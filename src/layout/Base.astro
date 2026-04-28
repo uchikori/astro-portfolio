@@ -44,17 +44,12 @@ import Menu from "../components/Menu.astro";
       <Aside />
       <div id="smooth-wrapper">
         <div id="smooth-content">
-          <slot />
+          <div id="pageContainer">
+            <slot />
+          </div>
         </div>
       </div>
       <canvas id="canvas"></canvas>
     </div>
   </body>
 </html>
-
-<style lang="scss">
-  .ly_asides {
-    position: relative;
-    z-index: 10;
-  }
-</style>

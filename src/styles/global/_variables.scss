@@ -1,0 +1,54 @@
+@use "sass:map";
+
+/* Orbitron Medium */
+@font-face {
+  font-family: "Orbitron";
+  src: url("/fonts/Orbitron-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007F;
+}
+
+/* Orbitron Bold */
+@font-face {
+  font-family: "Orbitron";
+  src: url("/fonts/Orbitron-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-007F;
+}
+
+$c-black: #000000;
+$c-white: #ffffff;
+$c-gray: #868686;
+$c-gray-2: #d9d9d9;
+
+$default-min-bp: 375px;
+$default-max-bp: 1280px;
+$root-font-size: 16px;
+
+$base-font:
+  "Orbitron",
+  "Noto Sans JP",
+  system-ui,
+  -apple-system,
+  "Segoe UI",
+  sans-serif;
+
+$font-weights: (
+  "thin": 100,
+  "light": 300,
+  "regular": 400,
+  "medium": 500,
+  "bold": 700,
+  "black": 900,
+);
+
+@mixin font-style-set($family, $weight-key, $style: normal) {
+  font-family: $family;
+  font-optical-sizing: auto;
+  font-weight: map.get($font-weights, $weight-key);
+  font-style: $style;
+}

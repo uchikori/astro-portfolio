@@ -1,0 +1,48 @@
+@use "sass:math";
+@use "./variables" as *;
+
+// pxをremに変換する関数
+@function to-rem($px) {
+  $rem: math.div($px, $root-font-size) * 1rem;
+  @return $rem;
+}
+
+// pxをemに変換する関数
+@function to-em($px, $parent-px: $root-font-size) {
+  $em: math.div($px, $parent-px) * 1em;
+  @return $em;
+}
+
+// 小数点を指定した桁数で丸める関数
+@function rnd($number, $places: 0) {
+  $n: 1;
+  @if $places > 0 {
+    @for $i from 1 through $places {
+      $n: $n * 10;
+    }
+  }
+  @return math.div(math.round($number * $n), $n);
+}
+
+// min-pxからmax-pxまで、min-bpからmax-bpまでの範囲で可変する関数
+@function fluid-text(
+  $min-px,
+  $max-px,
+  $min-bp: $default-min-bp,
+  $max-bp: $default-max-bp
+) {
+  // 傾きを計算
+  $slope: math.div($max-px - $min-px, $max-bp - $min-bp);
+  // vwの係数を計算
+  $slope-vw: $slope * 100;
+  // 切片を計算
+  $intercept-rems: to-rem($min-px - $slope * $min-bp);
+  // 最小remを計算
+  $min-rems: to-rem($min-px);
+  // 最大remを計算
+  @return clamp(
+    #{$min-rems},
+    #{$slope-vw}vw + #{$intercept-rems},
+    #{$max-rems}
+  );
+}

@@ -1,22 +1,4 @@
-/* Orbitron Medium */
-@font-face {
-  font-family: "Orbitron";
-  src: url("/fonts/Orbitron-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0020-007F;
-}
-
-/* Orbitron Bold */
-@font-face {
-  font-family: "Orbitron";
-  src: url("/fonts/Orbitron-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0020-007F;
-}
+@use "./variables" as *;
 
 * {
   margin: 0;
@@ -25,13 +7,7 @@
 }
 body {
   background-color: #434243;
-  font-family:
-    "Orbitron",
-    "Noto Sans JP",
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    sans-serif;
+  font-family: $base-font;
 }
 
 #globalContainer {
