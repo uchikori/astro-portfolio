@@ -1,0 +1,11 @@
+.ly_main {
+  &_contentWidth {
+    width: calc(358 / 390) * 100%;
+    margin-inline: auto;
+    max-width: to-rem(1760px);
+  }
+  &_contentWidthNarrow {
+    max-width: to-rem(1280px);
+    margin-inline: auto;
+  }
+}

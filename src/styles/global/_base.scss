@@ -1,7 +1,39 @@
 @use "./variables" as *;
+:root {
+  --c-black: #{$c-black};
+  --c-white: #{$c-white};
+  --c-gray: #{$c-gray};
+  --c-dark: #{$c-dark};
+  --c-orange: #{$c-orange};
+}
 
-* {
+a {
+  text-decoration: none;
+  color: var(--c-text);
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+li {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+}
+
+li {
+  list-style: none;
+}
+
+img {
+  vertical-align: bottom;
+  max-width: 100%;
+  height: auto;
+}
+
+[data-webgl] {
+  // background: green;
+  opacity: 0;
 }

@@ -10,6 +10,43 @@ const scroller = {
 function init() {
   gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
+  ScrollTrigger.create({
+    trigger: "body",
+    start: "top top",
+    end: "bottom top",
+    pin: "#canvas",
+    pinSpacing: false,
+    markers: true,
+  });
+
+  /**
+   * FVのビデオをスクロールで変化させる
+   */
+  const video = INode.getElement(".hero");
+  const videoContent = INode.getElement("#js-kv-video");
+
+  if (video || videoContent) {
+    ScrollTrigger.create({
+      trigger: ".hero",
+      start: "top top",
+      end: "bottom top",
+      pin: videoContent,
+      pinSpacing: false,
+      markers: true,
+    });
+    gsap.to(videoContent, {
+      opacity: 0,
+      filter: "blur(20px)",
+      scrollTrigger: {
+        trigger: ".hero",
+        start: "top top",
+        end: "bottom top",
+        scrub: true, // スクロールに同期
+        markers: true,
+      },
+    });
+  }
+
   // ScrollSmootherの初期化;
   return ScrollSmoother.create({
     wrapper: "#smooth-wrapper",
@@ -40,32 +77,6 @@ function init() {
   //   onUpdate() {
   //     os[0].mesh.position.x = animation.x;
   //     os[0].mesh.rotation.z = animation.rotation;
-  //   },
-  // });
-
-  /**
-   * FVのビデオをスクロールで変化させる
-   */
-  // const video = INode.getElement(".hero_kv");
-  // const videoContent = INode.getElement(".hero_kv video");
-  // ScrollTrigger.create({
-  //   trigger: ".hero",
-  //   start: "top top",
-  //   end: "bottom top",
-  //   pin: video,
-  //   pinSpacing: false,
-  //   markers: true,
-  // });
-
-  // gsap.to(videoContent, {
-  //   opacity: 0,
-  //   filter: "blur(10px)",
-  //   scrollTrigger: {
-  //     trigger: ".hero",
-  //     start: "top top",
-  //     end: "bottom top",
-  //     scrub: true, // スクロールに同期
-  //     markers: true,
   //   },
   // });
 }

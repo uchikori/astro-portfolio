@@ -54,7 +54,7 @@ async function init(canvas, viewport) {
   world.renderer.setPixelRatio(viewport.devicePixelRatio);
   world.renderer.setClearColor(0x000000, 0);
   //sRGBからLinearに変換
-  world.renderer.outputColorSpace = LinearSRGBColorSpace;
+  // world.renderer.outputColorSpace = LinearSRGBColorSpace;
 
   //WebGPURendererの初期化
   await world.renderer.init();

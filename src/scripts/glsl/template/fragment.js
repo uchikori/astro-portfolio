@@ -26,7 +26,7 @@ export default function Fragment(opt) {
 
     // どちらか存在する方をサンプル
     // const color = mix(tex1, tex2, step(0.5, clipUv.x));
-    const color = tex2;
+    const color = tex1;
     return color;
   })();
 }

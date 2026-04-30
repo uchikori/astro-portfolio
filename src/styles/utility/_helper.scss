@@ -1,0 +1,17 @@
+@use "../global/" as *;
+
+//PC画面で非表示
+.hl_smVisible {
+  display: none;
+  @include mq("xl") {
+    display: block;
+  }
+}
+
+//SP画面で非表示
+.hl_smHidden {
+  display: block;
+  @include mq("xl") {
+    display: none;
+  }
+}

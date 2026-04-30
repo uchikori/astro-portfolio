@@ -48,9 +48,15 @@ class RenderTargetManager {
       element: el,
     };
 
+    // デバイスピクセル比を考慮してサイズを計算
+    const dpr = window.devicePixelRatio || 1;
+    const width = rect.width * dpr;
+    const height = rect.height * dpr;
+
     // レンダーターゲットを作成
-    targetInfo.renderTarget = new RenderTarget(rect.width, rect.height, {
+    targetInfo.renderTarget = new RenderTarget(width, height, {
       format: RGBAFormat, // RGBAフォーマットで透明をサポート
+      samples: 4, // アンチエイリアス（MSAA）を有効にする
     });
     // targetInfo.renderTarget = new RenderTarget(3840, 3840, {
     //   format: RGBAFormat, // RGBAフォーマットで透明をサポート
@@ -150,46 +156,27 @@ class RenderTargetManager {
    * @private
    */
   _setupLights(scene) {
-    // const light1 = new PointLight(0xffffff, 1, 0);
-    // light1.position.set(-0.5, 2.1, 0.5);
-    // scene.add(light1);
-
-    // const light1Helper = new PointLightHelper(light1, 1);
-    // scene.add(light1Helper);
-
-    const light2 = new PointLight(0xffffff, 1, 0);
-    light2.position.set(0.5, 0.6, 1);
-    scene.add(light2);
-
-    const light2Helper = new PointLightHelper(light2, 1);
-    scene.add(light2Helper);
-
-    // const light3 = new PointLight(0xffffff, 1, 0);
-    // light3.position.set(-10, -20, -10);
-    // scene.add(light3);
-
-    // const light3Helper = new PointLightHelper(light3, 1);
-    // scene.add(light3Helper);
-
-    const spotLight = new SpotLight(0xffffff, 1.2, 0);
-    spotLight.position.set(-0.5, 2.1, 0.5);
-    scene.add(spotLight);
-
-    const spotLightHelper = new SpotLightHelper(spotLight, 1);
-    scene.add(spotLightHelper);
-
-    const ambientLight = new AmbientLight(0xffffff, 1);
-    scene.add(ambientLight);
-
-    const dirLight = new DirectionalLight(0xffffff, 1);
-    dirLight.position.set(0, 0, 0);
+    // メインの平行光源（斜め上から）
+    const dirLight = new DirectionalLight(0xffffff, 2.0);
+    dirLight.position.set(5, 10, 7.5);
     scene.add(dirLight);
 
-    // this.light1 = light1;
-    // this.light2 = light2;
-    // this.light3 = light3;
-    // this.ambientLight = ambientLight;
-    // this.dirLight = dirLight;
+    // 補助の平行光源（反対側から影を和らげる）
+    const fillLight = new DirectionalLight(0xffffff, 0.8);
+    fillLight.position.set(-5, 2, -5);
+    scene.add(fillLight);
+
+    // 環境光（全体の明るさの底上げ）
+    const ambientLight = new AmbientLight(0xffffff, 1.5);
+    scene.add(ambientLight);
+
+    // アクセント用のポイントライト
+    this.pointLight = new PointLight(0xffffff, 1.5);
+    this.pointLight.position.set(0.4, 0.6, 0.9);
+    scene.add(this.pointLight);
+
+    this.pointLightHelper = new PointLightHelper(this.pointLight, 1);
+    scene.add(this.pointLightHelper);
   }
 
   /**
@@ -280,6 +267,19 @@ class RenderTargetManager {
         .add(targetInfo.camera.position, "z", -10, 10)
         .step(0.01)
         .name("cameraZ");
+      folder
+        .add(this.pointLight.position, "x", -10, 10)
+        .step(0.01)
+        .name("lightX");
+      folder
+        .add(this.pointLight.position, "y", -10, 10)
+        .step(0.01)
+        .name("lightY");
+      folder
+        .add(this.pointLight.position, "z", -10, 10)
+        .step(0.01)
+        .name("lightZ");
+
       // folder.add(this.light1, "intensity", 0, 10).step(0.01).name("light1");
       // folder.add(this.light2, "intensity", 0, 10).step(0.01).name("light2");
       // folder.add(this.light3, "intensity", 0, 10).step(0.01).name("light3");

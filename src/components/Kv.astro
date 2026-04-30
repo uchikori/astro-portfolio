@@ -1,36 +1,94 @@
 ---
-
+import Fv from "./Fv.astro";
 ---
 
 <div class="hero">
   <div class="hero_kv">
-    <video src="/movie/kv.mp4" autoplay muted loop playsinline class="kv-img"
-    ></video>
+    <video
+      id="js-kv-video"
+      class="hero_video kv-img"
+      src="/movie/kv.mp4"
+      autoplay
+      muted
+      loop
+      playsinline></video>
   </div>
+
   <div class="hero_cover">
-    情熱の先へ。 磨き抜いた技術で、 世界へ。 Beyond Passion, With our refined
-    skills To Global
+    <div class="hero_content">
+      <p class="hero_text">
+        PASSION BECOMES DESIGN. <br />DESIGN BECOMES EMOTION.
+      </p>
+      <div
+        class="kickman"
+        data-webgl="normal"
+        data-model="/model/logo.glb"
+        data-render-material="standard"
+        data-roughness="0.3"
+        data-metalness="0.5"
+        data-rotation-x="0"
+        data-rotation-y="45"
+        data-rotation-z="5"
+      >
+      </div>
+      <p>
+        好きという気持ちを原動力に、<br
+        />誰かの心を動かすデザインをつくっています。
+      </p>
+    </div>
+    <div class="about_content" style="height:300svh"></div>
   </div>
 </div>
 
 <style lang="scss">
-  .hero_kv {
-    width: 100%;
-    height: 100svh;
-    background-color: aqua;
-    video {
+  .hero {
+    position: relative;
+    &_kv {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100svh;
+    }
+    .kickman {
+      width: 50%;
+      aspect-ratio: 1;
+      animation: floating 2s ease-in-out infinite; // 4秒周期でふわふわさせる
+    }
+
+    @keyframes floating {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-15px);
+      }
+    }
+
+    &_cover {
+      // position: absolute;
+      // top: 0;
+      // left: 0;
       width: 100%;
     }
+    &_content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
   }
-  .hero_cover {
-    position: absolute;
+  :global(#js-kv-video) {
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100svh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    z-index: -2;
+    pointer-events: none;
   }
 </style>

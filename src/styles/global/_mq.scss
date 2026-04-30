@@ -1,0 +1,22 @@
+/*
+ * メディアクエリ用mixin
+ */
+@use "functions" as *;
+@use "sass:map";
+// @use "sass:math"; // 不要のため削除してOKです！
+$breakpoints: (
+  // 479px以下に適用
+  "sm": "screen and (max-width: #{to-em(479px, 16px)})",
+  // 599px以下に適用
+  "md": "screen and (max-width: #{to-em(599px, 16px)})",
+  // 959px以下に適用
+  "lg": "screen and (max-width: #{to-em(959px, 16px)})",
+  // 1279px以下に適用
+  "xl": "screen and (max-width: #{to-em(1279px, 16px)})"
+) !default;
+
+@mixin mq($breakpoint: md) {
+  @media #{map.get($breakpoints, $breakpoint)} {
+    @content;
+  }
+}

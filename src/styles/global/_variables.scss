@@ -1,25 +1,5 @@
 @use "sass:map";
 
-/* Orbitron Medium */
-@font-face {
-  font-family: "Orbitron";
-  src: url("/fonts/Orbitron-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0020-007F;
-}
-
-/* Orbitron Bold */
-@font-face {
-  font-family: "Orbitron";
-  src: url("/fonts/Orbitron-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0020-007F;
-}
-
 $c-black: #333333;
 $c-white: #ffffff;
 $c-dark: #110028;

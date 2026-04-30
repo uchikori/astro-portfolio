@@ -1,12 +1,12 @@
 ---
 import Base from "../layout/Base.astro";
-import Kv from "../components/kv.astro";
+import Kv from "../components/Kv.astro";
 import Fv from "../components/Fv.astro";
 import Reflect from "../components/Reflect.astro";
 ---
 
 <Base title="Astro-home">
-  <!-- <Kv /> -->
+  <Kv />
   <div class="ly_wrapper">
     <Fv />
     <Reflect />
@@ -102,10 +102,6 @@ import Reflect from "../components/Reflect.astro";
       max-width: 1000px;
     }
   }
-  [data-webgl] {
-    // background: green;
-    opacity: 0;
-  }
 
   .video {
     width: 300px;
@@ -120,13 +116,7 @@ import Reflect from "../components/Reflect.astro";
     height: auto;
     aspect-ratio: 2/1;
   }
-  // img,
-  // :global(img) {
-  //   width: 100%;
-  //   height: auto;
-  //   aspect-ratio: 2/1;
-  //   /* bottom: 100px; */
-  // }
+
   .kickman {
     width: 50%;
     aspect-ratio: 1;

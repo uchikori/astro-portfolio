@@ -12,6 +12,7 @@ import {
 import { initRipplePass } from "./glsl/ripple";
 import { initMouseParticles } from "./glsl/mouse-particles";
 import menu from "./component/menu";
+import "./component/scroll-animation";
 
 window.debug = enableDebugMode(0);
 

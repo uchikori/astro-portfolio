@@ -40,6 +40,8 @@ function _toggleMeshVisibility(_isOpen) {
   //メッシュの取得
   const fvText = world.getObjByEl(".bl_fv_shader");
 
+  if (!fvText) return;
+
   //メッシュの表示/非表示を切り替える
   fvText.mesh.visible = _isOpen;
 }
