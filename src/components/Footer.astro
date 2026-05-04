@@ -1,0 +1,156 @@
+---
+import Nav from "./Nav.astro";
+---
+
+<footer class="ly_footer bl_footer">
+  <div class="bl_footer_inner hl_contentWidthNarrow">
+    <div
+      class="bl_footer_logo"
+      data-webgl="normal"
+      data-model="/model/logo.glb"
+      data-render-material="standard"
+      data-roughness="0.3"
+      data-metalness="0.5"
+      data-rotation-x="0"
+      data-rotation-y="45"
+      data-rotation-z="5"
+    >
+    </div>
+    <div class="bl_footer_body font-28-32">
+      <Nav />
+      <hr />
+      <div class="bl_sns">
+        <p class="bl_sns_title font-16-24">FOLLOW ME</p>
+        <ul class="bl_sns_list">
+          <li class="bl_sns_item" data-mouse="stuck">
+            <a
+              href="#"
+              class="bl_sns_link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/img/icon/logo-x.png" alt="X" />
+            </a>
+          </li>
+          <li class="bl_sns_item" data-mouse="stuck">
+            <a
+              href="#"
+              class="bl_sns_link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/img/icon/logo-insta.png" alt="Instagram" />
+            </a>
+          </li>
+          <li class="bl_sns_item" data-mouse="stuck">
+            <a
+              href="#"
+              class="bl_sns_link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/img/icon/logo-fb.png" alt="Facebook" />
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <small class="bl_footer_copyright"
+        >©2026 UCHIWA Creative Studio All Rights Reserved.</small
+      >
+    </div>
+  </div>
+</footer>
+
+<style lang="scss">
+  @use "../styles/utility" as *;
+  @use "../styles/global" as *;
+
+  .bl_footer {
+    padding: fluid-text(120px, 160px) 0;
+    // background-color: var(--c-gray);
+    color: var(--c-white);
+
+    &_inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: to-rem(40px);
+      @include mq(lg) {
+        justify-content: center;
+        // align-items: center;
+        gap: to-rem(20px);
+      }
+    }
+
+    &_logo {
+      width: 40%;
+      max-width: to-rem(400px);
+      aspect-ratio: 1;
+
+      @include mq(sm) {
+        width: 80%;
+      }
+    }
+
+    &_body {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: to-rem(40px);
+      flex-grow: 1;
+
+      @include mq(lg) {
+        align-items: center;
+        width: 100%;
+      }
+    }
+    hr {
+      display: block;
+      width: 100%;
+      height: 1px;
+      background-color: var(--c-white);
+    }
+    &_copyright {
+      width: 100%;
+      font-size: to-rem(12px);
+      text-align: right;
+    }
+  }
+
+  .bl_sns {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: to-rem(12px);
+    align-items: flex-end;
+
+    &_title {
+      font-size: to-rem(12px);
+      letter-spacing: 0.15em;
+      line-height: 1;
+    }
+
+    &_list {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    &_item {
+      padding: to-rem(8px);
+    }
+    &_link {
+      display: block;
+      width: to-rem(24px);
+      transition:
+        transform 0.3s ease,
+        opacity 0.3s ease;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+</style>

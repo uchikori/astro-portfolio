@@ -1,47 +1,85 @@
 ---
 import Fv from "./Fv.astro";
+import FlickerText from "./FlickerText.astro";
 ---
 
-<div class="hero">
-  <div class="hero_kv">
+<div class="bl_hero js_hero">
+  <div class="bl_hero_kv">
     <video
       id="js-kv-video"
-      class="hero_video kv-img"
-      src="/movie/kv.mp4"
+      class="bl_hero_video kv-img"
       autoplay
       muted
       loop
-      playsinline></video>
+      playsinline
+    >
+      <source
+        media="(max-width: 959px)"
+        src="/movie/kv_mobile_converted.mp4"
+        type="video/mp4"
+      />
+      <source src="/movie/kv_converted.mp4" type="video/mp4" />
+    </video>
   </div>
 
-  <div class="hero_cover">
-    <div class="hero_content">
-      <p class="hero_text">
-        PASSION BECOMES DESIGN. <br />DESIGN BECOMES EMOTION.
-      </p>
-      <div
-        class="kickman"
-        data-webgl="normal"
-        data-model="/model/logo.glb"
-        data-render-material="standard"
-        data-roughness="0.3"
-        data-metalness="0.5"
-        data-rotation-x="0"
-        data-rotation-y="45"
-        data-rotation-z="5"
-      >
+  <div class="bl_hero_cover">
+    <div class="bl_hero_inner hl_contentWidth">
+      <div class="bl_hero_content">
+        <h2 class="bl_hero_title">
+          PASSION BECOMES<br />
+          <FlickerText text="DESIGN." class="hl_accentColor" />
+          <br />DESIGN BECOMES<br />
+          <FlickerText text="EMOTION." class="hl_accentColor" />
+        </h2>
+        <div
+          class="bl_hero_object"
+          data-webgl="normal"
+          data-model="/model/logo.glb"
+          data-render-material="standard"
+          data-roughness="0.3"
+          data-metalness="0.5"
+          data-rotation-x="0"
+          data-rotation-y="45"
+          data-rotation-z="5"
+        >
+        </div>
+        <p class="bl_hero_text">
+          好きという気持ちを原動力に、<br
+          />誰かの心を動かすデザインをつくっています。
+        </p>
       </div>
-      <p>
-        好きという気持ちを原動力に、<br
-        />誰かの心を動かすデザインをつくっています。
-      </p>
+      <div class="about_content" style="height:300svh"></div>
     </div>
-    <div class="about_content" style="height:300svh"></div>
   </div>
 </div>
 
+<script>
+  //
+  const video = document.getElementById("js-kv-video");
+  const mq = window.matchMedia("(max-width: 959px)");
+
+  function updateVideoSrc(e) {
+    const newSrc = e.matches
+      ? "/movie/kv_mobile_converted.mp4"
+      : "/movie/kv_converted.mp4";
+
+    if (video.currentSrc !== location.origin + newSrc) {
+      video.src = newSrc;
+      video.load();
+      video.play();
+    }
+  }
+
+  if (video && mq) {
+    mq.addEventListener("change", updateVideoSrc);
+  }
+</script>
+
 <style lang="scss">
-  .hero {
+  @use "../styles/utility" as *;
+  @use "../styles/global" as *;
+
+  .bl_hero {
     position: relative;
     &_kv {
       position: absolute;
@@ -49,11 +87,6 @@ import Fv from "./Fv.astro";
       left: 0;
       width: 100%;
       height: 100svh;
-    }
-    .kickman {
-      width: 50%;
-      aspect-ratio: 1;
-      animation: floating 2s ease-in-out infinite; // 4秒周期でふわふわさせる
     }
 
     @keyframes floating {
@@ -67,28 +100,77 @@ import Fv from "./Fv.astro";
     }
 
     &_cover {
-      // position: absolute;
-      // top: 0;
-      // left: 0;
       width: 100%;
+    }
+    &_inner {
     }
     &_content {
       width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      height: 100svh;
+      padding: fluid-text(100px, 140px) 0;
       color: #fff;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(12, 1fr);
+      gap: 0 40px;
+      position: relative;
+
+      @include mq(lg) {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+    &_title {
+      grid-column: 1 / 7; /* 1列目から5列目まで */
+      grid-row: 3 / 7; /* 2行目から9行目まで */
+      font-size: fluid-text(32px, 56px, 375px, 1920px);
+      white-space: nowrap;
+
+      @include mq(lg) {
+        order: 2;
+      }
+    }
+    &_object {
+      grid-column: 5/9;
+      grid-row: 5/9;
+      width: 700px;
+      aspect-ratio: 1;
+      align-self: center; // グリッドセル内で上下中央に配置
+      justify-self: center;
+      animation: floating 2s ease-in-out infinite; // 4秒周期でふわふわさせる
+      @include mq(lg) {
+        width: 50%;
+        order: 1;
+      }
+      @include mq(md) {
+        width: calc(300 / 390) * 100%;
+      }
+    }
+    &_text {
+      grid-column: 8 / -1;
+      grid-row: 11 / -1;
+      // align-self: end;
+      justify-self: end;
+      font-size: fluid-text(16px, 24px, 375px, 1920px);
+      @include mq(lg) {
+        order: 3;
+        margin-top: to-rem(24px);
+      }
     }
   }
-  :global(#js-kv-video) {
+  #js-kv-video {
     position: relative;
     top: 0;
     left: 0;
     width: 100%;
-    aspect-ratio: 16/9;
+    height: 100svh;
+    // aspect-ratio: 16/9;
     object-fit: cover;
     z-index: -2;
     pointer-events: none;
+
+    @include mq(lg) {
+      height: 100svh;
+    }
   }
 </style>

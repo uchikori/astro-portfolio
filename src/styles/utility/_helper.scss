@@ -1,17 +1,38 @@
 @use "../global/" as *;
 
+.hl_hidden {
+  display: none;
+}
+
 //PC画面で非表示
 .hl_smVisible {
-  display: none;
-  @include mq("xl") {
-    display: block;
+  @media screen and (min-width: to-em(1280px, 16px)) {
+    display: none !important;
   }
 }
 
 //SP画面で非表示
 .hl_smHidden {
-  display: block;
   @include mq("xl") {
-    display: none;
+    display: none !important;
   }
+}
+
+// PC画面の横幅指定
+.hl_contentWidth {
+  width: calc(358 / 390) * 100%;
+  margin-inline: auto;
+  max-width: to-rem(1760px);
+}
+
+// PC画面の横幅指定（narrow）
+.hl_contentWidthNarrow {
+  width: calc(358 / 390) * 100%;
+  max-width: to-rem(1280px);
+  margin-inline: auto;
+}
+
+//
+.hl_accentColor {
+  color: $c-orange;
 }

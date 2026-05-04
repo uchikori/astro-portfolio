@@ -1,45 +1,171 @@
 ---
-//alignの初期値を'right'に設定
-const { align = "right" } = Astro.props;
+
 ---
 
-<div class:list={["bl_nav", { "is-left": align === "left" }]}>
-  <button class="el_navBtn el_navBtn__prev js_navBtn__prev" data-mouse="stuck">
-    <img src="/img/slide-nav.svg" alt="前へ" />
-  </button>
-  <button class="el_navBtn el_navBtn__next js_navBtn__next" data-mouse="stuck">
-    <img src="/img/slide-nav.svg" alt="次へ" />
-  </button>
-</div>
+<nav class="bl_menu_nav bl_nav">
+  <ul class="bl_nav_ul">
+    <li class="bl_nav_li" data-mouse="highlight" data-mouse-scale="2">
+      <a href="/" class="bl_nav_link"
+        ><span data-text="HOME">HOME</span> <span>ホーム</span></a
+      >
+    </li>
+    <li class="bl_nav_li" data-mouse="highlight" data-mouse-scale="2">
+      <a href="/" class="bl_nav_link"
+        ><span data-text="ABOUT">ABOUT</span> <span>UCHIWAについて</span></a
+      >
+    </li>
+    <li class="bl_nav_li" data-mouse="highlight" data-mouse-scale="2">
+      <a href="/" class="bl_nav_link"
+        ><span data-text="SERVICE">SERVICE</span> <span>事業内容</span></a
+      >
+    </li>
+    <li class="bl_nav_li" data-mouse="highlight" data-mouse-scale="2">
+      <a href="/" class="bl_nav_link"
+        ><span data-text="PRICE">PRICE</span> <span>料金</span></a
+      >
+    </li>
+    <li class="bl_nav_li" data-mouse="highlight" data-mouse-scale="2">
+      <a href="/" class="bl_nav_link"
+        ><span data-text="WORKS">WORKS</span> <span>制作実績</span></a
+      >
+    </li>
+    <li class="bl_nav_li" data-mouse="highlight" data-mouse-scale="2">
+      <a href="/" class="bl_nav_link"
+        ><span data-text="BLOG">BLOG</span> <span>ブログ</span></a
+      >
+    </li>
+    <li class="bl_nav_li" data-mouse="highlight" data-mouse-scale="2">
+      <a href="/" class="bl_nav_link"
+        ><span data-text="CONTACT">CONTACT</span>
+        <span>お問い合わせ</span></a
+      >
+    </li>
+  </ul>
+</nav>
+
 <style lang="scss">
+  @use "../styles/utility" as *;
+  @use "../styles/global" as *;
+
   .bl_nav {
-    font-size: 120px;
-    text-align: right;
-    position: absolute;
-    bottom: 10%;
-    right: 0.3em;
-    height: 1em;
-    width: 100%;
-    &.is-left {
-      text-align: left;
+    :global(.bl_footer) & {
+      width: 100%;
     }
-  }
-
-  .el_navBtn {
-    background-color: transparent;
-    border: none;
-    opacity: 0.7;
-    cursor: pointer;
-    padding: 0;
-
-    &:active {
-      transform: scale(0.85);
-    }
-
-    &__prev {
-      img {
-        transform: rotate(180deg);
+    &_ul {
+      // header配下の場合
+      :global(.bl_header) & {
+        // display: flex;
+        // flex-direction: column;
+        gap: 0.5em;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(to-rem(300px), 1fr));
       }
+
+      // フッター配下の場合
+      :global(.bl_footer) & {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(to-rem(300px), 1fr));
+        gap: to-rem(32px) to-rem(40px);
+      }
+    }
+
+    &_li {
+      list-style: none;
+
+      // header配下の場合
+      :global(.bl_header) & {
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: bottom;
+        transition:
+          transform 0.2s,
+          opacity 0.2s;
+      }
+
+      :global(.js_menu_open) & {
+        opacity: 1;
+        transform: scaleY(1);
+        @for $i from 1 through 7 {
+          &:nth-child(#{$i}) {
+            transition-delay: calc(0.6s + 0.07s * $i);
+          }
+        }
+      }
+    }
+
+    & a {
+      position: relative;
+      width: 100%;
+      display: flex;
+      // デフォルト（PC）は2列。7emで固定することで英語ラベルの頭が揃います。
+      // grid-template-columns: repeat(auto-fit, minmax(7em, 1fr));
+      color: var(--c-dark);
+      text-decoration: none;
+      transition: transform 0.4s ease;
+      @media screen and (max-width: 389px) {
+        flex-direction: column;
+      }
+
+      & > span:first-child {
+        min-width: 7em;
+        display: block;
+        position: relative;
+
+        @media (hover: hover) {
+          overflow: hidden;
+          white-space: nowrap;
+
+          &::after {
+            content: attr(data-text) "\a0\a0\a0" attr(data-text) "\a0\a0\a0"
+              attr(data-text) "\a0\a0\a0" attr(data-text) "\a0\a0\a0";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: max-content;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+          }
+        }
+      }
+
+      @media (hover: hover) {
+        &:hover > span:first-child {
+          color: transparent;
+
+          &::after {
+            opacity: 1;
+            color: var(--c-orange);
+            animation: marquee 3s linear infinite;
+          }
+        }
+      }
+
+      & > span:nth-child(2) {
+        font-size: 0.5em;
+        display: flex;
+        align-items: center;
+        flex: 1 1 auto;
+        gap: 12px;
+
+        &:before {
+          content: "";
+          width: 1em;
+          height: 1px;
+          background-color: currentColor;
+          display: inline-block;
+          opacity: 0.6;
+        }
+      }
+
+      :global(.bl_footer) & {
+        color: var(--c-white);
+      }
+    }
+
+    &_li:hover a {
+      color: #868686;
+      transform: translateX(5%);
     }
   }
 </style>

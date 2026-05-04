@@ -1,5 +1,5 @@
 ---
-import Nav from "./Nav.astro";
+import PrevNextBtn from "./prevNextBtn.astro";
 ---
 
 <section class="bl_reflect">
@@ -8,11 +8,11 @@ import Nav from "./Nav.astro";
       <div
         class="bl_reflect_slider"
         data-webgl="slider-reflect"
-        data-tex-1="/img/slider/slider_1.jpg"
-        data-tex-2="/img/slider/slider_4.jpg"
-        data-tex-3="/img/slider/slider_3.jpg"
-        data-tex-4="/movie/beach.mp4"
-        data-tex-5="/img/slider/slider_2.jpg"
+        data-tex-1="/img/reflect/reflect_media_04.webp"
+        data-tex-2="/img/reflect/reflect_media_05_converted.mp4"
+        data-tex-3="/img/reflect/reflect_media_01.webp"
+        data-tex-4="/img/reflect/reflect_media_02_converted.mp4"
+        data-tex-5="/img/reflect/reflect_media_03.webp"
       >
       </div>
       <!-- /.bl_reflect_slider -->
@@ -21,46 +21,68 @@ import Nav from "./Nav.astro";
     <div class="bl_reflect_content">
       <ul class="bl_reflect_ul">
         <li class="bl_reflect_li">
-          <h3 class="bl_reflect_headline">正規化</h3>
+          <h3 class="bl_reflect_headline">情報設計</h3>
           <p class="bl_reflect_text">
-            正規化とはデータを一定のルールに基づいて、利用しやすい形に変形すること。WebGLにおいては正規化によってベクトルの長さを１にしたり、ある変数の取りうる値の範囲を-1
-            ~ 1にします。
+            Webサイトは、ただ作るだけでは価値を伝えきれません。<br />
+            大切なのは「誰に・何を・どのように届けるか」を整理すること。<br />
+            制作の前段階であるコンセプト設計から向き合い、サービスの魅力がきちんと伝わるWebサイトを形にします。
           </p>
         </li>
         <li class="bl_reflect_li">
-          <h3 class="bl_reflect_headline">座標</h3>
+          <h3 class="bl_reflect_headline">UI・UXデザイン</h3>
           <p class="bl_reflect_text">
-            座標とは空間内の点の位置を一意に指定するための数の組みで、WebGLにおいては頂点やテクスチャ画像の位置を指定するために使用されます。
+            視覚的な美しさだけでなく、ブランドの哲学を表現することを大切にしています。<br
+            />
+            最新のトレンドを取り入れつつも、流行に左右されない本質的な価値を追求。<br
+            />
+            直感的な使いやすさと、心に深く残るエモーショナルなビジュアルを両立させ、
+            ユーザーがブランドの世界観に没入できる体験をデザインします。
           </p>
         </li>
         <li class="bl_reflect_li">
-          <h3 class="bl_reflect_headline">ベクトル</h3>
+          <h3 class="bl_reflect_headline">実装・構築</h3>
           <p class="bl_reflect_text">
-            数学、物理学においてベクトルは大きさと方向を持つ量で、幾何学的に矢印としてイメージされます。WebGLにおいては頂点の座標やカメラや光の向きの表現に利用されます。
+            最新のWebGPU技術やフレームワークを用い、高度な演出と高速な動作を両立させます。<br
+            />
+            複雑な3D表現の実装においても、滑らかな操作性とアクセシビリティを追求。<br
+            />
+            ただ動くコードを書くのではなく、将来の拡張性や保守性までを見据えた 妥協のないエンジニアリングで、クリエイティブを確実に形にします。
           </p>
         </li>
         <li class="bl_reflect_li">
-          <h3 class="bl_reflect_headline">線形補間</h3>
+          <h3 class="bl_reflect_headline">運用・改善</h3>
           <p class="bl_reflect_text">
-            線形補間とは、既知の2点の間に存在する値を線形である1次関数を用いて近似的に求める手法です。WebGLでは各フラグメントには線形補間された値が渡ってきます。
+            Webサイトの完成は、ゴールではなく新たなスタートであると考えています。<br
+            />
+            公開後の更新作業やデータ分析を通じ、変化する市場に合わせた最適な改善を提案。<br
+            />
+            技術ブログによる知見の共有や、継続的なパートナーシップを通じて、 お客様のビジネスが長期的に成長し続けるためのサポートを全力で行います。
           </p>
         </li>
         <li class="bl_reflect_li">
-          <h3 class="bl_reflect_headline">行列</h3>
+          <h3 class="bl_reflect_headline">3D演出</h3>
           <p class="bl_reflect_text">
-            行列とは数や記号を縦と横に矩形に配列したものです。WebGLにおいては頂点の座標を表すベクトルと掛け合わせることで、ベクトルの回転や長さの変更を行うことができます。
+            ブランドの世界観をより深く印象付けるため、3D演出による表現を提案します。<br
+            />
+            BlenderやThree.jsを活用し、平面では表現できない奥行きや没入感を提供。<br
+            />
+            サイトに訪れた瞬間の「驚き」を演出し、競合他社との圧倒的な差別化を図ることで、<br
+            />
+            ユーザーの記憶に強く残り続けるブランド体験を創出します。
           </p>
         </li>
       </ul>
     </div>
     <!-- /.bl_reflect_content -->
-    <Nav align="left" />
+    <PrevNextBtn align="left" />
   </div>
   <!-- /.bl_reflect_inner -->
 </section>
 <!-- /.bl_reflect -->
 
 <style lang="scss">
+  @use "../styles/utility" as *;
+  @use "../styles/global" as *;
   /**
    * reflect
    */
@@ -86,7 +108,7 @@ import Nav from "./Nav.astro";
     }
     &_slider {
       width: 100%;
-      aspect-ratio: 7/4;
+      aspect-ratio: 16/9;
     }
 
     //content
@@ -97,10 +119,10 @@ import Nav from "./Nav.astro";
       margin-top: 1em;
       position: absolute;
       padding: 1rem 2rem;
-      width: 30em;
+      width: to-rem(600px);
       right: 0;
       bottom: 0;
-      text-align: right;
+      text-align: left;
     }
     &_ul {
       position: relative;

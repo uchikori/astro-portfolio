@@ -3,7 +3,7 @@
 ---
 
 <button
-  class="ly_aside_btn bl_hamburger js_hamburger"
+  class="bl_hamburger hl_smVisible js_hamburger"
   data-mouse="stuck"
   aria-label="メニューを開く"
 >
@@ -27,13 +27,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 5em;
-    height: 5em;
+    width: 3em;
+    aspect-ratio: 1;
     border: 0;
-    background: none;
-    margin-bottom: 10px;
+    border-radius: 100vh;
+    background: var(--c-white);
     cursor: pointer;
     pointer-events: auto;
+    padding: 0;
+    ::global(.ly_header) & {
+      mix-blend-mode: difference;
+    }
     &_inner {
       position: relative;
       display: block;
@@ -55,7 +59,7 @@
       display: block;
       width: 100%;
       height: 1px;
-      background-color: white;
+      background-color: var(--c-dark);
     }
   }
 </style>

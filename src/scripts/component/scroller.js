@@ -22,12 +22,12 @@ function init() {
   /**
    * FVのビデオをスクロールで変化させる
    */
-  const video = INode.getElement(".hero");
+  const video = INode.getElement(".js_hero");
   const videoContent = INode.getElement("#js-kv-video");
 
   if (video || videoContent) {
     ScrollTrigger.create({
-      trigger: ".hero",
+      trigger: ".js_hero",
       start: "top top",
       end: "bottom top",
       pin: videoContent,
@@ -38,7 +38,7 @@ function init() {
       opacity: 0,
       filter: "blur(20px)",
       scrollTrigger: {
-        trigger: ".hero",
+        trigger: ".js_hero",
         start: "top top",
         end: "bottom top",
         scrub: true, // スクロールに同期

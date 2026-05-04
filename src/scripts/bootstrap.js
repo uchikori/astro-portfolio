@@ -101,10 +101,10 @@ export async function init() {
   });
 
   //リプルパスを初期化(ポストプロセスエフェクト)
-  await initRipplePass(world, mouse);
+  // await initRipplePass(world, mouse);
 
   //マウスパーティクルを初期化
-  // await initMouseParticles(world, mouse);
+  await initMouseParticles(world, mouse);
 
   menu.init(world, smoother);
 

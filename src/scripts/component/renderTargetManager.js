@@ -81,7 +81,7 @@ class RenderTargetManager {
     this._addModelsToScene(targetInfo, models, overrideMaterial);
 
     // ライトを設定
-    this._setupLights(targetInfo.scene);
+    this._setupLights(targetInfo);
 
     // マップに保存
     this.targets.set(el, targetInfo);
@@ -97,7 +97,7 @@ class RenderTargetManager {
   _addModelsToScene(targetInfo, models, overrideMaterial) {
     models.forEach((gltf, key) => {
       if (gltf && gltf.scene) {
-        const model = gltf.scene;
+        const model = gltf.scene.clone();
 
         // 指定されたマテリアルがある場合は全メッシュに適用
         if (overrideMaterial) {
@@ -155,7 +155,8 @@ class RenderTargetManager {
    * ライトを設定
    * @private
    */
-  _setupLights(scene) {
+  _setupLights(targetInfo) {
+    const scene = targetInfo.scene;
     // メインの平行光源（斜め上から）
     const dirLight = new DirectionalLight(0xffffff, 2.0);
     dirLight.position.set(5, 10, 7.5);
@@ -171,12 +172,12 @@ class RenderTargetManager {
     scene.add(ambientLight);
 
     // アクセント用のポイントライト
-    this.pointLight = new PointLight(0xffffff, 1.5);
-    this.pointLight.position.set(0.4, 0.6, 0.9);
-    scene.add(this.pointLight);
+    targetInfo.pointLight = new PointLight(0xffffff, 1.5);
+    targetInfo.pointLight.position.set(0.4, 0.6, 0.9);
+    scene.add(targetInfo.pointLight);
 
-    this.pointLightHelper = new PointLightHelper(this.pointLight, 1);
-    scene.add(this.pointLightHelper);
+    // targetInfo.pointLightHelper = new PointLightHelper(targetInfo.pointLight, 1);
+    // scene.add(targetInfo.pointLightHelper);
   }
 
   /**
@@ -268,15 +269,15 @@ class RenderTargetManager {
         .step(0.01)
         .name("cameraZ");
       folder
-        .add(this.pointLight.position, "x", -10, 10)
+        .add(targetInfo.pointLight.position, "x", -10, 10)
         .step(0.01)
         .name("lightX");
       folder
-        .add(this.pointLight.position, "y", -10, 10)
+        .add(targetInfo.pointLight.position, "y", -10, 10)
         .step(0.01)
         .name("lightY");
       folder
-        .add(this.pointLight.position, "z", -10, 10)
+        .add(targetInfo.pointLight.position, "z", -10, 10)
         .step(0.01)
         .name("lightZ");
 

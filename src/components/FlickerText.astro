@@ -1,0 +1,97 @@
+---
+interface Props {
+  text: string;
+  class?: string;
+}
+
+const { text, class: className } = Astro.props;
+---
+
+<span class:list={["flicker-text", className]}>
+  {
+    text.split("").map((char, i) => (
+      <span
+        style={`--delay: ${Math.random() * 5}s; --wake-delay: ${i * 0.05}s`}
+      >
+        {char === " " ? "\u00A0" : char}
+      </span>
+    ))
+  }
+</span>
+
+<style lang="scss">
+  .flicker-text {
+    display: inline-flex;
+    flex-wrap: wrap;
+
+    span {
+      display: inline-block;
+      animation:
+        title-wake 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) var(--wake-delay)
+          backwards,
+        title-flicker 4s steps(1, end) var(--delay) infinite;
+    }
+  }
+
+  @keyframes title-wake {
+    0% {
+      opacity: 0;
+      filter: brightness(0.25);
+    }
+    34% {
+      opacity: 0.18;
+      filter: brightness(0.55);
+    }
+    43%,
+    51%,
+    63% {
+      opacity: 1;
+      filter: brightness(1.55);
+      text-shadow: 0 0 0.18em rgba(237, 151, 35, 0.42);
+    }
+    47%,
+    57% {
+      opacity: 0.22;
+      filter: brightness(0.7);
+      text-shadow: none;
+    }
+    to {
+      opacity: 1;
+      filter: brightness(1);
+    }
+  }
+
+  @keyframes title-flicker {
+    0%,
+    4%,
+    8%,
+    13%,
+    19%,
+    to {
+      opacity: 1;
+      filter: brightness(1);
+      text-shadow: none;
+    }
+    5%,
+    12% {
+      opacity: 0.24;
+      filter: brightness(0.56);
+    }
+    6%,
+    14% {
+      opacity: 1;
+      filter: brightness(1.75);
+      text-shadow:
+        0 0 0.16em rgba(237, 151, 35, 0.52),
+        0 0 0.38em rgba(237, 151, 35, 0.18);
+    }
+    20% {
+      opacity: 0.72;
+      filter: brightness(0.86);
+    }
+    21% {
+      opacity: 1;
+      filter: brightness(1.22);
+    }
+  }
+</style>

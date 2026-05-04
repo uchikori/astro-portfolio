@@ -4,6 +4,10 @@ import "../styles/style.scss";
 import Loader from "../components/Loader.astro";
 import Aside from "../components/Aside.astro";
 import Video from "../components/Video.astro";
+import Header from "../components/Header.astro";
+import Menu from "../components/Menu.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
 ---
 
 <html lang="ja">
@@ -41,56 +45,60 @@ import Video from "../components/Video.astro";
   <body>
     <Loader />
     <div id="globalContainer">
-      <Aside />
+      <Header />
+      <!-- <Aside /> -->
       <div id="smooth-wrapper">
         <div id="smooth-content">
           <div id="pageContainer">
             <slot />
           </div>
+          <Footer />
           <canvas id="canvas"></canvas>
         </div>
       </div>
     </div>
   </body>
+
+  <style lang="scss">
+    @use "../styles/global" as *;
+    @use "sass:math";
+
+    html {
+      font-size: math.div($root-font-size, 16px) * 100%;
+      font-feature-settings: "palt";
+      background-color: var(--c-dark);
+    }
+
+    body {
+      font-family: $base-font;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
+      -webkit-font-smoothing: antialiased;
+      color: var(--c-text);
+      margin: 0;
+      background-color: transparent;
+    }
+
+    body::-webkit-scrollbar {
+      display: none;
+    }
+
+    #globalContainer {
+      position: relative;
+      overflow-x: hidden;
+      visibility: hidden;
+    }
+
+    #canvas {
+      height: 100svh;
+      width: 100vw;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      background-color: transparent;
+    }
+  </style>
 </html>
-
-<style lang="scss">
-  @use "../styles/global" as *;
-  @use "sass:math";
-
-  html {
-    font-size: math.div($root-font-size, 16px) * 100%;
-    background-color: var(--c-dark);
-  }
-
-  body {
-    font-family: $base-font;
-    letter-spacing: 0.05em;
-    text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%;
-    -webkit-font-smoothing: antialiased;
-    color: var(--c-text);
-    margin: 0;
-    background-color: transparent;
-  }
-
-  body::-webkit-scrollbar {
-    display: none;
-  }
-
-  #globalContainer {
-    position: relative;
-    overflow-x: hidden;
-    visibility: hidden;
-  }
-
-  #canvas {
-    height: 100svh;
-    width: 100vw;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    background-color: transparent;
-  }
-</style>
