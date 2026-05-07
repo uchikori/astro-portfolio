@@ -102,9 +102,12 @@ import PrevNextBtn from "./prevNextBtn.astro";
       margin-inline: auto;
       font-size: 22px;
       width: 24em;
-      height: 18em;
+      aspect-ratio: 16/9;
       text-align: center;
       margin-top: 3em;
+      @include mq(lg) {
+        width: 12.5em;
+      }
     }
     &_slider {
       width: 100%;

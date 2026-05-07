@@ -9,4 +9,13 @@ export default class extends Ob {
   setupFragment(options) {
     return Fragment(options);
   }
+
+  setupMesh() {
+    const mesh = super.setupMesh();
+    const z = parseFloat(this.DOM.el.dataset.meshPositionZ) || 0;
+    mesh.position.z = z;
+    console.log(mesh.position.z);
+
+    return mesh;
+  }
 }

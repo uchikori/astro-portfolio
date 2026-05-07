@@ -1,0 +1,64 @@
+---
+const { alignItems, className } = Astro.props;
+---
+
+<div class:list={["bl_sns", className]} style={`align-items: ${alignItems};`}>
+  <p class="bl_sns_title">FOLLOW ME</p>
+  <ul class="bl_sns_list">
+    <li class="bl_sns_item" data-mouse="stuck">
+      <a href="#" class="bl_sns_link" target="_blank" rel="noopener noreferrer">
+        <img src="/img/icon/logo-x.png" alt="X" />
+      </a>
+    </li>
+    <li class="bl_sns_item" data-mouse="stuck">
+      <a href="#" class="bl_sns_link" target="_blank" rel="noopener noreferrer">
+        <img src="/img/icon/logo-insta.png" alt="Instagram" />
+      </a>
+    </li>
+    <li class="bl_sns_item" data-mouse="stuck">
+      <a href="#" class="bl_sns_link" target="_blank" rel="noopener noreferrer">
+        <img src="/img/icon/logo-fb.png" alt="Facebook" />
+      </a>
+    </li>
+  </ul>
+</div>
+
+<style lang="scss">
+  @use "../styles/utility" as *;
+  @use "../styles/global" as *;
+
+  .bl_sns {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: to-rem(12px);
+    // align-items: flex-end;
+
+    &_title {
+      font-size: to-rem(12px);
+      letter-spacing: 0.15em;
+      line-height: 1;
+    }
+
+    &_list {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    &_item {
+      padding: to-rem(8px);
+    }
+    &_link {
+      display: block;
+      width: to-rem(24px);
+      transition:
+        transform 0.3s ease,
+        opacity 0.3s ease;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+</style>
