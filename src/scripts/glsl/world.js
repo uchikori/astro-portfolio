@@ -108,14 +108,27 @@ async function _initObjects(viewport) {
     //WebGLのHTML要素のタイプを取得
     const type = INode.getDS(el, "webgl");
     trace("object:init:start", { type });
+    const importPath = `./${type}/index.js`;
+    trace("object:import:request", { type, importPath });
+    const pendingTimer = setTimeout(() => {
+      trace("object:import:pending", { type, importPath, waitMs: 5000 });
+    }, 5000);
 
     // Obの初期化メソッド
-    return import(`./${type}/index.js`).then(({ default: Ob }) => {
-      return Ob.init({ el, type }).then((result) => {
-        trace("object:init:done", { type });
-        return result;
+    return import(importPath)
+      .then(({ default: Ob }) => {
+        clearTimeout(pendingTimer);
+        trace("object:import:done", { type, importPath });
+        return Ob.init({ el, type }).then((result) => {
+          trace("object:init:done", { type });
+          return result;
+        });
+      })
+      .catch((error) => {
+        clearTimeout(pendingTimer);
+        trace("object:import:error", { type, importPath, error });
+        throw error;
       });
-    });
   });
 
   // Obの初期化の完了を待機して
