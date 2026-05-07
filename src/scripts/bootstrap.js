@@ -16,6 +16,11 @@ import "./component/scroll-animation";
 
 window.debug = enableDebugMode(0);
 
+const trace = (...args) => {
+  if (!import.meta.env.PROD) return;
+  console.info("[boot-trace]", ...args);
+};
+
 // デバッグモード:1=有効,0=無効
 function enableDebugMode(debug) {
   return debug && import.meta.env.DEV;
@@ -25,6 +30,7 @@ export async function init() {
   let hasBootError = false;
 
   try {
+    trace("init:start");
     //WebGLオブジェクトを格納するためのオブジェクト
     const canvas = INode.getElement("#canvas");
 
@@ -67,10 +73,14 @@ export async function init() {
         statusLabel.textContent = "Processing Assets";
       }
     });
+    trace("assets:load:start");
     await loader.loadAllAssets();
+    trace("assets:load:done");
 
     // Worldを初期化
+    trace("world:init:start");
     await world.init(canvas, viewport);
+    trace("world:init:done");
 
     mountNavBtnHandler(
       ".bl_fv_slider",
@@ -106,11 +116,14 @@ export async function init() {
     // await initRipplePass(world, mouse);
 
     //マウスパーティクルを初期化
+    trace("mouse-particles:init:start");
     await initMouseParticles(world, mouse);
+    trace("mouse-particles:init:done");
 
     menu.init(world, smoother);
 
     world.render();
+    trace("world:render:started");
 
     setTimeout(() => {
       mouse.makeVisible();
@@ -147,9 +160,11 @@ export async function init() {
     }
   } catch (error) {
     hasBootError = true;
+    trace("init:error", error);
     console.error("Bootstrap initialization failed:", error);
     loader.setErrorState("Initialization Error");
   } finally {
+    trace("init:finally", { hasBootError });
     // 初期化途中で失敗しても、ローダーで画面が塞がったままにならないようにする
     loader.letsBegin(hasBootError);
   }
