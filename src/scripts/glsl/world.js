@@ -15,6 +15,11 @@ import RenderTargetManager from "../component/renderTargetManager";
 import { Ob } from "./Ob";
 import { pass } from "three/tsl";
 
+const trace = (...args) => {
+  if (!import.meta.env.PROD) return;
+  console.info("[world-trace]", ...args);
+};
+
 //Worldオブジェクト
 const world = {
   os: [],
@@ -43,6 +48,7 @@ const world = {
 };
 
 async function init(canvas, viewport) {
+  trace("init:start");
   //WebGPURenderer
   world.renderer = new WebGPURenderer({
     canvas,
@@ -57,7 +63,9 @@ async function init(canvas, viewport) {
   world.renderer.outputColorSpace = LinearSRGBColorSpace;
 
   //WebGPURendererの初期化
+  trace("renderer:init:start");
   await world.renderer.init();
+  trace("renderer:init:done");
 
   // レンダーターゲットマネージャーを初期化
   world.renderTargetManager = new RenderTargetManager(world.renderer);
@@ -74,7 +82,10 @@ async function init(canvas, viewport) {
   world.scenePassColor = scenePass.getTextureNode("output");
 
   // メッシュオブジェクトの初期化
+  trace("objects:init:start");
   await _initObjects(viewport);
+  trace("objects:init:done");
+  trace("init:done");
 }
 
 //カメラの設定
@@ -91,19 +102,25 @@ function _setupPerspectiveCamera(viewport) {
 async function _initObjects(viewport) {
   //WebGLのHTML要素を取得
   const els = INode.qsAll("[data-webgl]");
+  trace("objects:targets", { count: els.length });
 
   const prms = [...els].map(async (el) => {
     //WebGLのHTML要素のタイプを取得
     const type = INode.getDS(el, "webgl");
+    trace("object:init:start", { type });
 
     // Obの初期化メソッド
     return import(`./${type}/index.js`).then(({ default: Ob }) => {
-      return Ob.init({ el, type });
+      return Ob.init({ el, type }).then((result) => {
+        trace("object:init:done", { type });
+        return result;
+      });
     });
   });
 
   // Obの初期化の完了を待機して
   const _os = await Promise.all(prms); // prmsはelsと同一の順序の配列
+  trace("objects:promise-all:done", { count: _os.length });
 
   _os.forEach((o) => {
     if (!o.mesh) return;
@@ -117,7 +134,9 @@ async function _initObjects(viewport) {
     return o.afterInit();
   });
 
+  trace("objects:after-init:start", { count: afterPrms.length });
   await Promise.all(afterPrms);
+  trace("objects:after-init:done");
 }
 
 //メッシュオブジェクトの追加
