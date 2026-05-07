@@ -10,29 +10,18 @@ import world from "./world";
 import { utils, viewport } from "../helper";
 import gsap from "gsap";
 
-const trace = (...args) => {
-  if (!import.meta.env.PROD) return;
-  console.info("[ob-trace]", ...args);
-};
-
 class Ob {
   static async init({ el, type }) {
-    trace("init:start", { type, tagName: el?.tagName });
     //textureを取得
-    trace("getTexByElement:start", { type });
     const texes = await loader.getTexByElement(el);
-    trace("getTexByElement:done", { type, texCount: texes?.size ?? 0 });
     // tex1が非対応拡張子の場合（loader.jsのloadVideoに記述）
     if (texes.get("tex1") === null) {
       // tex2をtex1にセット
       texes.set("tex1", texes.get("tex2"));
     }
 
-    trace("constructor:start", { type });
     const o = new this({ texes, el, type }); //Obのインスタンス化
-    trace("constructor:done", { type, hasMesh: !!o?.mesh });
 
-    trace("init:done", { type });
     return o;
   }
   constructor({ texes, el, type }) {
