@@ -22,127 +22,135 @@ function enableDebugMode(debug) {
 }
 
 export async function init() {
-  //WebGLオブジェクトを格納するためのオブジェクト
-  const canvas = INode.getElement("#canvas");
+  let hasBootError = false;
 
-  // デバッグモードの場合
-  if (window.debug) {
-    await gui.init();
-  }
+  try {
+    //WebGLオブジェクトを格納するためのオブジェクト
+    const canvas = INode.getElement("#canvas");
 
-  if (navigator.gpu === undefined) {
-    console.log("WebGPU is not available");
-  } else {
-    console.log("WebGPU is available");
-  }
-
-  //viewportを初期化
-  viewport.init(canvas);
-
-  //ScrollTriggerを初期化＆ScrollSmootherを受け取る
-  const smoother = scroller.init();
-
-  loader.init();
-
-  // ローダーアニメーションの追加
-  const loading = INode.getElement(".js_loader");
-  const loaderPercent = INode.getElement(".js_countNum");
-  const progressBar = INode.getElement(".js_progressBar");
-  const statusLabel = INode.getElement(".js_statusLabel");
-  loader.addProgressAction((progress, total) => {
-    const currentVal = progress / total;
-
-    // カウントの更新
-    loaderPercent.innerHTML = Math.round(currentVal * 100);
-
-    // プログレスバーの更新
-    progressBar.style.width = `${currentVal * 100}%`;
-
-    // ステータスラベルの更新
-    if (currentVal > 0.95) {
-      statusLabel.textContent = "Finalizing Data";
-    } else if (currentVal > 0.5) {
-      statusLabel.textContent = "Processing Assets";
+    // デバッグモードの場合
+    if (window.debug) {
+      await gui.init();
     }
-  });
-  await loader.loadAllAssets();
 
-  // Worldを初期化
-  await world.init(canvas, viewport);
+    if (navigator.gpu === undefined) {
+      console.log("WebGPU is not available");
+    } else {
+      console.log("WebGPU is available");
+    }
 
-  mountNavBtnHandler(
-    ".bl_fv_slider",
-    ".bl_fv .js_navBtn__prev",
-    ".bl_fv .js_navBtn__next",
-    ".bl_fv_shader",
-  );
+    //viewportを初期化
+    viewport.init(canvas);
 
-  mountReflectBtnHandler(
-    ".bl_reflect_slider",
-    ".bl_reflect .js_navBtn__prev",
-    ".bl_reflect .js_navBtn__next",
-    ".bl_reflect_ul",
-  );
+    //ScrollTriggerを初期化＆ScrollSmootherを受け取る
+    const smoother = scroller.init();
 
-  // mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
+    loader.init();
 
-  mouse.init(false, true);
+    // ローダーアニメーションの追加
+    const loaderPercent = INode.getElement(".js_countNum");
+    const progressBar = INode.getElement(".js_progressBar");
+    const statusLabel = INode.getElement(".js_statusLabel");
+    loader.addProgressAction((progress, total) => {
+      const currentVal = total > 0 ? progress / total : 1;
 
-  viewport.addResizeAction(() => {
-    world.adjustWorldPosition(viewport);
+      // カウントの更新
+      loaderPercent.innerHTML = Math.round(currentVal * 100);
 
-    mouse.resize();
-  });
+      // プログレスバーの更新
+      progressBar.style.width = `${currentVal * 100}%`;
 
-  // レンダリングループでの更新処理を追加
-  world.addRenderAction(() => {
-    mouse.render();
-    world.raycast();
-  });
-
-  //リプルパスを初期化(ポストプロセスエフェクト)
-  // await initRipplePass(world, mouse);
-
-  //マウスパーティクルを初期化
-  await initMouseParticles(world, mouse);
-
-  menu.init(world, smoother);
-
-  world.render();
-
-  loader.letsBegin();
-
-  setTimeout(() => {
-    mouse.makeVisible();
-  }, 1000);
-
-  // setTimeout(() => {
-  //   const o = world.getObjByEl('[data-webgl="twist-plane"]');
-  //   gsap.to(o.uniforms.uProgress, {
-  //     value: 1,
-  //     duration: 1,
-  //     ease: "power2.out",
-  //     onComplete() {
-  //       world.removeObj(o);
-  //     },
-  //   });
-  // }, 3000);
-
-  // デバッグモードの場合
-  if (window.debug) {
-    gui.add(world.addOrbitControlGUI);
-    // guiにコールバック関数を登録
-    gui.add((lilGUI) => {
-      // world.osの各オブジェクトのdebugメソッドを呼び出す
-      world.os.forEach((o) => {
-        if (!o.debug) return;
-        // data-webgl属性を取得
-        const type = INode.getDS(o.DOM.el, "webgl");
-        // typeをフォルダ名にしてdebugメソッドを呼び出す
-        const folder = lilGUI.addFolder(type);
-        folder.close();
-        o.debug(folder);
-      });
+      // ステータスラベルの更新
+      if (currentVal > 0.95) {
+        statusLabel.textContent = "Finalizing Data";
+      } else if (currentVal > 0.5) {
+        statusLabel.textContent = "Processing Assets";
+      }
     });
+    await loader.loadAllAssets();
+
+    // Worldを初期化
+    await world.init(canvas, viewport);
+
+    mountNavBtnHandler(
+      ".bl_fv_slider",
+      ".bl_fv .js_navBtn__prev",
+      ".bl_fv .js_navBtn__next",
+      ".bl_fv_shader",
+    );
+
+    mountReflectBtnHandler(
+      ".bl_reflect_slider",
+      ".bl_reflect .js_navBtn__prev",
+      ".bl_reflect .js_navBtn__next",
+      ".bl_reflect_ul",
+    );
+
+    // mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
+
+    mouse.init(false, true);
+
+    viewport.addResizeAction(() => {
+      world.adjustWorldPosition(viewport);
+
+      mouse.resize();
+    });
+
+    // レンダリングループでの更新処理を追加
+    world.addRenderAction(() => {
+      mouse.render();
+      world.raycast();
+    });
+
+    //リプルパスを初期化(ポストプロセスエフェクト)
+    // await initRipplePass(world, mouse);
+
+    //マウスパーティクルを初期化
+    await initMouseParticles(world, mouse);
+
+    menu.init(world, smoother);
+
+    world.render();
+
+    setTimeout(() => {
+      mouse.makeVisible();
+    }, 1000);
+
+    // setTimeout(() => {
+    //   const o = world.getObjByEl('[data-webgl="twist-plane"]');
+    //   gsap.to(o.uniforms.uProgress, {
+    //     value: 1,
+    //     duration: 1,
+    //     ease: "power2.out",
+    //     onComplete() {
+    //       world.removeObj(o);
+    //     },
+    //   });
+    // }, 3000);
+
+    // デバッグモードの場合
+    if (window.debug) {
+      gui.add(world.addOrbitControlGUI);
+      // guiにコールバック関数を登録
+      gui.add((lilGUI) => {
+        // world.osの各オブジェクトのdebugメソッドを呼び出す
+        world.os.forEach((o) => {
+          if (!o.debug) return;
+          // data-webgl属性を取得
+          const type = INode.getDS(o.DOM.el, "webgl");
+          // typeをフォルダ名にしてdebugメソッドを呼び出す
+          const folder = lilGUI.addFolder(type);
+          folder.close();
+          o.debug(folder);
+        });
+      });
+    }
+  } catch (error) {
+    hasBootError = true;
+    console.error("Bootstrap initialization failed:", error);
+    loader.setErrorState("Initialization Error");
+  } finally {
+    // 初期化途中で失敗しても、ローダーで画面が塞がったままにならないようにする
+    loader.letsBegin(hasBootError);
   }
 }

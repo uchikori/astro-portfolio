@@ -22,6 +22,7 @@ const loader = {
   getTexByElement,
   getModelByElement,
   addProgressAction,
+  setErrorState,
   letsBegin,
 };
 
@@ -191,6 +192,13 @@ function addProgressAction(_callback) {
   _progressAction = _callback;
 }
 
+function setErrorState(message = "Initialization Error") {
+  if (DOM.statusLabel) {
+    DOM.statusLabel.textContent = message;
+    DOM.statusLabel.style.color = "#f43f5e";
+  }
+}
+
 async function loadModel(url) {
   // 読み込み対象の画像の総数を計算
   incrementTotal();
@@ -325,8 +333,21 @@ function loadingAnimationStart() {
   return tl;
 }
 
-function letsBegin() {
-  const tl = loadingAnimationStart();
+function letsBegin(forceClose = false) {
+  if (forceClose) {
+    gsap.set(DOM.globalContainer, { autoAlpha: 1 });
+    gsap.to(DOM.loader, {
+      autoAlpha: 0,
+      pointerEvents: "none",
+      duration: 0.25,
+      onComplete: () => {
+        ScrollTrigger.refresh();
+      },
+    });
+    return;
+  }
+
+  loadingAnimationStart();
 }
 
 export default loader;
