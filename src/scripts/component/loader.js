@@ -7,6 +7,11 @@ import { INode } from "../helper";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const trace = (...args) => {
+  if (!import.meta.env.PROD) return;
+  console.info("[loader-trace]", ...args);
+};
+
 const texLoader = new TextureLoader();
 const modelLoader = new GLTFLoader();
 
@@ -22,6 +27,7 @@ const loader = {
   getTexByElement,
   getModelByElement,
   addProgressAction,
+  setErrorState,
   letsBegin,
 };
 
@@ -39,6 +45,7 @@ function init() {
 
 async function loadAllAssets() {
   const els = INode.qsAll("[data-webgl]");
+  trace("loadAllAssets:start", { webglElements: els.length });
 
   for (const el of els) {
     const data = el.dataset;
@@ -99,6 +106,12 @@ async function loadAllAssets() {
 
   // textureとmodelの読み込み完了を待つ
   await Promise.all([...texPrms, ...modelPrms]);
+  trace("loadAllAssets:done", {
+    textures: textureCache.size,
+    models: modelCache.size,
+    total,
+    progress,
+  });
 }
 
 let total = 0;
@@ -175,10 +188,12 @@ async function loadVideo(url) {
 
 function incrementTotal() {
   total++;
+  trace("progress:total", { total, progress });
 }
 
 function incrementProgress() {
   progress++;
+  trace("progress:tick", { total, progress });
 
   if (_progressAction) {
     _progressAction(progress, total);
@@ -189,6 +204,14 @@ function incrementProgress() {
 
 function addProgressAction(_callback) {
   _progressAction = _callback;
+}
+
+function setErrorState(message = "Initialization Error") {
+  trace("setErrorState", { message });
+  if (DOM.statusLabel) {
+    DOM.statusLabel.textContent = message;
+    DOM.statusLabel.style.color = "#f43f5e";
+  }
 }
 
 async function loadModel(url) {
@@ -325,8 +348,22 @@ function loadingAnimationStart() {
   return tl;
 }
 
-function letsBegin() {
-  const tl = loadingAnimationStart();
+function letsBegin(forceClose = false) {
+  trace("letsBegin", { forceClose });
+  if (forceClose) {
+    gsap.set(DOM.globalContainer, { autoAlpha: 1 });
+    gsap.to(DOM.loader, {
+      autoAlpha: 0,
+      pointerEvents: "none",
+      duration: 0.25,
+      onComplete: () => {
+        ScrollTrigger.refresh();
+      },
+    });
+    return;
+  }
+
+  loadingAnimationStart();
 }
 
 export default loader;
