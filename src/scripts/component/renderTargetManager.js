@@ -11,6 +11,7 @@ import {
   SpotLightHelper,
 } from "three/webgpu";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
 import { PointLight, AmbientLight, DirectionalLight } from "three/webgpu";
 import { RGBAFormat } from "three";
 import { gui } from "../helper";
@@ -72,7 +73,7 @@ class RenderTargetManager {
 
     // カメラを作成
     targetInfo.camera = worldCamera.clone();
-    targetInfo.camera.aspect = 1;
+    targetInfo.camera.aspect = rect.width / rect.height;
 
     // OrbitControlsを先に設定（モデルの center を target に合わせるため）
     this._setupControls(targetInfo, el);
@@ -97,7 +98,7 @@ class RenderTargetManager {
   _addModelsToScene(targetInfo, models, overrideMaterial) {
     models.forEach((gltf, key) => {
       if (gltf && gltf.scene) {
-        const model = gltf.scene.clone();
+        const model = SkeletonUtils.clone(gltf.scene);
 
         // 指定されたマテリアルがある場合は全メッシュに適用
         if (overrideMaterial) {
@@ -114,6 +115,7 @@ class RenderTargetManager {
         }
 
         // モデルのサイズを計算してカメラ位置を調整
+        model.updateMatrixWorld();
         const box = new Box3().setFromObject(model);
         const center = new Vector3();
         box.getCenter(center);
@@ -123,13 +125,16 @@ class RenderTargetManager {
         // カメラとコントロールをモデルの中心に合わせる
         targetInfo.controls?.target.copy(center);
 
-        // モデル全体が収まる距離をざっくりフィットさせる
-        const maxDim = Math.max(size.x, size.y, size.z) || 1;
+        // モデル全体が収まる距離を計算（垂直方向・水平方向のフィット）
         const fov = MathUtils.degToRad(targetInfo.camera.fov);
-        const fitHeightDistance = maxDim / (2 * Math.tan(fov / 2));
-        const fitWidthDistance =
-          fitHeightDistance / (targetInfo.camera.aspect || 1);
-        const distance = 1.4 * Math.max(fitHeightDistance, fitWidthDistance);
+        const aspect = targetInfo.camera.aspect;
+
+        // 高さ基準の距離と幅基準の距離をそれぞれ計算
+        const distanceHeight = (size.y / 2) / Math.tan(fov / 2);
+        const distanceWidth = (size.x / 2) / (Math.tan(fov / 2) * aspect);
+        
+        // 大きい方の距離を採用し、1.1倍のマージンを持たせる
+        const distance = Math.max(distanceHeight, distanceWidth) * 1.1;
 
         targetInfo.camera.position.set(center.x, center.y, center.z + distance);
         targetInfo.camera.near = Math.max(0.01, distance / 100);
