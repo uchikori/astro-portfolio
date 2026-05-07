@@ -57,9 +57,7 @@ async function init(canvas, viewport) {
   world.renderer.outputColorSpace = LinearSRGBColorSpace;
 
   //WebGPURendererの初期化
-  console.log("Initializing WebGPU Renderer...");
   await world.renderer.init();
-  console.log("WebGPU Renderer initialized.");
 
   // レンダーターゲットマネージャーを初期化
   world.renderTargetManager = new RenderTargetManager(world.renderer);
@@ -76,9 +74,7 @@ async function init(canvas, viewport) {
   world.scenePassColor = scenePass.getTextureNode("output");
 
   // メッシュオブジェクトの初期化
-  console.log("Initializing mesh objects...");
   await _initObjects(viewport);
-  console.log("Mesh objects initialized.");
 }
 
 //カメラの設定
@@ -95,22 +91,15 @@ function _setupPerspectiveCamera(viewport) {
 async function _initObjects(viewport) {
   //WebGLのHTML要素を取得
   const els = INode.qsAll("[data-webgl]");
-  console.log(`Found ${els.length} WebGL elements.`);
 
   const prms = [...els].map(async (el) => {
     //WebGLのHTML要素のタイプを取得
     const type = INode.getDS(el, "webgl");
-    console.log(`Importing module for type: ${type}`);
 
     // Obの初期化メソッド
-    return import(`./${type}/index.js`)
-      .then(({ default: Ob }) => {
-        return Ob.init({ el, type });
-      })
-      .catch((err) => {
-        console.error(`Failed to load module for type: ${type}`, err);
-        return null;
-      });
+    return import(`./${type}/index.js`).then(({ default: Ob }) => {
+      return Ob.init({ el, type });
+    });
   });
 
   // Obの初期化の完了を待機して

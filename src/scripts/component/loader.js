@@ -227,19 +227,11 @@ async function getTexByElement(el) {
     if (first && el instanceof HTMLImageElement) {
       //画像読み込み完了を待つ
       mediaLoaded = new Promise((resolve) => {
-        // すでに読み込みが完了している場合
-        if (el.complete) {
+        //画像読み込み完了時
+        el.onload = () => {
+          //resolveで画像読み込み完了を通知
           resolve();
-        } else {
-          //画像読み込み完了時
-          el.onload = () => {
-            resolve();
-          };
-          // 読み込み失敗時もresolveして進行を止めない
-          el.onerror = () => {
-            resolve();
-          };
-        }
+        };
       });
       //img要素のsrc属性にURLをセット
       el.src = url;

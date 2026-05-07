@@ -65,65 +65,52 @@ export async function init() {
       statusLabel.textContent = "Processing Assets";
     }
   });
-  try {
-    console.log("Starting asset loading...");
-    await loader.loadAllAssets();
-    console.log("Assets loaded successfully.");
+  await loader.loadAllAssets();
 
-    // Worldを初期化
-    console.log("Initializing World...");
-    await world.init(canvas, viewport);
-    console.log("World initialized.");
+  // Worldを初期化
+  await world.init(canvas, viewport);
 
-    mountNavBtnHandler(
-      ".bl_fv_slider",
-      ".bl_fv .js_navBtn__prev",
-      ".bl_fv .js_navBtn__next",
-      ".bl_fv_shader",
-    );
+  mountNavBtnHandler(
+    ".bl_fv_slider",
+    ".bl_fv .js_navBtn__prev",
+    ".bl_fv .js_navBtn__next",
+    ".bl_fv_shader",
+  );
 
-    mountReflectBtnHandler(
-      ".bl_reflect_slider",
-      ".bl_reflect .js_navBtn__prev",
-      ".bl_reflect .js_navBtn__next",
-      ".bl_reflect_ul",
-    );
+  mountReflectBtnHandler(
+    ".bl_reflect_slider",
+    ".bl_reflect .js_navBtn__prev",
+    ".bl_reflect .js_navBtn__next",
+    ".bl_reflect_ul",
+  );
 
-    // mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
+  // mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
 
-    mouse.init(false, true);
+  mouse.init(false, true);
 
-    viewport.addResizeAction(() => {
-      world.adjustWorldPosition(viewport);
+  viewport.addResizeAction(() => {
+    world.adjustWorldPosition(viewport);
 
-      mouse.resize();
-    });
+    mouse.resize();
+  });
 
-    // レンダリングループでの更新処理を追加
-    world.addRenderAction(() => {
-      mouse.render();
-      world.raycast();
-    });
+  // レンダリングループでの更新処理を追加
+  world.addRenderAction(() => {
+    mouse.render();
+    world.raycast();
+  });
 
-    //リプルパスを初期化(ポストプロセスエフェクト)
-    // await initRipplePass(world, mouse);
+  //リプルパスを初期化(ポストプロセスエフェクト)
+  // await initRipplePass(world, mouse);
 
-    //マウスパーティクルを初期化
-    console.log("Initializing Mouse Particles...");
-    await initMouseParticles(world, mouse);
-    console.log("Mouse Particles initialized.");
+  //マウスパーティクルを初期化
+  await initMouseParticles(world, mouse);
 
-    menu.init(world, smoother);
+  menu.init(world, smoother);
 
-    world.render();
+  world.render();
 
-    console.log("All systems ready, starting letsBegin...");
-    loader.letsBegin();
-  } catch (error) {
-    console.error("Initialization failed:", error);
-    // 致命的なエラーでも最悪ローダーだけは消して中身を見せる（デバッグ用）
-    loader.letsBegin();
-  }
+  loader.letsBegin();
 
   setTimeout(() => {
     mouse.makeVisible();
