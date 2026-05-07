@@ -19,6 +19,7 @@ const trace = (...args) => {
   if (!import.meta.env.PROD) return;
   console.info("[world-trace]", ...args);
 };
+const objectModuleLoaders = import.meta.glob("./*/index.js");
 
 //Worldオブジェクト
 const world = {
@@ -113,9 +114,20 @@ async function _initObjects(viewport) {
     const pendingTimer = setTimeout(() => {
       trace("object:import:pending", { type, importPath, waitMs: 5000 });
     }, 5000);
+    const loadModule = objectModuleLoaders[importPath];
+
+    if (!loadModule) {
+      clearTimeout(pendingTimer);
+      trace("object:import:error", {
+        type,
+        importPath,
+        reason: "module loader not found",
+      });
+      throw new Error(`Unknown webgl type module: ${importPath}`);
+    }
 
     // Obの初期化メソッド
-    return import(importPath)
+    return loadModule()
       .then(({ default: Ob }) => {
         clearTimeout(pendingTimer);
         trace("object:import:done", { type, importPath });
