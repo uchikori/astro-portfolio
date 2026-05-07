@@ -12,6 +12,7 @@ import gsap from "gsap";
 
 class Ob {
   static async init({ el, type }) {
+    console.log(`Initializing object: ${type}`, el);
     //textureを取得
     const texes = await loader.getTexByElement(el);
     // tex1が非対応拡張子の場合（loader.jsのloadVideoに記述）
@@ -21,6 +22,7 @@ class Ob {
     }
 
     const o = new this({ texes, el, type }); //Obのインスタンス化
+    console.log(`Object initialized: ${type}`);
 
     return o;
   }
