@@ -19,7 +19,7 @@ const trace = (...args) => {
   if (!import.meta.env.PROD) return;
   console.info("[world-trace]", ...args);
 };
-const objectModuleLoaders = import.meta.glob("./*/index.js");
+const objectModules = import.meta.glob("./*/index.js", { eager: true });
 
 //Worldオブジェクト
 const world = {
@@ -111,13 +111,9 @@ async function _initObjects(viewport) {
     trace("object:init:start", { type });
     const importPath = `./${type}/index.js`;
     trace("object:import:request", { type, importPath });
-    const pendingTimer = setTimeout(() => {
-      trace("object:import:pending", { type, importPath, waitMs: 5000 });
-    }, 5000);
-    const loadModule = objectModuleLoaders[importPath];
+    const module = objectModules[importPath];
 
-    if (!loadModule) {
-      clearTimeout(pendingTimer);
+    if (!module) {
       trace("object:import:error", {
         type,
         importPath,
@@ -126,21 +122,14 @@ async function _initObjects(viewport) {
       throw new Error(`Unknown webgl type module: ${importPath}`);
     }
 
+    trace("object:import:done", { type, importPath, mode: "eager" });
+
     // Obの初期化メソッド
-    return loadModule()
-      .then(({ default: Ob }) => {
-        clearTimeout(pendingTimer);
-        trace("object:import:done", { type, importPath });
-        return Ob.init({ el, type }).then((result) => {
-          trace("object:init:done", { type });
-          return result;
-        });
-      })
-      .catch((error) => {
-        clearTimeout(pendingTimer);
-        trace("object:import:error", { type, importPath, error });
-        throw error;
-      });
+    const Ob = module.default;
+    return Ob.init({ el, type }).then((result) => {
+      trace("object:init:done", { type });
+      return result;
+    });
   });
 
   // Obの初期化の完了を待機して
