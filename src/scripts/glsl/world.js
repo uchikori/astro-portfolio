@@ -95,15 +95,22 @@ function _setupPerspectiveCamera(viewport) {
 async function _initObjects(viewport) {
   //WebGLのHTML要素を取得
   const els = INode.qsAll("[data-webgl]");
+  console.log(`Found ${els.length} WebGL elements.`);
 
   const prms = [...els].map(async (el) => {
     //WebGLのHTML要素のタイプを取得
     const type = INode.getDS(el, "webgl");
+    console.log(`Importing module for type: ${type}`);
 
     // Obの初期化メソッド
-    return import(`./${type}/index.js`).then(({ default: Ob }) => {
-      return Ob.init({ el, type });
-    });
+    return import(`./${type}/index.js`)
+      .then(({ default: Ob }) => {
+        return Ob.init({ el, type });
+      })
+      .catch((err) => {
+        console.error(`Failed to load module for type: ${type}`, err);
+        return null;
+      });
   });
 
   // Obの初期化の完了を待機して
