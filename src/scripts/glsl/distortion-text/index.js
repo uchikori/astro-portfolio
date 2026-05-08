@@ -10,7 +10,8 @@ export default class extends Ob {
     //
     uniforms.uSpeed = uniform(1.0);
     uniforms.uParam = uniform(vec4(1, 1, 1, 1));
-    uniforms.uReversal = uniform(1);
+    uniforms.uReversal = uniform(0);
+    uniforms.uProgress = uniform(1);
     return uniforms;
   }
   setupVertex(options) {

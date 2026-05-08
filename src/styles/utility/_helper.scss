@@ -13,7 +13,7 @@
 
 //SP画面で非表示
 .hl_smHidden {
-  @include mq("xl") {
+  @include mq("lg") {
     display: none !important;
   }
 }

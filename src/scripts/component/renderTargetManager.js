@@ -130,9 +130,9 @@ class RenderTargetManager {
         const aspect = targetInfo.camera.aspect;
 
         // 高さ基準の距離と幅基準の距離をそれぞれ計算
-        const distanceHeight = (size.y / 2) / Math.tan(fov / 2);
-        const distanceWidth = (size.x / 2) / (Math.tan(fov / 2) * aspect);
-        
+        const distanceHeight = size.y / 2 / Math.tan(fov / 2);
+        const distanceWidth = size.x / 2 / (Math.tan(fov / 2) * aspect);
+
         // 大きい方の距離を採用し、1.1倍のマージンを持たせる
         const distance = Math.max(distanceHeight, distanceWidth) * 1.1;
 
@@ -163,17 +163,17 @@ class RenderTargetManager {
   _setupLights(targetInfo) {
     const scene = targetInfo.scene;
     // メインの平行光源（斜め上から）
-    const dirLight = new DirectionalLight(0xffffff, 2.0);
+    const dirLight = new DirectionalLight(0xffffff, 3.0);
     dirLight.position.set(5, 10, 7.5);
     scene.add(dirLight);
 
     // 補助の平行光源（反対側から影を和らげる）
-    const fillLight = new DirectionalLight(0xffffff, 0.8);
+    const fillLight = new DirectionalLight(0xffffff, 3);
     fillLight.position.set(-5, 2, -5);
     scene.add(fillLight);
 
     // 環境光（全体の明るさの底上げ）
-    const ambientLight = new AmbientLight(0xffffff, 1.5);
+    const ambientLight = new AmbientLight(0xffffff, 3);
     scene.add(ambientLight);
 
     // アクセント用のポイントライト

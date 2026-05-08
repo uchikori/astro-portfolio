@@ -20,6 +20,12 @@
   unicode-range: U+0020-007F;
 }
 
+@font-face {
+  font-family: "Noto Sans JP";
+  src: local("Noto Sans JP"), local("Noto Sans Japanese"); /* ローカルを探す */
+  font-weight: 500;
+}
+
 .font-12-14 {
   font-size: fluid-text(12px, 14px);
 }

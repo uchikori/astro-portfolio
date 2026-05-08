@@ -1,7 +1,7 @@
 ---
 import Fv from "./Fv.astro";
-import FlickerText from "./FlickerText.astro";
-import Sns from "./Sns.astro";
+import FlickerText from "../ui/FlickerText.astro";
+import Sns from "../common/Sns.astro";
 ---
 
 <div class="bl_hero js_hero">
@@ -60,7 +60,7 @@ import Sns from "./Sns.astro";
               alt=""
             />
           </div>
-          <div class="bl_hero_sub_gridItem grid_2">
+          <div class="bl_hero_sub_gridItem grid_2 hl_smHidden">
             <img
               data-webgl="template"
               data-tex-1="/img/grid/grid_2.webp"
@@ -79,7 +79,7 @@ import Sns from "./Sns.astro";
               「UCHIWA Creative Studio」という屋号で道内・道外問わず、<br />
               全国のお客様のWebサイト作りに携わらせて頂いております。
             </p>
-            <a href="" class="bl_hero_sub_link el_link" data-mouse="stuck">
+            <a href="/" class="bl_hero_sub_link el_link" data-mouse="stuck">
               <span class="el_link_text">View More</span>
               <svg
                 width="72"
@@ -130,6 +130,8 @@ import Sns from "./Sns.astro";
       ? "/movie/kv_mobile_converted.mp4"
       : "/movie/kv_converted.mp4";
 
+    if (!video) return;
+
     if (video.currentSrc !== location.origin + newSrc) {
       video.src = newSrc;
       video.load();
@@ -143,8 +145,8 @@ import Sns from "./Sns.astro";
 </script>
 
 <style lang="scss">
-  @use "../styles/utility" as *;
-  @use "../styles/global" as *;
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
 
   .bl_hero {
     position: relative;
@@ -238,7 +240,16 @@ import Sns from "./Sns.astro";
         display: grid;
         grid-template-columns: repeat(12, 1fr);
         grid-template-rows: repeat(12, 70px);
-        gap: 32px 40px;
+        gap: fluid-text(16px, 32px, 375px, 1920px)
+          fluid-text(24px, 40px, 375px, 1920px);
+
+        @include mq("lg") {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: to-rem(40px);
+        }
+
         .grid_1 {
           grid-column: 1/5;
           grid-row: 2/11;
@@ -246,7 +257,7 @@ import Sns from "./Sns.astro";
           z-index: 2;
           &:after {
             content: "UCHIWA";
-            font-size: fluid-text(60px, 120px);
+            font-size: fluid-text(60px, 120px, 375px, 1920px);
             color: var(--c-white);
             mix-blend-mode: soft-light;
             position: absolute;
@@ -255,6 +266,11 @@ import Sns from "./Sns.astro";
             transform: translate(25%, -40%);
             font-weight: 900;
             opacity: 0.7;
+          }
+
+          @include mq("lg") {
+            order: 1;
+            width: calc(300 / 390) * 100%;
           }
         }
         .grid_2 {
@@ -267,6 +283,10 @@ import Sns from "./Sns.astro";
           grid-row: 7/-1;
           // align-self: end;
           z-index: 3;
+          @include mq("lg") {
+            order: 2;
+            width: 100%;
+          }
         }
       }
       &_gridItem {
@@ -280,7 +300,7 @@ import Sns from "./Sns.astro";
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: fluid-text(48px, 64px);
+        gap: fluid-text(48px, 64px, 375px, 1920px);
       }
       &_text {
         line-height: 2;
@@ -311,15 +331,19 @@ import Sns from "./Sns.astro";
     align-items: center;
     gap: 40px;
     color: var(--c-white);
+    transition: all 0.3s ease;
     span {
       font-size: to-rem(32px);
     }
-    &:hover {
-      color: var(--c-orange);
-      transition: color 0.5s ease;
-      g {
-        transition: transform 0.5s ease;
-        transform: translateX(4px);
+    @media (hover: hover) {
+      &:hover {
+        color: var(--c-orange);
+        letter-spacing: 0.3em;
+        transition: all 0.3s ease;
+        g {
+          transition: transform 0.5s ease;
+          transform: translateX(4px);
+        }
       }
     }
   }
