@@ -92,12 +92,14 @@ async function _initObjects(viewport) {
   //WebGLのHTML要素を取得
   const els = INode.qsAll("[data-webgl]");
 
+  const modules = import.meta.glob("#/glsl/*/index.js");
+
   const prms = [...els].map(async (el) => {
     //WebGLのHTML要素のタイプを取得
     const type = INode.getDS(el, "webgl");
 
     // Obの初期化メソッド
-    return import(`#/glsl/${type}/index.js`)
+    return import(`./${type}/index.js`)
       .then(({ default: Ob }) => {
         return Ob.init({ el, type });
       })
