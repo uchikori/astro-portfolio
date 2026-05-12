@@ -95,15 +95,10 @@ async function _initObjects(viewport) {
   const prms = [...els].map(async (el) => {
     //WebGLのHTML要素のタイプを取得
     const type = INode.getDS(el, "webgl");
-    const importPath = `#/glsl/${type}/index.js`;
-    console.log(
-      `[world] _initObjects: type="${type}" → importing "${importPath}"`,
-    );
 
     // Obの初期化メソッド
     return import(`#/glsl/${type}/index.js`)
       .then(({ default: Ob }) => {
-        console.log(`[world] _initObjects: import OK for type="${type}"`, Ob);
         return Ob.init({ el, type });
       })
       .catch((err) => {
