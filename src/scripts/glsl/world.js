@@ -92,24 +92,38 @@ async function _initObjects(viewport) {
   //WebGLのHTML要素を取得
   const els = INode.qsAll("[data-webgl]");
 
+  // 1. 指定ディレクトリ内の index.js をすべて動的インポート対象としてリスト化
   const modules = import.meta.glob("#/glsl/*/index.js");
 
   const prms = [...els].map(async (el) => {
     //WebGLのHTML要素のタイプを取得
     const type = INode.getDS(el, "webgl");
 
-    // Obの初期化メソッド
-    return import(`./${type}/index.js`)
-      .then(({ default: Ob }) => {
+    const path = `./${type}/index.js`;
+
+    if (modules[path]) {
+      return modules[path]().then(({ default: Ob }) => {
         return Ob.init({ el, type });
-      })
-      .catch((err) => {
-        console.error(
-          `[world] _initObjects: import FAILED for type="${type}" path="${importPath}"`,
-          err,
-        );
-        throw err;
       });
+    } else {
+      console.error(
+        `[world] _initObjects: import FAILED for type="${type}" path="${path}"`,
+      );
+      return null;
+    }
+
+    // Obの初期化メソッド
+    // return import(`./${type}/index.js`)
+    //   .then(({ default: Ob }) => {
+    //     return Ob.init({ el, type });
+    //   })
+    //   .catch((err) => {
+    //     console.error(
+    //       `[world] _initObjects: import FAILED for type="${type}" path="${importPath}"`,
+    //       err,
+    //     );
+    //     throw err;
+    //   });
   });
 
   // Obの初期化の完了を待機して
