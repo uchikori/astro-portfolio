@@ -99,7 +99,7 @@ async function _initObjects(viewport) {
     //WebGLのHTML要素のタイプを取得
     const type = INode.getDS(el, "webgl");
 
-    const path = `./${type}/index.js`;
+    const path = `/src/scripts/glsl/${type}/index.js`;
 
     if (modules[path]) {
       return modules[path]().then(({ default: Ob }) => {
