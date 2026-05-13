@@ -136,7 +136,8 @@ async function _initObjects(viewport) {
   const _os = await Promise.all(prms); // prmsはelsと同一の順序の配列
 
   _os.forEach((o) => {
-    if (!o.mesh) return;
+    // もしoが存在せず、かつ、oにmeshが存在しなければ処理を終了
+    if (!o || !o.mesh) return;
     addObj(o);
   });
 
