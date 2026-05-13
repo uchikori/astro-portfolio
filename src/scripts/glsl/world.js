@@ -103,29 +103,10 @@ async function _initObjects(viewport) {
     // glob のキーは相対パス形式 "./type/index.js" になる
     const path = `./${type}/index.js`;
 
-    console.log("[world] glob key:", path, "available:", Object.keys(modules));
-
     if (modules[path]) {
-      try {
-        const mod = await modules[path]();
-        const initPromise = mod.default.init({ el, type });
-        const timeoutMs = 15000;
-        let timerId = null;
-        const timeoutPromise = new Promise((resolve) => {
-          timerId = setTimeout(() => {
-            console.error(
-              `[world] _initObjects: init TIMEOUT for type="${type}" after ${timeoutMs}ms`,
-            );
-            resolve(null);
-          }, timeoutMs);
-        });
-        const result = await Promise.race([initPromise, timeoutPromise]);
-        if (timerId) clearTimeout(timerId);
-        return result;
-      } catch (err) {
-        console.error(`[world] _initObjects: init FAILED for type="${type}"`, err);
-        return null;
-      }
+      return modules[path]().then(({ default: Ob }) => {
+        return Ob.init({ el, type });
+      });
     } else {
       console.error(
         `[world] _initObjects: import FAILED for type="${type}" path="${path}"`,
@@ -150,15 +131,7 @@ async function _initObjects(viewport) {
   });
 
   // Obの初期化の完了を待機して
-  const settled = await Promise.allSettled(prms); // prmsはelsと同一の順序の配列
-  const _os = settled.map((r, i) => {
-    if (r.status === "fulfilled") return r.value;
-    const type = INode.getDS(els[i], "webgl");
-    console.error(`[world] _initObjects: Promise rejected for type="${type}"`, r.reason);
-    return null;
-  });
-
-  console.log(_os);
+  const _os = await Promise.all(prms); // prmsはelsと同一の順序の配列
 
   _os.forEach((o) => {
     // もしoが存在せず、かつ、oにmeshが存在しなければ処理を終了
