@@ -13,7 +13,9 @@ import gsap from "gsap";
 class Ob {
   static async init({ el, type }) {
     //textureを取得
+    console.log(`[Ob] init start: ${type}`);
     const texes = await loader.getTexByElement(el);
+    console.log(`[Ob] textures ready: ${type}`);
     // tex1が非対応拡張子の場合（loader.jsのloadVideoに記述）
     if (texes.get("tex1") === null) {
       // tex2をtex1にセット
@@ -22,6 +24,7 @@ class Ob {
 
     const o = new this({ texes, el, type }); //Obのインスタンス化
 
+    console.log(`[Ob] instance created: ${type}`);
     return o;
   }
   constructor({ texes, el, type }) {

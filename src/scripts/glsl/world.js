@@ -108,7 +108,9 @@ async function _initObjects(viewport) {
     const path = `./${type}/index.js`;
 
     if (modules[path]) {
+      console.log(`[world] import start: ${type}`);
       return modules[path]().then(({ default: Ob }) => {
+        console.log(`[world] import done: ${type}`);
         return Ob.init({ el, type });
       });
     } else {
