@@ -206,6 +206,85 @@ async function getTexByElement(el) {
   const texes = new Map();
   const data = el.dataset;
 
+  let mediaUrl = null;
+
+  for (let key in data) {
+    if (!key.startsWith("tex")) continue;
+
+    const url = data[key];
+    const tex = textureCache.get(url);
+
+    key = key.replace("-", "");
+    texes.set(key, tex);
+
+    if (!mediaUrl) {
+      mediaUrl = url;
+    }
+  }
+
+  if (mediaUrl && el instanceof HTMLImageElement) {
+    await new Promise((resolve) => {
+      const cleanup = () => {
+        el.onload = null;
+        el.onerror = null;
+      };
+      const done = () => {
+        cleanup();
+        resolve();
+      };
+
+      if (el.currentSrc === mediaUrl && el.complete) {
+        done();
+        return;
+      }
+
+      el.onload = done;
+      el.onerror = done;
+      el.src = mediaUrl;
+
+      if (el.complete) {
+        done();
+      }
+    });
+
+    return texes;
+  }
+
+  if (mediaUrl && el instanceof HTMLVideoElement) {
+    await new Promise((resolve) => {
+      const cleanup = () => {
+        el.onloadeddata = null;
+        el.oncanplay = null;
+        el.onerror = null;
+      };
+      const done = () => {
+        cleanup();
+        resolve();
+      };
+
+      if (el.currentSrc === mediaUrl && el.readyState >= 2) {
+        done();
+        return;
+      }
+
+      el.onloadeddata = done;
+      el.oncanplay = done;
+      el.onerror = done;
+      el.src = mediaUrl;
+      el.load();
+
+      if (el.readyState >= 2) {
+        done();
+      }
+    });
+
+    return texes;
+  }
+
+  if (mediaUrl) {
+    return texes;
+  }
+
   let mediaLoaded = null;
   let first = true;
   //属性値をkeyとして抽出しループ処理
