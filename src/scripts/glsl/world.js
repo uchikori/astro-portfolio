@@ -57,9 +57,7 @@ async function init(canvas, viewport) {
   world.renderer.outputColorSpace = LinearSRGBColorSpace;
 
   //WebGPURendererの初期化
-  console.log("[world] renderer.init start");
   await world.renderer.init();
-  console.log("[world] renderer.init done");
 
   // レンダーターゲットマネージャーを初期化
   world.renderTargetManager = new RenderTargetManager(world.renderer);
@@ -76,9 +74,7 @@ async function init(canvas, viewport) {
   world.scenePassColor = scenePass.getTextureNode("output");
 
   // メッシュオブジェクトの初期化
-  console.log("[world] _initObjects start");
   await _initObjects(viewport);
-  console.log("[world] _initObjects done");
 }
 
 //カメラの設定

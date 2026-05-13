@@ -66,12 +66,9 @@ export async function init() {
     }
   });
   await loader.loadAllAssets();
-  console.log("[bootstrap] loadAllAssets done");
 
   // Worldを初期化
-  console.log("[bootstrap] world.init start");
   await world.init(canvas, viewport);
-  console.log("[bootstrap] world.init done");
 
   mountNavBtnHandler(
     ".bl_fv_slider",
@@ -107,17 +104,13 @@ export async function init() {
   // await initRipplePass(world, mouse);
 
   //マウスパーティクルを初期化
-  console.log("[bootstrap] initMouseParticles start");
   await initMouseParticles(world, mouse);
-  console.log("[bootstrap] initMouseParticles done");
 
   menu.init(world, smoother);
 
   world.render();
-  console.log("[bootstrap] world.render started");
 
   loader.letsBegin();
-  console.log("[bootstrap] loader.letsBegin called");
 
   setTimeout(() => {
     mouse.makeVisible();
