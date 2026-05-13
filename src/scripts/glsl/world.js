@@ -106,9 +106,13 @@ async function _initObjects(viewport) {
     console.log("[world] glob key:", path, "available:", Object.keys(modules));
 
     if (modules[path]) {
-      return modules[path]().then(({ default: Ob }) => {
-        return Ob.init({ el, type });
-      });
+      try {
+        const mod = await modules[path]();
+        return await mod.default.init({ el, type });
+      } catch (err) {
+        console.error(`[world] _initObjects: init FAILED for type="${type}"`, err);
+        return null;
+      }
     } else {
       console.error(
         `[world] _initObjects: import FAILED for type="${type}" path="${path}"`,
@@ -133,7 +137,13 @@ async function _initObjects(viewport) {
   });
 
   // Obの初期化の完了を待機して
-  const _os = await Promise.all(prms); // prmsはelsと同一の順序の配列
+  const settled = await Promise.allSettled(prms); // prmsはelsと同一の順序の配列
+  const _os = settled.map((r, i) => {
+    if (r.status === "fulfilled") return r.value;
+    const type = INode.getDS(els[i], "webgl");
+    console.error(`[world] _initObjects: Promise rejected for type="${type}"`, r.reason);
+    return null;
+  });
 
   console.log(_os);
 
