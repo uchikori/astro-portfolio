@@ -1,4 +1,4 @@
-﻿import { utils, INode } from "../helper";
+import { utils, INode } from "../helper";
 import mouse from "../component/mouse";
 import {
   WebGPURenderer,
@@ -105,10 +105,23 @@ async function _initObjects(viewport) {
 
     if (modules[path]) {
       console.log(`[world] import start: ${type}`);
-      return modules[path]().then(({ default: Ob }) => {
-        console.log(`[world] import done: ${type}`);
-        return Ob.init({ el, type });
-      });
+      return modules[path]()
+        .then(({ default: Ob }) => {
+          console.log(`[world] import done: ${type}`);
+          return Ob.init({
+            el,
+            type,
+            renderTargetManager: world.renderTargetManager,
+            camera: world.camera,
+          });
+        })
+        .catch((err) => {
+          console.error(
+            `[world] _initObjects: module load REJECTED for type="${type}" path="${path}"`,
+            err,
+          );
+          return null;
+        });
     } else {
       console.error(
         `[world] _initObjects: import FAILED for type="${type}" path="${path}"`,

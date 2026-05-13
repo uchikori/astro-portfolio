@@ -6,12 +6,11 @@ import {
   MeshBasicMaterial,
 } from "three/webgpu";
 import loader from "../component/loader";
-import world from "./world";
 import { utils, viewport } from "../helper";
 import gsap from "gsap";
 
 class Ob {
-  static async init({ el, type }) {
+  static async init({ el, type, renderTargetManager, camera }) {
     //textureを取得
     const texes = await loader.getTexByElement(el);
     // tex1が非対応拡張子の場合（loader.jsのloadVideoに記述）
@@ -20,11 +19,11 @@ class Ob {
       texes.set("tex1", texes.get("tex2"));
     }
 
-    const o = new this({ texes, el, type }); //Obのインスタンス化
+    const o = new this({ texes, el, type, renderTargetManager, camera }); //Obのインスタンス化
 
     return o;
   }
-  constructor({ texes, el, type }) {
+  constructor({ texes, el, type, renderTargetManager, camera }) {
     this.DOM = {
       el,
     };
@@ -48,10 +47,10 @@ class Ob {
       this.renderTargetMaterial = this.setupRenderTargetMaterial();
 
       // レンダーターゲット情報を初期化(モデルが一つもない場合はnullが格納されている)
-      this.targetInfo = world.renderTargetManager.initRenderTarget(
+      this.targetInfo = renderTargetManager.initRenderTarget(
         el,
         this.models,
-        world.camera,
+        camera,
         this.rect,
         this.renderTargetMaterial,
       );
