@@ -53,19 +53,15 @@ import Sns from "../common/Sns.astro";
       <div class="bl_hero_sub">
         <div class="bl_hero_sub_grid">
           <div class="bl_hero_sub_gridItem grid_1">
-            <img
+            <div
               data-webgl="template"
               data-tex-1="/img/grid/grid_1.webp"
               data-mesh-position-z="1"
-              alt=""
-            />
+            >
+            </div>
           </div>
           <div class="bl_hero_sub_gridItem grid_2 hl_smHidden">
-            <img
-              data-webgl="template"
-              data-tex-1="/img/grid/grid_2.webp"
-              alt=""
-            />
+            <div data-webgl="template" data-tex-1="/img/grid/grid_2.webp"></div>
           </div>
           <div class="bl_hero_sub_gridItem bl_hero_sub_content grid_3">
             <hgroup class="bl_hero_sub_title bl_sectiontitle">
@@ -292,6 +288,10 @@ import Sns from "../common/Sns.astro";
       &_gridItem {
         position: relative;
         object-fit: cover;
+        div {
+          width: 100%;
+          height: 100%;
+        }
         img {
           width: 100%;
         }

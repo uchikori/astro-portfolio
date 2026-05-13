@@ -225,37 +225,33 @@ async function getTexByElement(el) {
 
     //el が <img> 要素の場合
     if (first && el instanceof HTMLImageElement) {
+      //画像読み込み完了を待つ
+      mediaLoaded = new Promise((resolve) => {
+        //画像読み込み完了時
+        el.onload = () => {
+          //resolveで画像読み込み完了を通知
+          resolve();
+        };
+      });
       //img要素のsrc属性にURLをセット
       el.src = url;
-
-      // すでに読み込み済みの場合は onload が発火しないため complete で判定
-      if (el.complete && el.naturalWidth > 0) {
-        mediaLoaded = Promise.resolve();
-      } else {
-        mediaLoaded = new Promise((resolve) => {
-          el.onload = () => { resolve(); };
-          el.onerror = () => { resolve(); }; // エラーでも止めない
-        });
-      }
 
       first = false;
     }
 
     //el が <video> 要素の場合
     if (first && el instanceof HTMLVideoElement) {
+      //画像読み込み完了を待つ
+      mediaLoaded = new Promise((resolve) => {
+        //画像読み込み完了時
+        el.onloadeddata = () => {
+          //resolveで画像読み込み完了を通知
+          resolve();
+        };
+      });
       //img要素のsrc属性にURLをセット
       el.src = url;
-
-      // すでにデータが利用可能な場合は即 resolve
-      if (el.readyState >= 2) {
-        mediaLoaded = Promise.resolve();
-      } else {
-        mediaLoaded = new Promise((resolve) => {
-          el.onloadeddata = () => { resolve(); };
-          el.onerror = () => { resolve(); }; // エラーでも止めない
-        });
-        el.load();
-      }
+      el.load();
 
       first = false;
     }
