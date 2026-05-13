@@ -96,6 +96,8 @@ async function _initObjects(viewport) {
   //    import.meta.glob はエイリアス(#)を解釈しないため相対パスで指定する
   const modules = import.meta.glob("./{*/index.js,*/index.ts}");
 
+  console.log(modules);
+
   const prms = [...els].map(async (el) => {
     //WebGLのHTML要素のタイプを取得
     const type = INode.getDS(el, "webgl");
