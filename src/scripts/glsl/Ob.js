@@ -24,6 +24,8 @@ class Ob {
     return o;
   }
   constructor({ texes, el, type, renderTargetManager, camera }) {
+    console.log(texes, el);
+
     this.DOM = {
       el,
     };
