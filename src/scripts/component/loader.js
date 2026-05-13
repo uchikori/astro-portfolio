@@ -224,7 +224,10 @@ async function getTexByElement(el) {
 
   if (mediaUrl && el instanceof HTMLImageElement) {
     await new Promise((resolve) => {
+      const timeoutMs = 5000;
+      let timeoutId = null;
       const cleanup = () => {
+        if (timeoutId) clearTimeout(timeoutId);
         el.onload = null;
         el.onerror = null;
       };
@@ -240,6 +243,7 @@ async function getTexByElement(el) {
 
       el.onload = done;
       el.onerror = done;
+      timeoutId = setTimeout(done, timeoutMs);
       el.src = mediaUrl;
 
       if (el.complete) {
@@ -252,7 +256,10 @@ async function getTexByElement(el) {
 
   if (mediaUrl && el instanceof HTMLVideoElement) {
     await new Promise((resolve) => {
+      const timeoutMs = 5000;
+      let timeoutId = null;
       const cleanup = () => {
+        if (timeoutId) clearTimeout(timeoutId);
         el.onloadeddata = null;
         el.oncanplay = null;
         el.onerror = null;
@@ -270,6 +277,7 @@ async function getTexByElement(el) {
       el.onloadeddata = done;
       el.oncanplay = done;
       el.onerror = done;
+      timeoutId = setTimeout(done, timeoutMs);
       el.src = mediaUrl;
       el.load();
 
