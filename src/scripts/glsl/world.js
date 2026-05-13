@@ -93,13 +93,17 @@ async function _initObjects(viewport) {
   const els = INode.qsAll("[data-webgl]");
 
   // 1. 指定ディレクトリ内の index.js をすべて動的インポート対象としてリスト化
-  const modules = import.meta.glob("#/glsl/*/index.js");
+  //    import.meta.glob はエイリアス(#)を解釈しないため相対パスで指定する
+  const modules = import.meta.glob("./{*/index.js,*/index.ts}");
 
   const prms = [...els].map(async (el) => {
     //WebGLのHTML要素のタイプを取得
     const type = INode.getDS(el, "webgl");
 
-    const path = `/src/scripts/glsl/${type}/index.js`;
+    // glob のキーは相対パス形式 "./type/index.js" になる
+    const path = `./${type}/index.js`;
+
+    console.log("[world] glob key:", path, "available:", Object.keys(modules));
 
     if (modules[path]) {
       return modules[path]().then(({ default: Ob }) => {
@@ -108,6 +112,8 @@ async function _initObjects(viewport) {
     } else {
       console.error(
         `[world] _initObjects: import FAILED for type="${type}" path="${path}"`,
+        "available keys:",
+        Object.keys(modules),
       );
       return null;
     }
