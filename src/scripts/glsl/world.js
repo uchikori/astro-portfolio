@@ -1,4 +1,4 @@
-import { utils, INode } from "../helper";
+﻿import { utils, INode } from "../helper";
 import mouse from "../component/mouse";
 import {
   WebGPURenderer,
@@ -134,6 +134,8 @@ async function _initObjects(viewport) {
 
   // Obの初期化の完了を待機して
   const _os = await Promise.all(prms); // prmsはelsと同一の順序の配列
+
+  console.log(_os);
 
   _os.forEach((o) => {
     // もしoが存在せず、かつ、oにmeshが存在しなければ処理を終了
