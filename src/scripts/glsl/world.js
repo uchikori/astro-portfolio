@@ -108,7 +108,17 @@ async function _initObjects(viewport) {
     if (modules[path]) {
       try {
         const mod = await modules[path]();
-        return await mod.default.init({ el, type });
+        const initPromise = mod.default.init({ el, type });
+        const timeoutMs = 15000;
+        const timeoutPromise = new Promise((resolve) => {
+          setTimeout(() => {
+            console.error(
+              `[world] _initObjects: init TIMEOUT for type="${type}" after ${timeoutMs}ms`,
+            );
+            resolve(null);
+          }, timeoutMs);
+        });
+        return await Promise.race([initPromise, timeoutPromise]);
       } catch (err) {
         console.error(`[world] _initObjects: init FAILED for type="${type}"`, err);
         return null;
