@@ -96,43 +96,66 @@ async function _initObjects(viewport) {
   //    import.meta.glob はエイリアス(#)を解釈しないため相対パスで指定する
   const modules = import.meta.glob("./{*/index.js,*/index.ts}");
 
-  const prms = [...els].map(async (el) => {
-    //WebGLのHTML要素のタイプを取得
+  console.log("[world] _initObjects: Found modules keys:", Object.keys(modules));
+
+  const _os = [];
+  for (const el of els) {
     const type = INode.getDS(el, "webgl");
+    const pathJs = `./${type}/index.js`;
+    const pathTs = `./${type}/index.ts`;
 
-    // glob のキーは相対パス形式 "./type/index.js" になる
-    const path = `./${type}/index.js`;
+    const importer = modules[pathJs] || modules[pathTs];
 
-    /**
-     * デバッグ
-     */
-    const importer = modules[path];
+    if (!importer) {
+      console.error(
+        `[world] _initObjects: No importer found for type="${type}". Checked paths: "${pathJs}", "${pathTs}"`,
+      );
+      continue;
+    }
 
-    console.log(`[world] A before import call: ${type}`);
+    console.log(`[world] >>> Start processing type="${type}"`);
 
-    const promise = importer();
-
-    console.log(`[world] B after import call (sync reached): ${type}`);
-
-    return promise
-      .then(({ default: Ob }) => {
-        console.log(
-          `[world] C after promise resolve (Ob is available): ${type}`,
+    try {
+      // タイムアウト用のPromise（10秒）
+      const timeoutPromise = (ms) =>
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Timeout")), ms),
         );
-        return Ob.init({
+
+      // タイムアウト付きのインポート
+      const module = await Promise.race([importer(), timeoutPromise(10000)]);
+      console.log(`[world] Module loaded for type="${type}"`);
+
+      const LoadedOb = module.default;
+      if (!LoadedOb || typeof LoadedOb.init !== "function") {
+        console.error(
+          `[world] Module for type="${type}" does not export a valid Ob class with init method.`,
+          module,
+        );
+        continue;
+      }
+
+      // タイムアウト付きの初期化
+      const obj = await Promise.race([
+        LoadedOb.init({
           el,
           type,
           renderTargetManager: world.renderTargetManager,
           camera: world.camera,
-        });
-      })
-      .catch((err) => {
-        console.error(
-          `[world] _initObjects: module load REJECTED for type="${type}" path="${path}"`,
-          err,
-        );
-        return null;
-      });
+        }),
+        timeoutPromise(10000),
+      ]);
+
+      console.log(`[world] <<< Completed type="${type}"`);
+      if (obj && obj.mesh) {
+        _os.push(obj);
+      }
+    } catch (err) {
+      console.error(
+        `[world] Failed to process type="${type}":`,
+        err.message || err,
+      );
+    }
 
     // if (modules[path]) {
     //   console.log(`[world] import start: ${type}`);
@@ -174,10 +197,7 @@ async function _initObjects(viewport) {
     //     );
     //     throw err;
     //   });
-  });
-
-  // Obの初期化の完了を待機して
-  const _os = await Promise.all(prms); // prmsはelsと同一の順序の配列
+  }
 
   _os.forEach((o) => {
     // もしoが存在せず、かつ、oにmeshが存在しなければ処理を終了

@@ -227,11 +227,23 @@ async function getTexByElement(el) {
     if (first && el instanceof HTMLImageElement) {
       //画像読み込み完了を待つ
       mediaLoaded = new Promise((resolve) => {
+        // すでにロード済みの場合は即座にresolve
+        if (el.complete) {
+          resolve();
+          return;
+        }
         //画像読み込み完了時
         el.onload = () => {
           //resolveで画像読み込み完了を通知
           resolve();
         };
+        //エラー時
+        el.onerror = () => {
+          console.error(`[loader] Failed to load image: ${el.src}`);
+          resolve(); // 失敗しても全体の処理は止めない
+        };
+        // 念のためタイムアウト（5秒）
+        setTimeout(resolve, 5000);
       });
       //img要素のsrc属性にURLをセット
       el.src = url;
@@ -248,6 +260,13 @@ async function getTexByElement(el) {
           //resolveで画像読み込み完了を通知
           resolve();
         };
+        //エラー時
+        el.onerror = () => {
+          console.error(`[loader] Failed to load video: ${el.src}`);
+          resolve();
+        };
+        // 念のためタイムアウト（5秒）
+        setTimeout(resolve, 5000);
       });
       //img要素のsrc属性にURLをセット
       el.src = url;
