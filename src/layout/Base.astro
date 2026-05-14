@@ -18,6 +18,10 @@ import Footer from "../components/common/Footer.astro";
     <meta name="generator" content={Astro.generator} />
     <script src="../scripts/index.js"></script>
     <title>{title}</title>
+    <meta
+      name="description"
+      content="個人ポートフォリオサイトです。Web制作のスキルや経験を紹介しています。"
+    />
     <link
       rel="preload"
       href="/fonts/Orbitron-Medium.woff2"
@@ -32,14 +36,6 @@ import Footer from "../components/common/Footer.astro";
       type="font/woff2"
       crossorigin
     />
-    <!-- Google Fonts の読み込みを追加 -->
-    <!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    /> -->
-
     <slot name="head" />
   </head>
   <body>
