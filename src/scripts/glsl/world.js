@@ -93,7 +93,9 @@ async function _initObjects(viewport) {
   const els = INode.qsAll("[data-webgl]");
 
   // eager: true を指定してビルド時にモジュールをすべて読み込んでおく
-  const modules = import.meta.glob("./{*/index.js,*/index.ts}", { eager: true });
+  const modules = import.meta.glob("./{*/index.js,*/index.ts}", {
+    eager: true,
+  });
 
   console.log(
     "[world] _initObjects: Found modules keys:",
