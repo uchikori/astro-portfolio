@@ -93,6 +93,31 @@ async function _initObjects(viewport) {
   const els = INode.qsAll("[data-webgl]");
 
   // eager: true を指定してビルド時にモジュールをすべて読み込んでおく
+  // eager: true を指定してビルド時にモジュールをすべて読み込んでおく（本番環境でのハングアップ防止）
+  const modules = import.meta.glob("./{*/index.js,*/index.ts}", { eager: true });
+
+  // 各要素の初期化を並列実行
+  const prms = els.map(async (el) => {
+    const type = INode.getDS(el, "webgl");
+    const module = modules[`./${type}/index.js`] || modules[`./${type}/index.ts`];
+
+    try {
+      const LoadedOb = module?.default;
+      if (!LoadedOb) return null;
+
+      return await LoadedOb.init({
+        el,
+        type,
+        renderTargetManager: world.renderTargetManager,
+        camera: world.camera,
+      });
+    } catch (err) {
+      console.error(`[world] Failed to process type="${type}":`, err);
+      return null;
+    }
+  });
+
+  // --- 以下、これまでの試行錯誤の履歴（コメントアウト） ---
   // const modules = import.meta.glob("./{*/index.js,*/index.ts}", {
   //   eager: true,
   // });
@@ -188,17 +213,17 @@ async function _initObjects(viewport) {
   // }
 
   // Obの初期化メソッド
-  const prms = [...els].map((el) => {
-    const type = INode.getDS(el, "webgl");
-    return import(`./${type}/index.js`).then(({ default: Ob }) => {
-      return Ob.init({
-        el,
-        type,
-        renderTargetManager: world.renderTargetManager,
-        camera: world.camera,
-      });
-    });
-  });
+  // const prms = [...els].map((el) => {
+  //   const type = INode.getDS(el, "webgl");
+  //   return import(`./${type}/index.js`).then(({ default: Ob }) => {
+  //     return Ob.init({
+  //       el,
+  //       type,
+  //       renderTargetManager: world.renderTargetManager,
+  //       camera: world.camera,
+  //     });
+  //   });
+  // });
 
   const _os = await Promise.all(prms);
 
