@@ -99,9 +99,14 @@ async function _initObjects(viewport) {
   // 各要素の初期化を並列実行
   const prms = els.map(async (el) => {
     const type = INode.getDS(el, "webgl");
-    const module = modules[`./${type}/index.js`];
+    const moduleFn = modules[`./${type}/index.js`];
+
+    if (!moduleFn) {
+      return null;
+    }
 
     try {
+      const module = await moduleFn();
       const LoadedOb = module?.default;
       if (!LoadedOb) return null;
 
