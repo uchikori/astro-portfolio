@@ -92,11 +92,13 @@ async function _initObjects(viewport) {
   //WebGLのHTML要素を取得
   const els = INode.qsAll("[data-webgl]");
 
-  // 1. 指定ディレクトリ内の index.js をすべて動的インポート対象としてリスト化
-  //    import.meta.glob はエイリアス(#)を解釈しないため相対パスで指定する
-  const modules = import.meta.glob("./{*/index.js,*/index.ts}");
+  // eager: true を指定してビルド時にモジュールをすべて読み込んでおく
+  const modules = import.meta.glob("./{*/index.js,*/index.ts}", { eager: true });
 
-  console.log("[world] _initObjects: Found modules keys:", Object.keys(modules));
+  console.log(
+    "[world] _initObjects: Found modules keys:",
+    Object.keys(modules),
+  );
 
   const _os = [];
   for (const el of els) {
@@ -104,11 +106,13 @@ async function _initObjects(viewport) {
     const pathJs = `./${type}/index.js`;
     const pathTs = `./${type}/index.ts`;
 
-    const importer = modules[pathJs] || modules[pathTs];
+    // eager の場合は関数ではなくモジュールそのものが格納されている
+    const module = modules[pathJs] || modules[pathTs];
 
-    if (!importer) {
+    //moduleが見つからない場合はエラーを出してスキップ
+    if (!module) {
       console.error(
-        `[world] _initObjects: No importer found for type="${type}". Checked paths: "${pathJs}", "${pathTs}"`,
+        `[world] _initObjects: No module found for type="${type}". Checked paths: "${pathJs}", "${pathTs}"`,
       );
       continue;
     }
@@ -116,16 +120,6 @@ async function _initObjects(viewport) {
     console.log(`[world] >>> Start processing type="${type}"`);
 
     try {
-      // タイムアウト用のPromise（10秒）
-      const timeoutPromise = (ms) =>
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Timeout")), ms),
-        );
-
-      // タイムアウト付きのインポート
-      const module = await Promise.race([importer(), timeoutPromise(10000)]);
-      console.log(`[world] Module loaded for type="${type}"`);
-
       const LoadedOb = module.default;
       if (!LoadedOb || typeof LoadedOb.init !== "function") {
         console.error(
@@ -135,7 +129,13 @@ async function _initObjects(viewport) {
         continue;
       }
 
-      // タイムアウト付きの初期化
+      // タイムアウト用のPromise（10秒）
+      const timeoutPromise = (ms) =>
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Init Timeout")), ms),
+        );
+
+      // 初期化処理の実行（eager なのでインポート待ちは不要）
       const obj = await Promise.race([
         LoadedOb.init({
           el,
