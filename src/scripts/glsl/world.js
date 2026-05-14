@@ -94,9 +94,7 @@ async function _initObjects(viewport) {
 
   // eager: true を指定してビルド時にモジュールをすべて読み込んでおく
   // eager: true を指定してビルド時にモジュールをすべて読み込んでおく（本番環境でのハングアップ防止）
-  const modules = import.meta.glob("./{*/index.js,*/index.ts}", {
-    eager: true,
-  });
+  const modules = import.meta.glob("./{*/index.js,*/index.ts}");
 
   // 各要素の初期化を並列実行
   const prms = els.map(async (el) => {
