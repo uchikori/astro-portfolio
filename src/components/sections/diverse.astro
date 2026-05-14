@@ -1,0 +1,277 @@
+---
+
+---
+
+<hr class="section-hr" />
+<section class="diverse">
+  <div class="diverse__inner">
+    <div class="diverse__left">
+      <div class="diverse__left-inner">
+        <h2 class="diverse__title">
+          <span
+            class="diverse__title-text"
+            data-webgl="distortion-text"
+            data-tex-1="/img/headline/DIVERSE.png"
+            data-scroll-trigger="progress"
+            data-mouse="highlight"
+            data-mouse-scale="3">diverse</span
+          >
+        </h2>
+        <div class="diverse__texts">
+          <p class="diverse__p" data-scroll-trigger="fade">
+            WebGLをわかりやすく解説し、多くのエンジニアに身近に感じてもらう。
+          </p>
+          <p class="diverse__p" data-scroll-trigger="fade">
+            WebGLを一般的な選択肢として普及させ、Web制作業界の表現の幅を広げる。
+          </p>
+        </div>
+        <div class="diverse__more" data-scroll-trigger="fade">
+          <a href="/" class="more-link">
+            <span class="more-link__text">MORE</span>
+            <span class="more-link__circle" data-mouse="stuck"></span>
+            <span class="more-link__arrow">
+              <span class="more-link__arrow-body">
+                <img src="/img/arrow.svg" alt="" />
+              </span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="diverse__right" data-mouse="highlight" data-mouse-scale="3">
+      <div class="hl_particleSlide">
+        <div
+          class="diverse__img"
+          data-webgl="particle-slide"
+          data-tex-1="/img/slider/slider_1.jpg"
+          data-tex-2="/img/slider/slider_2.jpg"
+        >
+        </div>
+      </div>
+      <!-- <div
+        class="diverse__fallback"
+        data-webgl="gray-pic"
+        data-tex-1="/img/slider/slider_1.jpg"
+      >
+      </div> -->
+    </div>
+  </div>
+</section>
+<hr class="section-hr" />
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  /* -------------------------------------------------- */
+  /*  diverse
+/* -------------------------------------------------- */
+
+  @mixin section-title {
+    color: var(--c-sec);
+    @extend .font-36-65;
+    font-weight: 700;
+    margin-bottom: 0.7em;
+    line-height: 0.8;
+    position: relative;
+    text-align: left;
+
+    @include mq("xl") {
+      text-align: center;
+    }
+
+    &-text {
+      display: inline-block;
+    }
+  }
+  .section-hr {
+    font-size: fluid-text(80px, 300px);
+    margin-bottom: 1em;
+    border: 0;
+  }
+
+  .diverse {
+    height: 100svh;
+    &__inner {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      @include mq("xl") {
+        flex-direction: column;
+      }
+    }
+
+    &__right {
+      width: 100%;
+      flex: 1 0 50%;
+
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      :global(.hl_particleSlide) {
+        width: 100%;
+        height: 40svh;
+
+        @include mq("xl") {
+          height: 70svh;
+        }
+      }
+    }
+
+    &__img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    // &__raymarching {
+    //   width: 100%;
+    //   max-width: 400px;
+    //   aspect-ratio: 1;
+    //   margin: 0 auto;
+    //   margin-bottom: 2em;
+    //   @include mq("xl") {
+    //     max-width: unset;
+    //     margin: 0;
+    //   }
+    // }
+
+    &__fallback {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      max-width: 650px;
+    }
+
+    &__left {
+      flex: 1 0 50%;
+
+      display: flex;
+      align-items: center;
+      text-align: left;
+      @extend .font-16-20;
+
+      @include mq("xl") {
+        text-align: center;
+      }
+
+      &-inner {
+        max-width: 575px;
+        margin: 0 auto;
+      }
+    }
+
+    &__title {
+      @include section-title;
+      overflow: hidden;
+
+      &.sm .diverse__title-text {
+        @include mq("xl") {
+          position: absolute;
+          transform: translateX(3000px);
+          display: none;
+        }
+      }
+
+      &.pc .diverse__title-text {
+        position: absolute;
+        transform: translateX(2000px);
+        @include mq("xl") {
+          position: relative;
+          transform: none;
+        }
+      }
+    }
+
+    &__p {
+      &:first-child {
+        margin-bottom: 2em;
+      }
+    }
+
+    &__more {
+      margin-top: 4em;
+      text-align: left;
+
+      @include mq("xl") {
+        text-align: right;
+      }
+    }
+  }
+
+  .more-link {
+    position: relative;
+    font-weight: 700;
+    text-align: left;
+    font-family: $base-font;
+    font-size: to-rem(18px);
+    margin: 1.7em 0;
+    display: inline-block;
+    color: var(--c-main);
+    width: 7.5em;
+    height: 1em;
+
+    &__text {
+      display: inline-block;
+      position: absolute;
+      top: 50%;
+      left: 20%;
+      transform: translate(-50%, -50%);
+      transform-origin: center center;
+      transition: letter-spacing 0.3s ease;
+    }
+
+    &:hover &__text {
+      letter-spacing: 0.3em;
+    }
+
+    &__circle {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      // border: white 1px solid;
+
+      width: 5em;
+      height: 5em;
+
+      transition: opacity 0.1s ease 0.1s;
+    }
+
+    &:hover &__circle {
+      opacity: 0;
+    }
+
+    &__arrow {
+      display: block;
+      overflow: hidden;
+      position: absolute;
+      width: 26px;
+      height: 16px;
+      top: 50%;
+      right: 2.5em;
+      transform: translate(50%, -50%);
+      pointer-events: none;
+
+      &-body {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 76px;
+        height: 16px;
+        transition: transform 0.3s ease;
+      }
+    }
+
+    &:hover &__arrow-body {
+      transform: translateX(50px);
+    }
+  }
+</style>

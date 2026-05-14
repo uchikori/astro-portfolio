@@ -32,11 +32,17 @@
   margin-inline: auto;
 }
 
-//
+// アクセントカラー指定
 .hl_accentColor {
   color: $c-orange;
 }
 
+// 大文字指定
 .hl_uppercase {
   text-transform: uppercase;
+}
+
+// パーティクル
+.hl_particleSlide {
+  position: relative;
 }

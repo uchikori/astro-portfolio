@@ -5,28 +5,28 @@ const { align = "right" } = Astro.props;
 
 <div class:list={["bl_nav", { "is-left": align === "left" }]}>
   <button class="el_navBtn el_navBtn__prev js_navBtn__prev" data-mouse="stuck">
-    <img src="/img/slide-nav.svg" alt="前へ" />
+    <img src="/img/view_more.svg" alt="前へ" />
   </button>
   <button class="el_navBtn el_navBtn__next js_navBtn__next" data-mouse="stuck">
-    <img src="/img/slide-nav.svg" alt="次へ" />
+    <img src="/img/view_more.svg" alt="次へ" />
   </button>
 </div>
 
 <style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
   .bl_nav {
-    font-size: 120px;
-    text-align: right;
-    position: absolute;
-    bottom: 10%;
-    right: 0.3em;
-    height: 1em;
-    width: 100%;
+    font-size: fluid-text(54px, 72px);
+    display: flex;
+    gap: fluid-text(24px, 40px);
     &.is-left {
       text-align: left;
     }
   }
 
   .el_navBtn {
+    width: fluid-text(54px, 72px);
+    aspect-ratio: 1;
     background-color: transparent;
     border: none;
     opacity: 0.7;
