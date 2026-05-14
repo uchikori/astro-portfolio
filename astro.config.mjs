@@ -21,7 +21,7 @@ export default defineConfig({
           return code
             .replace(
               /\\(?:\r\n|\n\r|\n|\r)|\/\*.*?\*\/|\/\/(?:\\(?:\r\n|\n\r|\n|\r)|[^\n\r])*/gs,
-              ""
+              "",
             )
             .split(/\n+/)
             .reduce((result, line) => {
@@ -36,8 +36,8 @@ export default defineConfig({
                 result.push(
                   line.replace(
                     /\s*({|}|=|\*|,|\+|\/|>|<|&|\||\[|\]|\(|\)|-|!|;)\s*/g,
-                    "$1"
-                  )
+                    "$1",
+                  ),
                 );
                 needNewline = true;
               }
