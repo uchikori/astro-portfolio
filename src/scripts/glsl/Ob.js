@@ -5,6 +5,7 @@ import {
   MeshBasicNodeMaterial,
   MeshBasicMaterial,
 } from "three/webgpu";
+
 import loader from "../component/loader";
 import { utils, viewport } from "../helper";
 import gsap from "gsap";
@@ -24,8 +25,6 @@ class Ob {
     return o;
   }
   constructor({ texes, el, type, renderTargetManager, camera }) {
-    console.log(texes, el);
-
     this.DOM = {
       el,
     };

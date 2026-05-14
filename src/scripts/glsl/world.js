@@ -96,8 +96,6 @@ async function _initObjects(viewport) {
   //    import.meta.glob はエイリアス(#)を解釈しないため相対パスで指定する
   const modules = import.meta.glob("./{*/index.js,*/index.ts}");
 
-  console.log(modules);
-
   const prms = [...els].map(async (el) => {
     //WebGLのHTML要素のタイプを取得
     const type = INode.getDS(el, "webgl");
@@ -105,33 +103,64 @@ async function _initObjects(viewport) {
     // glob のキーは相対パス形式 "./type/index.js" になる
     const path = `./${type}/index.js`;
 
-    if (modules[path]) {
-      console.log(`[world] import start: ${type}`);
-      return modules[path]()
-        .then(({ default: Ob }) => {
-          console.log(`[world] import done: ${type}`);
-          return Ob.init({
-            el,
-            type,
-            renderTargetManager: world.renderTargetManager,
-            camera: world.camera,
-          });
-        })
-        .catch((err) => {
-          console.error(
-            `[world] _initObjects: module load REJECTED for type="${type}" path="${path}"`,
-            err,
-          );
-          return null;
+    /**
+     * デバッグ
+     */
+    const importer = modules[path];
+
+    console.log(`[world] A before import call: ${type}`);
+
+    const promise = importer();
+
+    console.log(`[world] B after import call (sync reached): ${type}`);
+
+    return promise
+      .then(({ default: Ob }) => {
+        console.log(
+          `[world] C after promise resolve (Ob is available): ${type}`,
+        );
+        return Ob.init({
+          el,
+          type,
+          renderTargetManager: world.renderTargetManager,
+          camera: world.camera,
         });
-    } else {
-      console.error(
-        `[world] _initObjects: import FAILED for type="${type}" path="${path}"`,
-        "available keys:",
-        Object.keys(modules),
-      );
-      return null;
-    }
+      })
+      .catch((err) => {
+        console.error(
+          `[world] _initObjects: module load REJECTED for type="${type}" path="${path}"`,
+          err,
+        );
+        return null;
+      });
+
+    // if (modules[path]) {
+    //   console.log(`[world] import start: ${type}`);
+    //   return modules[path]()
+    //     .then(({ default: Ob }) => {
+    //       console.log(`[world] import done: ${type}`);
+    //       return Ob.init({
+    //         el,
+    //         type,
+    //         renderTargetManager: world.renderTargetManager,
+    //         camera: world.camera,
+    //       });
+    //     })
+    //     .catch((err) => {
+    //       console.error(
+    //         `[world] _initObjects: module load REJECTED for type="${type}" path="${path}"`,
+    //         err,
+    //       );
+    //       return null;
+    //     });
+    // } else {
+    //   console.error(
+    //     `[world] _initObjects: import FAILED for type="${type}" path="${path}"`,
+    //     "available keys:",
+    //     Object.keys(modules),
+    //   );
+    //   return null;
+    // }
 
     // Obの初期化メソッド
     // return import(`./${type}/index.js`)
