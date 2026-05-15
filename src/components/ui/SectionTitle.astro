@@ -1,0 +1,43 @@
+---
+const {
+  en,
+  ja,
+  class: className = "",
+  enClass = "font-48-80 hl_uppercase",
+  jaClass = "bl_sectiontitle_en font-16-20",
+} = Astro.props;
+
+// 最初の1文字をアクセントカラーにするための分割
+const accent = en.charAt(0);
+const remaining = en.slice(1);
+---
+
+<hgroup class:list={["bl_sectiontitle", className]}>
+  <h2 class:list={[enClass]}>
+    <span class="hl_accentColor">{accent}</span>{remaining}
+  </h2>
+  <span class:list={[jaClass]}>{ja}</span>
+</hgroup>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_sectiontitle {
+    h2 {
+      letter-spacing: 0.15em;
+    }
+    & > span {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      &:before {
+        content: "";
+        display: block;
+        width: fluid-text(40px, 72px);
+        height: 2px;
+        background-color: var(--c-white);
+      }
+    }
+  }
+</style>

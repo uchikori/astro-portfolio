@@ -92,140 +92,46 @@ async function _initObjects(viewport) {
   //WebGLのHTML要素を取得
   const els = INode.qsAll("[data-webgl]");
 
-  // eager: true を指定してビルド時にモジュールをすべて読み込んでおく
-  // eager: true を指定してビルド時にモジュールをすべて読み込んでおく（本番環境でのハングアップ防止）
-  const modules = import.meta.glob("./{*/index.js,*/index.ts}", {
-    eager: true,
-  });
-
-  // 各要素の初期化を並列実行
-  const prms = els.map(async (el) => {
-    const type = INode.getDS(el, "webgl");
-    const module = modules[`./${type}/index.js`];
-
-    try {
-      const LoadedOb = module?.default;
-      if (!LoadedOb) return null;
-
-      return await LoadedOb.init({
-        el,
-        type,
-        renderTargetManager: world.renderTargetManager,
-        camera: world.camera,
-      });
-    } catch (err) {
-      console.error(`[world] Failed to process type="${type}":`, err);
-      return null;
-    }
-  });
-
-  // --- 以下、これまでの試行錯誤の履歴（コメントアウト） ---
+  // // eager: true を指定してビルド時にモジュールをすべて読み込んでおく（本番環境でのハングアップ防止）
   // const modules = import.meta.glob("./{*/index.js,*/index.ts}", {
   //   eager: true,
   // });
 
-  // console.log(
-  //   "[world] _initObjects: Found modules keys:",
-  //   Object.keys(modules),
-  // );
-
-  // const _os = [];
-  // for (const el of els) {
+  // // 各要素の初期化を並列実行
+  // const prms = els.map(async (el) => {
   //   const type = INode.getDS(el, "webgl");
-  //   const pathJs = `./${type}/index.js`;
-  //   const pathTs = `./${type}/index.ts`;
-
-  //   // eager の場合は関数ではなくモジュールそのものが格納されている
-  //   const module = modules[pathJs] || modules[pathTs];
-
-  //   //moduleが見つからない場合はエラーを出してスキップ
-  //   if (!module) {
-  //     console.error(
-  //       `[world] _initObjects: No module found for type="${type}". Checked paths: "${pathJs}", "${pathTs}"`,
-  //     );
-  //     continue;
-  //   }
-
-  //   console.log(`[world] >>> Start processing type="${type}"`);
+  //   const module = modules[`./${type}/index.js`];
 
   //   try {
-  //     const LoadedOb = module.default;
-  //     if (!LoadedOb || typeof LoadedOb.init !== "function") {
-  //       console.error(
-  //         `[world] Module for type="${type}" does not export a valid Ob class with init method.`,
-  //         module,
-  //       );
-  //       continue;
-  //     }
+  //     const LoadedOb = module?.default;
+  //     if (!LoadedOb) return null;
 
-  //     // タイムアウト用のPromise（10秒）
-  //     const timeoutPromise = (ms) =>
-  //       new Promise((_, reject) =>
-  //         setTimeout(() => reject(new Error("Init Timeout")), ms),
-  //       );
-
-  //     // 初期化処理の実行（eager なのでインポート待ちは不要）
-  //     const obj = await Promise.race([
-  //       LoadedOb.init({
-  //         el,
-  //         type,
-  //         renderTargetManager: world.renderTargetManager,
-  //         camera: world.camera,
-  //       }),
-  //       timeoutPromise(10000),
-  //     ]);
-
-  //     console.log(`[world] <<< Completed type="${type}"`);
-  //     if (obj && obj.mesh) {
-  //       _os.push(obj);
-  //     }
-  //   } catch (err) {
-  //     console.error(
-  //       `[world] Failed to process type="${type}":`,
-  //       err.message || err,
-  //     );
-  //   }
-
-  // if (modules[path]) {
-  //   console.log(`[world] import start: ${type}`);
-  //   return modules[path]()
-  //     .then(({ default: Ob }) => {
-  //       console.log(`[world] import done: ${type}`);
-  //       return Ob.init({
-  //         el,
-  //         type,
-  //         renderTargetManager: world.renderTargetManager,
-  //         camera: world.camera,
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       console.error(
-  //         `[world] _initObjects: module load REJECTED for type="${type}" path="${path}"`,
-  //         err,
-  //       );
-  //       return null;
-  //     });
-  // } else {
-  //   console.error(
-  //     `[world] _initObjects: import FAILED for type="${type}" path="${path}"`,
-  //     "available keys:",
-  //     Object.keys(modules),
-  //   );
-  //   return null;
-  // }
-
-  // Obの初期化メソッド
-  // const prms = [...els].map((el) => {
-  //   const type = INode.getDS(el, "webgl");
-  //   return import(`./${type}/index.js`).then(({ default: Ob }) => {
-  //     return Ob.init({
+  //     return await LoadedOb.init({
   //       el,
   //       type,
   //       renderTargetManager: world.renderTargetManager,
   //       camera: world.camera,
   //     });
-  //   });
+  //   } catch (err) {
+  //     console.error(`[world] Failed to process type="${type}":`, err);
+  //     return null;
+  //   }
   // });
+
+  // --- 以下、これまでの試行錯誤の履歴（コメントアウト） --
+
+  // Obの初期化メソッド
+  const prms = [...els].map((el) => {
+    const type = INode.getDS(el, "webgl");
+    return import(`./${type}/index.js`).then(({ default: Ob }) => {
+      return Ob.init({
+        el,
+        type,
+        renderTargetManager: world.renderTargetManager,
+        camera: world.camera,
+      });
+    });
+  });
 
   const _os = await Promise.all(prms);
 

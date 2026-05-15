@@ -1,14 +1,28 @@
 ---
+import { Image } from "astro:assets";
+
 //alignの初期値を'right'に設定
 const { align = "right" } = Astro.props;
 ---
 
 <div class:list={["bl_nav", { "is-left": align === "left" }]}>
   <button class="el_navBtn el_navBtn__prev js_navBtn__prev" data-mouse="stuck">
-    <img src="/img/view_more.svg" alt="前へ" />
+    <Image
+      width={72}
+      height={72}
+      src="/img/view_more.svg"
+      loading="lazy"
+      alt="前へ"
+    />
   </button>
   <button class="el_navBtn el_navBtn__next js_navBtn__next" data-mouse="stuck">
-    <img src="/img/view_more.svg" alt="次へ" />
+    <Image
+      width={72}
+      height={72}
+      src="/img/view_more.svg"
+      loading="lazy"
+      alt="次へ"
+    />
   </button>
 </div>
 

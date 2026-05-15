@@ -1,0 +1,66 @@
+---
+const { href = "/", text = "View More", class: className = "" } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={["el_link", className]}
+  data-mouse="highlight"
+  data-mouse-scale="2"
+>
+  <span class="el_link_text">{text}</span>
+  <svg
+    width="72"
+    height="72"
+    viewBox="0 0 72 72"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    class="el_link_icon"
+  >
+    <rect x="0.5" y="0.5" width="71" height="71" rx="35.5" stroke="white"
+    ></rect>
+    <g clip-path="url(#clip0_826_1656)">
+      <path
+        d="M39.0149 42L39 41.9809L43.641 36.0003L39 30.0191L39.0149 30H41.3419L46 35.9997L41.3419 41.9989L39.0149 42Z"
+        fill="white"></path>
+      <path d="M26 35H45V37H26V35Z" fill="white"></path>
+    </g>
+    <defs>
+      <clipPath id="clip0_826_1656">
+        <rect
+          width="12"
+          height="20"
+          fill="white"
+          transform="matrix(0 1 -1 0 46 30)"></rect>
+      </clipPath>
+    </defs>
+  </svg>
+</a>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .el_link {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    color: var(--c-white);
+    transition: all 0.3s ease;
+    position: relative;
+    &_text {
+      font-size: to-rem(32px);
+    }
+    @media (hover: hover) {
+      &:hover {
+        color: var(--c-orange);
+        letter-spacing: 0.3em;
+        transition: all 0.3s ease;
+        g {
+          transition: transform 0.5s ease;
+          transform: translateX(4px);
+        }
+      }
+    }
+  }
+</style>

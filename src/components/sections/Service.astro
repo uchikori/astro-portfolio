@@ -1,0 +1,91 @@
+---
+import Reflect from "../../components/webgl/Reflect.astro";
+import SectionTitle from "../../components/ui/SectionTitle.astro";
+import ArrowLink from "../../components/ui/ArrowLink.astro";
+---
+
+<section class="bl_service">
+  <div class="bl_service_inner hl_contentWidth">
+    <div class="bl_media">
+      <div class="bl_media_contents">
+        <SectionTitle en="Service" ja="事業内容" className="bl_media_title" />
+        <p class="bl_media_text font-16-20">
+          UCHIWA Creative Studioでは、単にWebサイトを「作る」だけでなく、<br />
+          お客様のサービスの価値が正しく伝わることを目的としたWebデザインを行います。<br
+          />
+          ヒアリングから構成設計・デザイン・実装まで一貫して対応し、必要に応じてアニメーションやインタラクティブ表現（WebGL・3DCG）を取り入れ、印象に残る体験を設計します。<br
+          />
+          企業サイト・LP・バナー制作などの外注デザイン業務にも対応しています。
+        </p>
+        <ArrowLink href="/service" class="bl_media_link" />
+      </div>
+      <div class="bl_media_media">
+        <div
+          class="hl_webglObject"
+          data-webgl="reflect"
+          data-tex-1="/img/reflect/reflect_single_01.webp"
+        >
+        </div>
+      </div>
+    </div>
+    <Reflect />
+  </div>
+</section>
+
+<style lang="scss">
+  @use "../../styles/global" as *;
+  @use "../../styles/utility" as *;
+
+  .bl_service {
+    padding: fluid-text(120px, 160px) 0;
+    &_inner {
+      display: flex;
+      flex-direction: column;
+      gap: fluid-text(100px, 260px);
+    }
+  }
+
+  .bl_media {
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: flex-start;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    // grid-template-rows: 1fr;
+    gap: fluid-text(40px, 80px, 960px, 1920px);
+
+    @include mq("lg") {
+      display: flex;
+      grid-template-columns: 1fr;
+      flex-direction: column-reverse;
+
+      gap: 60px;
+    }
+
+    &_contents {
+      grid-column: 1/2;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: fluid-text(48px, 64px, 375px, 1920px);
+      @include mq(lg) {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+    &_text {
+      line-height: 2;
+    }
+    &_media {
+      grid-column: 2/-1;
+      aspect-ratio: 2/1;
+
+      margin-bottom: 25%;
+
+      @include mq(lg) {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+  }
+</style>

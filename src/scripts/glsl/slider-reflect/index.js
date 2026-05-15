@@ -22,7 +22,6 @@ export default class extends Ob {
     const planeGeo = new PlaneGeometry(
       this.rect.width * this.texes.size,
       this.rect.height,
-      // 円柱に添わせるために分割数を増やす
       1,
       1,
     );
@@ -54,7 +53,7 @@ export default class extends Ob {
       uActiveSlideIdx: this.uniforms.uActiveSlideIdx,
     };
 
-    //reflectメッシュのfragmentシェーダーをセット
+    //reflectメッシュ専用のfragmentシェーダーをセット
     reflect.material.colorNode = this.setupFragment({
       vUv: this.vUv,
       uniforms: reflectUniforms,

@@ -2,9 +2,11 @@
 import Fv from "./Fv.astro";
 import FlickerText from "../ui/FlickerText.astro";
 import Sns from "../common/Sns.astro";
+import SectionTitle from "../ui/SectionTitle.astro";
+import ArrowLink from "../ui/ArrowLink.astro";
 ---
 
-<div class="bl_hero js_hero">
+<section class="bl_hero js_hero">
   <div class="bl_hero_kv">
     <video
       id="js-kv-video"
@@ -32,7 +34,7 @@ import Sns from "../common/Sns.astro";
           <br />DESIGN BECOMES<br />
           <FlickerText text="EMOTION." class="hl_accentColor" />
         </h2>
-        <Sns alignItems="flex-start" className="hl_smHidden" />
+        <Sns alignItems="flex-start" className="hl_smHidden" loading="eager" />
         <div
           class="bl_hero_object"
           data-webgl="normal"
@@ -54,6 +56,7 @@ import Sns from "../common/Sns.astro";
         <div class="bl_hero_sub_grid">
           <div class="bl_hero_sub_gridItem grid_1">
             <div
+              class="hl_webglObject"
               data-webgl="template"
               data-tex-1="/img/grid/grid_1.webp"
               data-mesh-position-z="1"
@@ -61,60 +64,31 @@ import Sns from "../common/Sns.astro";
             </div>
           </div>
           <div class="bl_hero_sub_gridItem grid_2 hl_smHidden">
-            <div data-webgl="template" data-tex-1="/img/grid/grid_2.webp"></div>
+            <div
+              class="hl_webglObject"
+              data-webgl="template"
+              data-tex-1="/img/grid/grid_2.webp"
+            >
+            </div>
           </div>
           <div class="bl_hero_sub_gridItem bl_hero_sub_content grid_3">
-            <hgroup class="bl_hero_sub_title bl_sectiontitle">
-              <h2 class="font-48-80 hl_uppercase">
-                <span class="hl_accentColor">a</span>bout
-              </h2>
-              <span class="bl_sectiontitle_en font-16-20">UCHIWAについて</span>
-            </hgroup>
+            <SectionTitle
+              en="about"
+              ja="UCHIWAについて"
+              class="bl_hero_sub_title"
+            />
             <p class="bl_hero_sub_text font-16-20">
               北海道札幌市の個人事業のWebデザイナー。<br />
               「UCHIWA Creative Studio」という屋号で道内・道外問わず、<br />
               全国のお客様のWebサイト作りに携わらせて頂いております。
             </p>
-            <a href="/" class="bl_hero_sub_link el_link" data-mouse="stuck">
-              <span class="el_link_text">View More</span>
-              <svg
-                width="72"
-                height="72"
-                viewBox="0 0 72 72"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                class="el_link_icon"
-              >
-                <rect
-                  x="0.5"
-                  y="0.5"
-                  width="71"
-                  height="71"
-                  rx="35.5"
-                  stroke="white"></rect>
-                <g clip-path="url(#clip0_826_1656)">
-                  <path
-                    d="M39.0149 42L39 41.9809L43.641 36.0003L39 30.0191L39.0149 30H41.3419L46 35.9997L41.3419 41.9989L39.0149 42Z"
-                    fill="white"></path>
-                  <path d="M26 35H45V37H26V35Z" fill="white"></path>
-                </g>
-                <defs>
-                  <clipPath id="clip0_826_1656">
-                    <rect
-                      width="12"
-                      height="20"
-                      fill="white"
-                      transform="matrix(0 1 -1 0 46 30)"></rect>
-                  </clipPath>
-                </defs>
-              </svg>
-            </a>
+            <ArrowLink href="/" class="bl_hero_sub_link" />
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <script>
   //
@@ -288,10 +262,6 @@ import Sns from "../common/Sns.astro";
       &_gridItem {
         position: relative;
         object-fit: cover;
-        div {
-          width: 100%;
-          height: 100%;
-        }
         img {
           width: 100%;
         }
@@ -304,46 +274,6 @@ import Sns from "../common/Sns.astro";
       }
       &_text {
         line-height: 2;
-      }
-    }
-  }
-
-  .bl_sectiontitle {
-    h2 {
-      letter-spacing: 0.15em;
-    }
-    & > span {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      &:before {
-        content: "";
-        display: block;
-        width: fluid-text(40px, 72px);
-        height: 2px;
-        background-color: var(--c-white);
-      }
-    }
-  }
-
-  .el_link {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    color: var(--c-white);
-    transition: all 0.3s ease;
-    span {
-      font-size: to-rem(32px);
-    }
-    @media (hover: hover) {
-      &:hover {
-        color: var(--c-orange);
-        letter-spacing: 0.3em;
-        transition: all 0.3s ease;
-        g {
-          transition: transform 0.5s ease;
-          transform: translateX(4px);
-        }
       }
     }
   }
