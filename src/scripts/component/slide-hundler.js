@@ -74,7 +74,6 @@ function mountReflectBtnHandler(
   prevEl.addEventListener("click", () => {
     let idx = slider.activeSlideIdx - 1;
     idx = (slideList.length + idx) % slideList.length;
-    console.log(idx);
 
     goTo(idx);
   });
@@ -82,7 +81,6 @@ function mountReflectBtnHandler(
   nextEl.addEventListener("click", () => {
     let idx = slider.activeSlideIdx + 1;
     idx = idx % slideList.length;
-    console.log(idx);
 
     goTo(idx);
   });
