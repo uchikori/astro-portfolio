@@ -30,11 +30,22 @@ import {
   select,
 } from "three/tsl";
 import { Quaternion, Vector3, Vector4 } from "three/webgpu";
+import { detect as detectBrowser } from "detect-browser";
 
+const browser = detectBrowser();
+
+/**
+ * タッチデバイスか判定する
+ * @returns {boolean}
+ */
 const isTouchDevices = Boolean(
   "ontouchstart" in window ||
     (window.DocumentTouch && document instanceof DocumentTouch),
 );
+
+function isSafari() {
+  return browser.name === "safari";
+}
 
 /**
  * 線形補間
@@ -747,5 +758,6 @@ const utils = {
   parabora,
   pointTo,
   isTouchDevices,
+  isSafari,
 };
 export { utils };

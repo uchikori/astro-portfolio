@@ -8,6 +8,7 @@ import Header from "../components/common/Header.astro";
 import Menu from "../components/common/Menu.astro";
 import Nav from "../components/common/Nav.astro";
 import Footer from "../components/common/Footer.astro";
+import FresnelBG from "../components/webgl/FresnelBG.astro";
 ---
 
 <html lang="ja">
@@ -42,6 +43,8 @@ import Footer from "../components/common/Footer.astro";
     <Loader />
     <div id="globalContainer">
       <Header />
+
+      <!-- <FresnelBG /> -->
       <!-- <Aside /> -->
       <div id="smooth-wrapper">
         <div id="smooth-content">
@@ -49,7 +52,10 @@ import Footer from "../components/common/Footer.astro";
             <slot />
           </div>
           <Footer />
-          <canvas id="canvas"></canvas>
+          <canvas
+            id="canvas"
+            data-scroll-trigger="pin"
+            data-scroll-trigger-target="body"></canvas>
         </div>
       </div>
     </div>
@@ -62,7 +68,7 @@ import Footer from "../components/common/Footer.astro";
     html {
       font-size: math.div($root-font-size, 16px) * 100%;
       font-feature-settings: "palt";
-      background-color: var(--c-dark);
+      background-color: var(--c-bg);
     }
 
     body {

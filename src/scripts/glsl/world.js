@@ -343,8 +343,18 @@ function _attachOrbitControl() {
     ({ OrbitControls }) => {
       //OrbitControlのインスタンス化
       orbitControl = new OrbitControls(world.camera, world.renderer.domElement);
-      // canvasのz-indexを1に設定(-1のままだとマウスでドラッグできないため)
-      world.renderer.domElement.style.zIndex = 1;
+      // canvasのz-indexを100に設定(-1のままだとマウスでドラッグできないため)
+      const el = world.renderer.domElement;
+      el.style.zIndex = 100;
+
+      //もし親要素がpin-spacerクラスを持っていたら
+      if (
+        el.parentElement &&
+        el.parentElement.classList.contains("pin-spacer")
+      ) {
+        //親要素のz-indexを100に設定
+        el.parentElement.style.zIndex = 100;
+      }
     },
   );
 }
@@ -352,7 +362,13 @@ function _attachOrbitControl() {
 function _detachOrbitControl() {
   orbitControl?.dispose();
   // canvasのz-indexを-1に設定(OrbitControlを無効化するため)
-  world.renderer.domElement.style.zIndex = -1;
+  const el = world.renderer.domElement;
+  el.style.zIndex = -1;
+  //もし親要素がpin-spacerクラスを持っていたら
+  if (el.parentElement && el.parentElement.classList.contains("pin-spacer")) {
+    //親要素のz-indexを-1に設定
+    el.parentElement.style.zIndex = -1;
+  }
 }
 
 /**

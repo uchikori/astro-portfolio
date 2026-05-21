@@ -7,22 +7,60 @@ const { align = "right" } = Astro.props;
 
 <div class:list={["bl_nav", { "is-left": align === "left" }]}>
   <button class="el_navBtn el_navBtn__prev js_navBtn__prev" data-mouse="stuck">
-    <Image
-      width={72}
-      height={72}
-      src="/img/view_more.svg"
-      loading="lazy"
-      alt="前へ"
-    />
+    <svg
+      width="72"
+      height="72"
+      viewBox="0 0 72 72"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="el_link_icon"
+    >
+      <rect x="0.5" y="0.5" width="71" height="71" rx="35.5" stroke="var(--c-text)"
+      ></rect>
+      <g clip-path="url(#clip0_826_1656)">
+        <path
+          d="M39.0149 42L39 41.9809L43.641 36.0003L39 30.0191L39.0149 30H41.3419L46 35.9997L41.3419 41.9989L39.0149 42Z"
+          fill="var(--c-text)"></path>
+        <path d="M26 35H45V37H26V35Z" fill="var(--c-text)"></path>
+      </g>
+      <defs>
+        <clipPath id="clip0_826_1656">
+          <rect
+            width="12"
+            height="20"
+            fill="var(--c-text)"
+            transform="matrix(0 1 -1 0 46 30)"></rect>
+        </clipPath>
+      </defs>
+    </svg>
   </button>
   <button class="el_navBtn el_navBtn__next js_navBtn__next" data-mouse="stuck">
-    <Image
-      width={72}
-      height={72}
-      src="/img/view_more.svg"
-      loading="lazy"
-      alt="次へ"
-    />
+    <svg
+      width="72"
+      height="72"
+      viewBox="0 0 72 72"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="el_link_icon"
+    >
+      <rect x="0.5" y="0.5" width="71" height="71" rx="35.5" stroke="var(--c-text)"
+      ></rect>
+      <g clip-path="url(#clip0_826_1656)">
+        <path
+          d="M39.0149 42L39 41.9809L43.641 36.0003L39 30.0191L39.0149 30H41.3419L46 35.9997L41.3419 41.9989L39.0149 42Z"
+          fill="var(--c-text)"></path>
+        <path d="M26 35H45V37H26V35Z" fill="var(--c-text)"></path>
+      </g>
+      <defs>
+        <clipPath id="clip0_826_1656">
+          <rect
+            width="12"
+            height="20"
+            fill="var(--c-text)"
+            transform="matrix(0 1 -1 0 46 30)"></rect>
+        </clipPath>
+      </defs>
+    </svg>
   </button>
 </div>
 
@@ -32,7 +70,7 @@ const { align = "right" } = Astro.props;
   .bl_nav {
     font-size: fluid-text(54px, 72px);
     display: flex;
-    gap: fluid-text(24px, 40px);
+    gap: fluid-px(24px, 40px);
     &.is-left {
       text-align: left;
     }
@@ -47,12 +85,17 @@ const { align = "right" } = Astro.props;
     cursor: pointer;
     padding: 0;
 
+    svg {
+      width: fluid-text(54px, 72px);
+      height: auto;
+    }
+
     &:active {
       transform: scale(0.85);
     }
 
     &__prev {
-      img {
+      svg {
         transform: rotate(180deg);
       }
     }

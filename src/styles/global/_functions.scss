@@ -47,3 +47,24 @@
     #{$max-rems}
   );
 }
+
+// min-pxからmax-pxまで、min-bpからmax-bpまでの範囲で可変する関数 (px固定値版)
+@function fluid-px(
+  $min-px,
+  $max-px,
+  $min-bp: $default-min-bp,
+  $max-bp: $default-max-bp
+) {
+  // 傾きを計算
+  $slope: math.div($max-px - $min-px, $max-bp - $min-bp);
+  // vwの係数を計算
+  $slope-vw: $slope * 100;
+  // 切片を計算
+  $intercept-px: $min-px - $slope * $min-bp;
+
+  @return clamp(
+    #{$min-px},
+    #{$slope-vw}vw + #{$intercept-px},
+    #{$max-px}
+  );
+}

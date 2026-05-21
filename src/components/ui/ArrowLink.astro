@@ -5,8 +5,6 @@ const { href = "/", text = "View More", class: className = "" } = Astro.props;
 <a
   href={href}
   class:list={["el_link", className]}
-  data-mouse="highlight"
-  data-mouse-scale="2"
 >
   <span class="el_link_text">{text}</span>
   <svg
@@ -16,21 +14,22 @@ const { href = "/", text = "View More", class: className = "" } = Astro.props;
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     class="el_link_icon"
+    data-mouse="stuck"
   >
-    <rect x="0.5" y="0.5" width="71" height="71" rx="35.5" stroke="white"
+    <rect x="0.5" y="0.5" width="71" height="71" rx="35.5" stroke="var(--c-text)"
     ></rect>
     <g clip-path="url(#clip0_826_1656)">
       <path
         d="M39.0149 42L39 41.9809L43.641 36.0003L39 30.0191L39.0149 30H41.3419L46 35.9997L41.3419 41.9989L39.0149 42Z"
-        fill="white"></path>
-      <path d="M26 35H45V37H26V35Z" fill="white"></path>
+        fill="var(--c-text)"></path>
+      <path d="M26 35H45V37H26V35Z" fill="var(--c-text)"></path>
     </g>
     <defs>
       <clipPath id="clip0_826_1656">
         <rect
           width="12"
           height="20"
-          fill="white"
+          fill="var(--c-text)"
           transform="matrix(0 1 -1 0 46 30)"></rect>
       </clipPath>
     </defs>
@@ -45,16 +44,21 @@ const { href = "/", text = "View More", class: className = "" } = Astro.props;
     display: flex;
     align-items: center;
     gap: 40px;
-    color: var(--c-white);
+    color: var(--c-text);
     transition: all 0.3s ease;
     position: relative;
     &_text {
       font-size: to-rem(32px);
     }
+
+    svg {
+      width: fluid-text(54px, 72px);
+      height: auto;
+    }
+
     @media (hover: hover) {
       &:hover {
         color: var(--c-orange);
-        letter-spacing: 0.3em;
         transition: all 0.3s ease;
         g {
           transition: transform 0.5s ease;

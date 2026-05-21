@@ -37,3 +37,13 @@ img {
   // background: green;
   opacity: 0;
 }
+
+[data-scroll-trigger="fade"] {
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0, 0, 0.2, 1);
+  will-change: opacity;
+
+  &.inview {
+    opacity: 1;
+  }
+}

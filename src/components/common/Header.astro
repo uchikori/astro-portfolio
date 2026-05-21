@@ -3,9 +3,9 @@ import Hamburger from "./Hamburger.astro";
 import Menu from "./Menu.astro";
 ---
 
-<header class="ly_header bl_header">
+<header class="ly_header bl_header" data-scroll-trigger="header">
   <div class="bl_header_inner">
-    <h1 class="bl_sitetitle">
+    <h1 class="bl_header_sitetitle">
       <span class="hl_hidden">UCHIWA Creative Studio</span>
       <a href="/" class="bl_header_logo el_logo" aria-label="Top-page">
         <svg
@@ -14,17 +14,6 @@ import Menu from "./Menu.astro";
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1506.55 343"
         >
-          <defs>
-            <style>
-              .cls-1 {
-                fill: #fff;
-              }
-
-              .cls-2 {
-                fill: #ed9723;
-              }
-            </style>
-          </defs>
           <g id="_レイヤー_1-2" data-name="レイヤー_1">
             <g>
               <path
@@ -181,7 +170,13 @@ import Menu from "./Menu.astro";
   @use "../../styles/global" as *;
   @use "../../styles/utility" as *;
   @use "sass:math";
+  .cls-1 {
+    fill: #fff;
+  }
 
+  .cls-2 {
+    fill: #ed9723;
+  }
   .ly_header {
     position: fixed;
     top: 0;
@@ -194,20 +189,39 @@ import Menu from "./Menu.astro";
     &_inner {
       width: calc(358 / 390) * 100%;
       margin-inline: auto;
-      max-width: to-rem(1840px);
+      max-width: 1840px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: fluid-text(10px, 40px) 0;
+      padding: fluid-px(10px, 40px) 0;
+    }
+    &_sitetitle {
+      font-size: 1rem;
+      line-height: 1;
     }
     &_logo {
-      width: fluid-text(160px, 300px);
+      width: fluid-px(160px, 300px, 375px, 1920px);
       display: inline-block;
+      transform-origin: left;
+      transition: transform 0.2s ease-in-out;
+
+      .inview &{
+        transform: scale(0.95);
+
+        transition: transform 0.2s ease-in-out;
+      }
     }
     &_nav {
       background: var(--c-white);
       padding: to-rem(16px) to-rem(40px);
       border-radius: 100vh;
+      transform-origin: right;
+      transition: transform 0.2s ease-in-out;
+
+      .inview &{
+        transform: scale(0.95);
+        transition: transform 0.2s ease-in-out;
+      }
     }
   }
 

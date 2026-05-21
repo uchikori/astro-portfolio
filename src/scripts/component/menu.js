@@ -38,12 +38,18 @@ function _bindEvents() {
 
 function _toggleMeshVisibility(_isOpen) {
   //メッシュの取得
-  const fvText = world.getObjByEl(".bl_fv_shader");
+  const webGlEls = INode.qsAll("[data-webgl]");
 
-  if (!fvText) return;
+  // eachで回してメッシュの表示/非表示を切り替える
+  webGlEls.forEach((el) => {
+    //DOM要素からオブジェクトを取得
+    const webGlObj = world.getObjByEl(el);
 
-  //メッシュの表示/非表示を切り替える
-  fvText.mesh.visible = _isOpen;
+    // webGlObjが存在しなければreturn
+    if (!webGlObj) return;
+    // メッシュの表示/非表示を切り替える
+    webGlObj.mesh.visible = _isOpen;
+  });
 }
 
 function _createClickTl() {

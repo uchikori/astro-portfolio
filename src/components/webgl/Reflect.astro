@@ -102,13 +102,14 @@ import PrevNextBtn from "../ui/prevNextBtn.astro";
     &_holder {
       position: relative;
       margin-inline: auto;
-      font-size: 22px;
+      // font-size: 22px;
+      max-width: 100%;
       width: 24em;
+      // width: 30%;
       aspect-ratio: 16/9;
       text-align: center;
-      margin-top: 3em;
       @include mq(lg) {
-        width: 12.5em;
+        // width: 12.5em;
       }
     }
     &_slider {
@@ -132,7 +133,7 @@ import PrevNextBtn from "../ui/prevNextBtn.astro";
     &_content {
       flex: 1;
       max-width: to-rem(600px);
-      color: white;
+      color: var(--c-text);
       text-align: left;
 
       @include mq(lg) {

@@ -1,5 +1,4 @@
 ---
-import Fv from "./Fv.astro";
 import FlickerText from "../ui/FlickerText.astro";
 import Sns from "../common/Sns.astro";
 import SectionTitle from "../ui/SectionTitle.astro";
@@ -15,9 +14,11 @@ import ArrowLink from "../ui/ArrowLink.astro";
       muted
       loop
       playsinline
+      data-scroll-trigger="pin,blur,playHTMLVideo"
+      data-pin-trigger=".js_hero"
     >
       <source
-        media="(max-width: 959px)"
+        media="(max-width: 59.9375em)"
         src="/movie/kv_mobile_converted.mp4"
         type="video/mp4"
       />
@@ -28,12 +29,12 @@ import ArrowLink from "../ui/ArrowLink.astro";
   <div class="bl_hero_cover">
     <div class="bl_hero_inner hl_contentWidth">
       <div class="bl_hero_content">
-        <h2 class="bl_hero_title">
+        <p class="bl_hero_title">
           PASSION BECOMES<br />
           <FlickerText text="DESIGN." class="hl_accentColor" />
           <br />DESIGN BECOMES<br />
           <FlickerText text="EMOTION." class="hl_accentColor" />
-        </h2>
+        </p>
         <Sns alignItems="flex-start" className="hl_smHidden" loading="eager" />
         <div
           class="bl_hero_object"
@@ -77,7 +78,7 @@ import ArrowLink from "../ui/ArrowLink.astro";
               ja="UCHIWAについて"
               class="bl_hero_sub_title"
             />
-            <p class="bl_hero_sub_text font-16-20">
+            <p class="bl_hero_sub_text font-16-20" data-scroll-trigger="fade">
               北海道札幌市の個人事業のWebデザイナー。<br />
               「UCHIWA Creative Studio」という屋号で道内・道外問わず、<br />
               全国のお客様のWebサイト作りに携わらせて頂いております。
@@ -93,7 +94,7 @@ import ArrowLink from "../ui/ArrowLink.astro";
 <script>
   //
   const video = document.getElementById("js-kv-video");
-  const mq = window.matchMedia("(max-width: 959px)");
+  const mq = window.matchMedia("(max-width: 59.9375em)");
 
   function updateVideoSrc(e) {
     const newSrc = e.matches
@@ -126,6 +127,7 @@ import ArrowLink from "../ui/ArrowLink.astro";
       left: 0;
       width: 100%;
       height: 100svh;
+      // height: auto;
     }
 
     @keyframes floating {
@@ -146,7 +148,7 @@ import ArrowLink from "../ui/ArrowLink.astro";
     &_content {
       width: 100%;
       height: 100svh;
-      padding: fluid-text(100px, 140px) 0;
+      padding: fluid-px(100px, 140px) 0;
       color: #fff;
       display: grid;
       grid-template-columns: repeat(12, 1fr);
@@ -154,16 +156,17 @@ import ArrowLink from "../ui/ArrowLink.astro";
       gap: 0 40px;
       position: relative;
 
-      @include mq(lg) {
+      @include mq("lg") {
         display: flex;
         flex-direction: column;
+        height: auto;
       }
     }
     &_title {
       grid-column: 1 / 7; /* 1列目から5列目まで */
       grid-row: 3 / 7; /* 2行目から9行目まで */
       font-size: fluid-text(30px, 56px, 375px, 1920px);
-      white-space: nowrap;
+      // white-space: nowrap;
 
       @include mq(lg) {
         order: 2;

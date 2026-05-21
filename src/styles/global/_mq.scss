@@ -3,7 +3,8 @@
  */
 @use "functions" as *;
 @use "sass:map";
-// @use "sass:math"; // 不要のため削除してOKです！
+
+// max-width用のブレイクポイント (〜以下に適用)
 $breakpoints: (
   // 479px以下に適用
   "sm": "screen and (max-width: #{to-em(479px, 16px)})",
@@ -15,8 +16,28 @@ $breakpoints: (
   "xl": "screen and (max-width: #{to-em(1279px, 16px)})"
 ) !default;
 
+// min-width用のブレイクポイント (〜以上に適用)
+$breakpoints-up: (
+  // 480px以上に適用
+  "sm": "screen and (min-width: #{to-em(480px, 16px)})",
+  // 600px以上に適用
+  "md": "screen and (min-width: #{to-em(600px, 16px)})",
+  // 960px以上に適用
+  "lg": "screen and (min-width: #{to-em(960px, 16px)})",
+  // 1280px以上に適用
+  "xl": "screen and (min-width: #{to-em(1280px, 16px)})"
+) !default;
+
+// max-width用 (デフォルトは md = 599px以下)
 @mixin mq($breakpoint: md) {
   @media #{map.get($breakpoints, $breakpoint)} {
+    @content;
+  }
+}
+
+// min-width用 (デフォルトは md = 600px以上)
+@mixin mq-up($breakpoint: md) {
+  @media #{map.get($breakpoints-up, $breakpoint)} {
     @content;
   }
 }

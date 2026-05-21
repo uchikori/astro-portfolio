@@ -12,7 +12,7 @@ import {
 import { initRipplePass } from "./glsl/ripple";
 import { initMouseParticles } from "./glsl/mouse-particles";
 import menu from "./component/menu";
-import "./component/scroll-animation";
+import { registScrollAnimations } from "./component/scroll-animation";
 
 window.debug = enableDebugMode(0);
 
@@ -99,6 +99,8 @@ export async function init() {
     mouse.render();
     world.raycast();
   });
+
+  registScrollAnimations();
 
   //リプルパスを初期化(ポストプロセスエフェクト)
   // await initRipplePass(world, mouse);

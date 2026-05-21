@@ -6,7 +6,7 @@
 
 //PC画面で非表示
 .hl_smVisible {
-  @media screen and (min-width: to-em(1280px, 16px)) {
+  @include mq-up("lg") {
     display: none !important;
   }
 }
