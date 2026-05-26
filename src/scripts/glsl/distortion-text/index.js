@@ -10,10 +10,19 @@ export default class extends Ob {
     //
     uniforms.uSpeed = uniform(1.0);
     uniforms.uParam = uniform(vec4(1, 1, 1, 1));
-    uniforms.uReversal = uniform(0);
+    uniforms.uReversal = uniform(1);
     uniforms.uProgress = uniform(0);
     return uniforms;
   }
+
+  setupTexes(uniforms) {
+    this.texes.forEach((tex, key) => {
+      uniforms.tDiffuse = tex;
+    });
+
+    return uniforms;
+  }
+
   setupVertex(options) {
     return Vertex(options);
   }

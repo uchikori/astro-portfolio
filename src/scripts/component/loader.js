@@ -23,10 +23,15 @@ const loader = {
   getModelByElement,
   addProgressAction,
   letsBegin,
+  addLoadingAnimation,
+  isLoaded: false, // 読み込み完了フラグ
 };
 
 const DOM = {};
 
+/**
+ * 初期化
+ */
 function init() {
   DOM.globalContainer = INode.getElement("#globalContainer");
   DOM.loader = INode.getElement(".js_loader");
@@ -37,6 +42,9 @@ function init() {
   DOM.statusLabel = INode.getElement(".js_statusLabel");
 }
 
+/**
+ * 全てのアセットを読み込む
+ */
 async function loadAllAssets() {
   const els = INode.qsAll("[data-webgl]");
 
@@ -105,6 +113,11 @@ let total = 0;
 let progress = 0;
 let _progressAction = null;
 
+/**
+ * 画像を読み込む
+ * @param {string} url - 画像のURL
+ * @returns {Promise<Texture>} - 画像のテクスチャ
+ */
 async function loadImg(url) {
   // 読み込み対象の画像の総数を計算
   incrementTotal();
@@ -119,6 +132,12 @@ async function loadImg(url) {
 
   return tex;
 }
+
+/**
+ * 動画を読み込む
+ * @param {string} url - 動画のURL
+ * @returns {Promise<VideoTexture>} - 動画のテクスチャ
+ */
 async function loadVideo(url) {
   const video = document.createElement("video");
   //拡張子を取得
@@ -173,10 +192,16 @@ async function loadVideo(url) {
   });
 }
 
+/**
+ * 読み込み完了枚数を加算
+ */
 function incrementTotal() {
   total++;
 }
 
+/**
+ * 読み込み完了枚数を計算
+ */
 function incrementProgress() {
   progress++;
 
@@ -187,10 +212,19 @@ function incrementProgress() {
   // progressAction(progress, total);
 }
 
+/**
+ * プログレスバーの処理内容を設定
+ * @param {Function} _callback
+ */
 function addProgressAction(_callback) {
   _progressAction = _callback;
 }
 
+/**
+ * 3Dモデルを読み込む
+ * @param {string} url - 3DモデルのURL
+ * @returns {Promise<Object>} - 3Dモデル
+ */
 async function loadModel(url) {
   // 読み込み対象の画像の総数を計算
   incrementTotal();
@@ -202,6 +236,11 @@ async function loadModel(url) {
   return models;
 }
 
+/**
+ * WebGL要素のdata属性からテクスチャを取得
+ * @param {HTMLElement} el - WebGL要素
+ * @returns {Promise<Map<string, Texture>>} - テクスチャのマップ
+ */
 async function getTexByElement(el) {
   const texes = new Map();
   const data = el.dataset;
@@ -281,6 +320,11 @@ async function getTexByElement(el) {
   return texes;
 }
 
+/**
+ * WebGL要素のdata属性からモデルを取得
+ * @param {HTMLElement} el - WebGL要素
+ * @returns {Promise<Map<string, Object>>} - モデルのマップ
+ */
 function getModelByElement(el) {
   const models = new Map();
   const data = el.dataset;
@@ -303,7 +347,10 @@ function getModelByElement(el) {
   return models;
 }
 
-// ローディング完了時のアニメーション
+/**
+ * ローディング完了時のアニメーション
+ * @returns {Promise<void>}
+ */
 function loadingAnimationStart() {
   const tl = gsap.timeline();
 
@@ -344,8 +391,43 @@ function loadingAnimationStart() {
   return tl;
 }
 
-function letsBegin() {
+function loadingAnimationEnd(tl) {
+  const page = INode.qsAll("#smooth-wrapper");
+
+  const header = INode.qsAll(".js_header");
+
+  return new Promise((resolve) => {
+    tl.to(
+      header,
+      {
+        y: 0,
+        duration: 0.3,
+        ease: "power1.inOut",
+        onComplete() {
+          loader.isLoaded = true;
+          resolve();
+        },
+      },
+      "<",
+    );
+  });
+}
+
+let loadingAnimation = null;
+
+function addLoadingAnimation(_loadingAnimation) {
+  loadingAnimation = _loadingAnimation;
+}
+
+/**
+ * ローディング完了後のアニメーションを開始
+ */
+async function letsBegin() {
   const tl = loadingAnimationStart();
+
+  loadingAnimation && loadingAnimation(tl);
+
+  return await loadingAnimationEnd(tl);
 }
 
 export default loader;

@@ -14,6 +14,7 @@ import {
 import RenderTargetManager from "../component/renderTargetManager";
 import { Ob } from "./Ob";
 import { pass } from "three/tsl";
+import gsap from "gsap";
 
 //Worldオブジェクト
 const world = {
@@ -72,6 +73,9 @@ async function init(canvas, viewport) {
   world.postProcessing = new PostProcessing(world.renderer);
   const scenePass = pass(world.scene, world.camera);
   world.scenePassColor = scenePass.getTextureNode("output");
+
+  //初期状態の出力ノードを設定（エフェクトが0個でも本来のシーンが描画されるようにする）
+  updatePostProcessing();
 
   // メッシュオブジェクトの初期化
   await _initObjects(viewport);
@@ -141,7 +145,7 @@ async function _initObjects(viewport) {
     addObj(o);
   });
 
-  adjustWorldPosition(viewport);
+  await adjustWorldPosition(viewport);
 
   // 初期化後の処理
   const afterPrms = world.os.map((o) => {
@@ -192,28 +196,45 @@ function getObjByEl(selector) {
 }
 
 //メッシュの位置とサイズとカメラ設定の変更
-function adjustWorldPosition(viewport) {
+async function adjustWorldPosition(viewport) {
   world.renderer.setSize(viewport.width, viewport.height, false);
 
   //メッシュの位置とサイズの変更
-  world.os.forEach((o) => {
-    o.resize();
+  const pResize = world.os.map((o) => {
+    return o.resize();
   });
 
   //カメラ設定の変更
-  updateCamera(viewport);
+  const pCamera = await updateCamera(viewport);
+
+  await Promise.all([...pResize, pCamera]);
 }
 
 //カメラの更新
-function updateCamera(viewport) {
+async function updateCamera(viewport) {
   const { fov, aspect, near, far } = viewport;
-  world.camera.fov = fov;
-  world.camera.near = near;
-  world.camera.far = far;
-  world.camera.aspect = aspect;
-  world.camera.updateProjectionMatrix();
 
-  return world.camera;
+  return new Promise((resolve) => {
+    gsap.to(world.camera, {
+      fov,
+      near,
+      far,
+      aspect,
+      overwrite: true,
+      onUpdate() {
+        world.camera.updateProjectionMatrix();
+      },
+      onComplete() {
+        resolve(world.camera);
+      },
+    });
+  });
+
+  // world.camera.fov = fov;
+  // world.camera.near = near;
+  // world.camera.far = far;
+  // world.camera.aspect = aspect;
+  // world.camera.updateProjectionMatrix();
 }
 
 //レイキャスティング

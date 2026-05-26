@@ -144,6 +144,13 @@ async function initRipplePass(world, mouseObj) {
   function getTexture() {
     return rt.texture;
   }
+  function addPass() {
+    world.addPass(rippleEffect);
+  }
+
+  function removePass() {
+    world.removePass(rippleEffect);
+  }
 
   // 毎フレームのデータ更新
   // world.addUpdate(renderRipple);
@@ -162,11 +169,13 @@ async function initRipplePass(world, mouseObj) {
     return color;
   });
 
-  world.addPass(rippleEffect);
+  // addPass(rippleEffect);
 
   return {
     rt,
     getTexture,
+    addPass,
+    removePass,
   };
 }
 

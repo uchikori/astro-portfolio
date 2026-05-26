@@ -12,9 +12,16 @@ function add(callback) {
   }
 }
 
+function close() {
+  if (lilGUI) {
+    lilGUI.close();
+  }
+}
+
 const gui = {
   init,
   add,
+  close,
 };
 
 export { gui };

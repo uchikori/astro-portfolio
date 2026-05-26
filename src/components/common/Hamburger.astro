@@ -5,7 +5,7 @@
 <button
   class="bl_hamburger hl_smVisible js_hamburger"
   data-mouse="stuck"
-  aria-label="メニューを開く"
+  aria-label="メニュー"
 >
   <span class="bl_hamburger_inner">
     <span class="bl_hamburger_wrap js_hamburger_wrap">
@@ -38,7 +38,7 @@
     transform-origin: right;
     transition: transform 0.2s ease-in-out;
 
-    ::global(.inview) &{
+    ::global(.inview) & {
       transform: scale(0.95);
       transition: transform 0.2s ease-in-out;
     }

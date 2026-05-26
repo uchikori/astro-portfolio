@@ -1,7 +1,9 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { INode, viewport } from "../helper";
+import { INode, utils, viewport } from "../helper";
 import world from "../glsl/world";
+import { initRipplePass } from "../glsl/ripple";
+import mouse from "./mouse";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,6 +17,7 @@ const ACTIONS = {
   fade,
   header,
   reversal,
+  ripple,
 };
 
 let startTrigger = null;
@@ -258,6 +261,22 @@ function reversal(el) {
         "--c-bg": "#DDDCDC",
       });
     },
+    onLeave() {
+      gsap.to(":root", {
+        "--c-text": "#DDDCDC",
+        "--c-sec": "rgba(218,218,218,0.8)",
+        "--c-main": "#fff",
+        "--c-bg": "#110028",
+      });
+    },
+    onEnterBack() {
+      gsap.to(":root", {
+        "--c-text": "#110028",
+        "--c-sec": "rgba(218,218,218,0.8)",
+        "--c-main": "#fff",
+        "--c-bg": "#DDDCDC",
+      });
+    },
     onLeaveBack() {
       gsap.to(":root", {
         "--c-text": "#DDDCDC",
@@ -269,4 +288,32 @@ function reversal(el) {
   });
 }
 
+/**
+ * リプルパスの表示/非表示を切り替える
+ * @param {*} el
+ */
+async function ripple(el) {
+  //タッチデバイスでは実行しない
+  if (viewport.isMobile()) return;
+
+  //リプルパスを初期化(ポストプロセスエフェクト)
+  const { addPass, removePass } = await initRipplePass(world, mouse);
+
+  ScrollTrigger.create({
+    trigger: el,
+    start: startTrigger,
+    onEnter() {
+      addPass();
+    },
+    onLeave() {
+      removePass();
+    },
+    onEnterBack() {
+      addPass();
+    },
+    onLeaveBack() {
+      removePass();
+    },
+  });
+}
 export { registScrollAnimations };

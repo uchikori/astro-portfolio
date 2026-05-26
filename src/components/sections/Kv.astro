@@ -37,7 +37,7 @@ import ArrowLink from "../ui/ArrowLink.astro";
         </p>
         <Sns alignItems="flex-start" className="hl_smHidden" loading="eager" />
         <div
-          class="bl_hero_object"
+          class="bl_hero_object js_hero_object"
           data-webgl="normal"
           data-model="/model/logo.glb"
           data-render-material="standard"
@@ -64,7 +64,7 @@ import ArrowLink from "../ui/ArrowLink.astro";
             >
             </div>
           </div>
-          <div class="bl_hero_sub_gridItem grid_2 hl_smHidden">
+          <div class="bl_hero_sub_gridItem grid_2">
             <div
               class="hl_webglObject"
               data-webgl="template"
@@ -156,6 +156,11 @@ import ArrowLink from "../ui/ArrowLink.astro";
       gap: 0 40px;
       position: relative;
 
+      // グリッド直下の子要素の min-width を 0 にして 1fr が等幅になるよう修正
+      & > * {
+        min-width: 0;
+      }
+
       @include mq("lg") {
         display: flex;
         flex-direction: column;
@@ -175,13 +180,15 @@ import ArrowLink from "../ui/ArrowLink.astro";
     &_object {
       grid-column: 5/9;
       grid-row: 5/9;
-      width: 700px;
+      max-width: 700px; // fixed width → max-width に変更（グリッド幅を歪めないため）
+      width: 100%;
       aspect-ratio: 1;
       align-self: center; // グリッドセル内で上下中央に配置
       justify-self: center;
       animation: floating 2s ease-in-out infinite; // 4秒周期でふわふわさせる
       @include mq(lg) {
         width: 50%;
+        max-width: none;
         order: 1;
       }
       @include mq(md) {
@@ -247,9 +254,19 @@ import ArrowLink from "../ui/ArrowLink.astro";
           }
         }
         .grid_2 {
+          width: 100%;
+          aspect-ratio: 1010/682;
+          display: block;
           grid-column: 3/10;
           grid-row: 1/8;
           z-index: 1;
+          position: relative;
+          transform: none;
+
+          @include mq("lg") {
+            position: absolute;
+            transform: translateY(-500%);
+          }
         }
         .grid_3 {
           grid-column: 7/-1;

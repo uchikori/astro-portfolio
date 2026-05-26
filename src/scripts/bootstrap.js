@@ -13,8 +13,9 @@ import { initRipplePass } from "./glsl/ripple";
 import { initMouseParticles } from "./glsl/mouse-particles";
 import menu from "./component/menu";
 import { registScrollAnimations } from "./component/scroll-animation";
+import { initDistortionPass } from "./glsl/distortion-text/pass";
 
-window.debug = enableDebugMode(0);
+window.debug = enableDebugMode(1);
 
 // デバッグモード:1=有効,0=無効
 function enableDebugMode(debug) {
@@ -70,6 +71,64 @@ export async function init() {
   // Worldを初期化
   await world.init(canvas, viewport);
 
+  loader.addLoadingAnimation((tl) => {
+    // エレメントを取得
+    const heroObject = world.getObjByEl(".js_hero_object");
+    const distortion = world.getObjByEl(".bl_loadPP");
+    if (!heroObject || !distortion) return;
+
+    // RenderTarget内の3Dモデルを取得
+    let targetModel = null;
+    if (heroObject.targetInfo) {
+      heroObject.targetInfo.scene.traverse((obj) => {
+        if (obj.isGroup && obj.name.includes("Scene")) {
+          targetModel = obj;
+        }
+      });
+    }
+
+    // レンダーターゲット内のモデルがあればそれを、なければmesh自体を回転させる
+    const animateTarget = targetModel || heroObject.mesh;
+    if (!animateTarget) return;
+
+    const startY = animateTarget.rotation.y;
+
+    // 手前（z軸プラス方向）の初期値を設定（ニアクリップを考慮して400）
+    heroObject.mesh.position.z = 500;
+
+    initDistortionPass(world);
+
+    // z位置を0に戻すアニメーション
+    tl.to(
+      distortion.uniforms.uProgress,
+      {
+        value: 1,
+        duration: 1,
+        ease: "power3.out",
+      },
+      "<",
+    )
+      .to(
+        heroObject.mesh.position,
+        {
+          z: 0,
+          duration: 2,
+          ease: "power3.out",
+        },
+        "<",
+      )
+      // 回転アニメーション
+      .to(
+        animateTarget.rotation,
+        {
+          y: startY + Math.PI * 2,
+          duration: 1,
+          ease: "power3.out",
+        },
+        "<",
+      );
+  });
+
   mountNavBtnHandler(
     ".bl_fv_slider",
     ".bl_fv .js_navBtn__prev",
@@ -88,8 +147,8 @@ export async function init() {
 
   mouse.init(false, true);
 
-  viewport.addResizeAction(() => {
-    world.adjustWorldPosition(viewport);
+  viewport.addResizeAction(async () => {
+    await world.adjustWorldPosition(viewport);
 
     mouse.resize();
   });
@@ -102,39 +161,26 @@ export async function init() {
 
   registScrollAnimations();
 
-  //リプルパスを初期化(ポストプロセスエフェクト)
-  // await initRipplePass(world, mouse);
+  await initRipplePass(world, mouse);
 
   //マウスパーティクルを初期化
-  await initMouseParticles(world, mouse);
+  // await initMouseParticles(world, mouse);
 
   menu.init(world, smoother);
 
   world.render();
 
-  loader.letsBegin();
+  await loader.letsBegin();
 
-  setTimeout(() => {
-    mouse.makeVisible();
-  }, 1000);
-
-  // setTimeout(() => {
-  //   const o = world.getObjByEl('[data-webgl="twist-plane"]');
-  //   gsap.to(o.uniforms.uProgress, {
-  //     value: 1,
-  //     duration: 1,
-  //     ease: "power2.out",
-  //     onComplete() {
-  //       world.removeObj(o);
-  //     },
-  //   });
-  // }, 3000);
+  //ロード完了後のアクション
+  mouse.makeVisible();
 
   // デバッグモードの場合
   if (window.debug) {
     gui.add(world.addOrbitControlGUI);
     // guiにコールバック関数を登録
     gui.add((lilGUI) => {
+      lilGUI.close();
       // world.osの各オブジェクトのdebugメソッドを呼び出す
       world.os.forEach((o) => {
         if (!o.debug) return;

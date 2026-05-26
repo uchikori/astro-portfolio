@@ -122,8 +122,9 @@ export default class extends Ob {
   render(tick) {
     super.render(tick);
 
-    //uHoverが0の時は処理をスキップ
-    if (this.uniforms.uHover.value === 0) return;
+    //uHoverが0の時
+    //且つリサイズ中の時は処理をスキップ
+    if (this.uniforms.uHover.value === 0 && this.resizing) return;
 
     //最新のDOM要素のRectを取得
     const rect = INode.getRect(this.DOM.el);
@@ -142,8 +143,9 @@ export default class extends Ob {
       (this.uniforms.uMouse.value.y - 0.5) * 50 * this.uniforms.uHover.value;
 
     // メッシュのスケールをホバーに応じて少し拡大
-    this.mesh.scale.x = 1.0 + 0.1 * this.uniforms.uHover.value;
-    this.mesh.scale.y = 1.0 + 0.1 * this.uniforms.uHover.value;
+    this.mesh.position.z = 100 * this.uniforms.uHover.value;
+    // this.mesh.scale.x = 1.0 + 0.1 * this.uniforms.uHover.value;
+    // this.mesh.scale.y = 1.0 + 0.1 * this.uniforms.uHover.value;
 
     // メッシュの回転をホバーに応じて少し回転
     this.mesh.rotation.x =

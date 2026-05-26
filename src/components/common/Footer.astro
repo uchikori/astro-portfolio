@@ -27,6 +27,18 @@ import Sns from "./Sns.astro";
     </div>
   </div>
 </footer>
+<button id="js-backToTop" class="bl_backToTop" aria-label="ページトップへ戻る">
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
 
 <style lang="scss">
   @use "../../styles/utility" as *;
@@ -84,4 +96,107 @@ import Sns from "./Sns.astro";
       text-align: right;
     }
   }
+
+  .bl_backToTop {
+    position: fixed;
+    bottom: to-rem(40px);
+    right: to-rem(40px);
+    z-index: 99;
+    width: to-rem(56px);
+    height: to-rem(56px);
+    border-radius: 50%;
+    background: rgba(17, 0, 40, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--c-text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.9);
+    transition:
+      opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 0;
+    outline: none;
+
+    &.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    svg {
+      width: to-rem(22px);
+      height: to-rem(22px);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    &:hover {
+      background-color: rgba(237, 151, 35, 0.9); // オレンジのアクセントカラー
+      border-color: rgba(255, 255, 255, 0.4);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(237, 151, 35, 0.6);
+
+      svg {
+        transform: translateY(-4px);
+      }
+    }
+
+    @include mq(md) {
+      bottom: to-rem(24px);
+      right: to-rem(24px);
+      width: to-rem(48px);
+      height: to-rem(48px);
+    }
+  }
 </style>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import ScrollSmoother from "gsap/ScrollSmoother";
+
+  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+  const button = document.getElementById("js-backToTop");
+
+  if (button) {
+    // ScrollSmoother (transform) の影響を受けないよう、DOM構造上でbodyの直下に移動します
+    document.body.appendChild(button);
+
+    // ページの上端からすこしスクロール（150px）されたら表示し、上端に戻ったら消す
+    ScrollTrigger.create({
+      start: "top -150px",
+      end: 99999,
+      onToggle: (self) => {
+        if (self.isActive) {
+          button.classList.add("is-visible");
+        } else {
+          button.classList.remove("is-visible");
+        }
+      },
+    });
+
+    // クリック時にページ上端までスムーズにスクロール
+    button.addEventListener("click", () => {
+      const smoother = ScrollSmoother.get();
+      if (smoother) {
+        smoother.scrollTo(0, true);
+      } else {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+    });
+  }
+</script>

@@ -9,14 +9,17 @@ import {
 import { Ob } from "../Ob";
 import Fragment from "./fragment";
 import Vertex from "./vertex";
-import { utils } from "../../helper";
+import { utils, viewport } from "../../helper";
 import { uniform } from "three/tsl";
 import { DoubleSide } from "three";
+import gsap from "gsap";
 
 export default class extends Ob {
   beforeCreateMesh() {
     const { radius, radiusScale } = this.DOM.el.dataset;
-    this.radius = radius ? parseFloat(radius) : this.rect.width * (parseFloat(radiusScale) || 1.0);
+    this.radius = radius
+      ? parseFloat(radius)
+      : this.rect.width * (parseFloat(radiusScale) || 1.0);
 
     //シリンダーの回転軸を定義
     this.rotateAxis = new Vector3(0.2, 0.8, 0.2).normalize();
@@ -66,13 +69,6 @@ export default class extends Ob {
 
     cylinder.position.z = -this.radius;
 
-    // Cylinderの頂点座標を取得
-    const { position, normal } = cylinderGeo.attributes;
-    // Cylinderの1周分の頂点数
-    const ONE_LOOP = cylinderGeo.attributes.position.count / 2;
-    // 1つのテクスチャあたりの頂点数
-    const step = Math.floor(ONE_LOOP / this.texes.size);
-
     // テクスチャのインデックス番号
     let idx = 0;
 
@@ -118,24 +114,7 @@ export default class extends Ob {
       // 他の関数(renderなど)からplaneUniformsの値を変更できるようにuserDataに格納
       plane.userData.uniforms = planeUniforms;
 
-      // テクスチャのインデックスから頂点周期を計算
-      const pickIdx = idx * step;
-      // 頂点座標を取得
-      plane.position.x = position.getX(pickIdx);
-      plane.position.z = position.getZ(pickIdx);
-
-      // メッシュの向きを設定
-      const originalDir = { x: 0, y: 0, z: 1 };
-      const targetDir = {
-        x: normal.getX(pickIdx),
-        y: 0,
-        z: normal.getZ(pickIdx),
-      };
-
-      // メッシュを指定方向に向ける
-      utils.pointTo(plane, originalDir, targetDir);
-
-      //cylinderのchildrenにplaneメッシュを追加
+      // //cylinderのchildrenにplaneメッシュを追加
       cylinder.add(plane);
 
       idx++;
@@ -261,5 +240,86 @@ export default class extends Ob {
       });
 
     folder.add(this.uniforms.uDist, "value", 0, 1, 0.01).name("dist").listen();
+  }
+
+  // オブジェクトのリサイズ処理
+  async resize(duration = 1) {
+    this.resizing = true; //リサイズ中
+    const {
+      DOM: { el },
+      mesh,
+      originalRect,
+    } = this;
+
+    this.setupResolution(this.uniforms);
+
+    //リサイズ後のWebGLのHTMLエレメントの座標を取得
+    const nextRect = el.getBoundingClientRect();
+    // ワールド座標の位置を取得
+    const { x, y } = this.getWorldPosition(nextRect, viewport);
+
+    // cylinderのジオメトリーを取得
+    const cylinderGeo = mesh.geometry;
+    // Cylinderの頂点座標を取得
+    const { position, normal } = cylinderGeo.attributes;
+    // Cylinderの1周分の頂点数
+    const ONE_LOOP = cylinderGeo.attributes.position.count / 2;
+    // 1つのテクスチャあたりの頂点数
+    const step = Math.floor(ONE_LOOP / this.texes.size);
+
+    //メッシュの位置を変更
+    const p1 = new Promise((resolve) => {
+      gsap.to(mesh.position, {
+        x,
+        y,
+        overwrite: true,
+        duration,
+        onComplete: () => {
+          resolve();
+        },
+      });
+    });
+
+    //大きさの変更(元のジオメトリーの何倍のスケールにするかを計算)
+    const p2 = new Promise((resolve) => {
+      gsap.to(this.scale, {
+        width: nextRect.width / originalRect.width,
+        height: nextRect.height / originalRect.height,
+        depth: 1,
+        overwrite: true,
+        duration,
+        onUpdate: () => {
+          mesh.scale.set(this.scale.width, this.scale.height, this.scale.width);
+
+          this.slides.forEach((plane, idx) => {
+            // テクスチャのインデックスから頂点周期を計算
+            const pickIdx = idx * step;
+            // 頂点座標を取得
+            plane.position.x = position.getX(pickIdx);
+            plane.position.z = position.getZ(pickIdx);
+
+            // メッシュの向きを設定
+            const originalDir = { x: 0, y: 0, z: 1 };
+            const targetDir = {
+              x: normal.getX(pickIdx),
+              y: 0,
+              z: normal.getZ(pickIdx),
+            };
+
+            // メッシュを指定方向に向ける
+            utils.pointTo(plane, originalDir, targetDir);
+          });
+        },
+        onComplete: () => {
+          resolve();
+        },
+      });
+    });
+
+    await Promise.all([p1, p2]);
+
+    this.rect = nextRect;
+
+    this.resizing = false; //リサイズ完了
   }
 }

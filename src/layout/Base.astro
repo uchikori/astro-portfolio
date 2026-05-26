@@ -9,6 +9,7 @@ import Menu from "../components/common/Menu.astro";
 import Nav from "../components/common/Nav.astro";
 import Footer from "../components/common/Footer.astro";
 import FresnelBG from "../components/webgl/FresnelBG.astro";
+import LoadPP from "../components/webgl/LoadPP.astro";
 ---
 
 <html lang="ja">
@@ -39,13 +40,13 @@ import FresnelBG from "../components/webgl/FresnelBG.astro";
     />
     <slot name="head" />
   </head>
-  <body>
+  <body data-scroll-trigger="ripple">
     <Loader />
     <div id="globalContainer">
       <Header />
 
       <!-- <FresnelBG /> -->
-      <!-- <Aside /> -->
+      <LoadPP />
       <div id="smooth-wrapper">
         <div id="smooth-content">
           <div id="pageContainer">
@@ -91,6 +92,10 @@ import FresnelBG from "../components/webgl/FresnelBG.astro";
       position: relative;
       overflow-x: hidden;
       visibility: hidden;
+    }
+
+    #smooth-wrapper {
+      // opacity: 0;
     }
 
     #canvas {

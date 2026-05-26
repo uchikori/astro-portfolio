@@ -3,7 +3,7 @@ import Hamburger from "./Hamburger.astro";
 import Menu from "./Menu.astro";
 ---
 
-<header class="ly_header bl_header" data-scroll-trigger="header">
+<header class="ly_header bl_header js_header" data-scroll-trigger="header">
   <div class="bl_header_inner">
     <h1 class="bl_header_sitetitle">
       <span class="hl_hidden">UCHIWA Creative Studio</span>
@@ -183,6 +183,7 @@ import Menu from "./Menu.astro";
     left: 0;
     z-index: 999;
     width: 100%;
+    transform: translateY(-100%);
   }
 
   .bl_header {
@@ -205,7 +206,7 @@ import Menu from "./Menu.astro";
       transform-origin: left;
       transition: transform 0.2s ease-in-out;
 
-      .inview &{
+      .inview & {
         transform: scale(0.95);
 
         transition: transform 0.2s ease-in-out;
@@ -218,7 +219,7 @@ import Menu from "./Menu.astro";
       transform-origin: right;
       transition: transform 0.2s ease-in-out;
 
-      .inview &{
+      .inview & {
         transform: scale(0.95);
         transition: transform 0.2s ease-in-out;
       }

@@ -7,7 +7,7 @@ import {
 } from "three/webgpu";
 
 import loader from "../component/loader";
-import { utils, viewport } from "../helper";
+import { INode, utils, viewport } from "../helper";
 import gsap from "gsap";
 
 class Ob {
@@ -30,8 +30,12 @@ class Ob {
     };
     this.texes = texes ?? [];
 
+    this.scale = { width: 1, height: 1, depth: 1 };
+
+    this.resizing = false; //リサイズ中フラグ
+
     //WebGLのHTML要素の座標を取得
-    this.rect = el.getBoundingClientRect();
+    this.rect = this.originalRect = INode.getRect(el);
 
     if (!this.rect.width || !this.rect.height) {
       if (window.debug) {
@@ -213,30 +217,56 @@ class Ob {
   }
 
   // オブジェクトのリサイズ処理
-  resize() {
+  async resize(duration = 1) {
+    this.resizing = true; //リサイズ中
     const {
       DOM: { el },
       mesh,
-      geometry,
-      rect,
+      originalRect,
     } = this;
+
+    this.setupResolution(this.uniforms);
 
     //リサイズ後のWebGLのHTMLエレメントの座標を取得
     const nextRect = el.getBoundingClientRect();
     // ワールド座標の位置を取得
     const { x, y } = this.getWorldPosition(nextRect, viewport);
-    //WebGLオブジェクトの位置を更新
-    mesh.position.y = y;
-    mesh.position.x = x;
+
+    //メッシュの位置を変更
+    const p1 = new Promise((resolve) => {
+      gsap.to(mesh.position, {
+        x,
+        y,
+        overwrite: true,
+        duration,
+        onComplete: () => {
+          resolve();
+        },
+      });
+    });
 
     //大きさの変更(元のジオメトリーの何倍のスケールにするかを計算)
-    geometry.scale(
-      nextRect.width / rect.width,
-      nextRect.height / rect.height,
-      1,
-    );
+    const p2 = new Promise((resolve) => {
+      gsap.to(this.scale, {
+        width: nextRect.width / originalRect.width,
+        height: nextRect.height / originalRect.height,
+        depth: 1,
+        overwrite: true,
+        duration,
+        onUpdate: () => {
+          mesh.scale.set(this.scale.width, this.scale.height, this.scale.depth);
+        },
+        onComplete: () => {
+          resolve();
+        },
+      });
+    });
+
+    await Promise.all([p1, p2]);
 
     this.rect = nextRect;
+
+    this.resizing = false; //リサイズ完了
   }
 
   //ワールド座標を割り出す関数

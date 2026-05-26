@@ -2,11 +2,15 @@
 import { Image } from "astro:assets";
 
 //alignの初期値を'right'に設定
-const { align = "right" } = Astro.props;
+const { align = "right", prevLabel = "前へ", nextLabel = "次へ" } = Astro.props;
 ---
 
 <div class:list={["bl_nav", { "is-left": align === "left" }]}>
-  <button class="el_navBtn el_navBtn__prev js_navBtn__prev" data-mouse="stuck">
+  <button
+    class="el_navBtn el_navBtn__prev js_navBtn__prev"
+    data-mouse="stuck"
+    aria-label={prevLabel}
+  >
     <svg
       width="72"
       height="72"
@@ -15,8 +19,13 @@ const { align = "right" } = Astro.props;
       xmlns="http://www.w3.org/2000/svg"
       class="el_link_icon"
     >
-      <rect x="0.5" y="0.5" width="71" height="71" rx="35.5" stroke="var(--c-text)"
-      ></rect>
+      <rect
+        x="0.5"
+        y="0.5"
+        width="71"
+        height="71"
+        rx="35.5"
+        stroke="var(--c-text)"></rect>
       <g clip-path="url(#clip0_826_1656)">
         <path
           d="M39.0149 42L39 41.9809L43.641 36.0003L39 30.0191L39.0149 30H41.3419L46 35.9997L41.3419 41.9989L39.0149 42Z"
@@ -34,7 +43,11 @@ const { align = "right" } = Astro.props;
       </defs>
     </svg>
   </button>
-  <button class="el_navBtn el_navBtn__next js_navBtn__next" data-mouse="stuck">
+  <button
+    class="el_navBtn el_navBtn__next js_navBtn__next"
+    data-mouse="stuck"
+    aria-label={nextLabel}
+  >
     <svg
       width="72"
       height="72"
@@ -43,8 +56,13 @@ const { align = "right" } = Astro.props;
       xmlns="http://www.w3.org/2000/svg"
       class="el_link_icon"
     >
-      <rect x="0.5" y="0.5" width="71" height="71" rx="35.5" stroke="var(--c-text)"
-      ></rect>
+      <rect
+        x="0.5"
+        y="0.5"
+        width="71"
+        height="71"
+        rx="35.5"
+        stroke="var(--c-text)"></rect>
       <g clip-path="url(#clip0_826_1656)">
         <path
           d="M39.0149 42L39 41.9809L43.641 36.0003L39 30.0191L39.0149 30H41.3419L46 35.9997L41.3419 41.9989L39.0149 42Z"

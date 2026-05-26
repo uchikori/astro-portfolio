@@ -45,7 +45,7 @@ export default function Fragment(opt) {
     // add(vUv, ...)=>ノイズの方向と強さをuv座標に足し込む
     const distortUV = add(vUv, mul(d, 0.3, sub(1.0, uniforms.uProgress)));
 
-    const tex1 = texture(uniforms.uTexes.tex1, distortUV);
+    const tex1 = texture(uniforms.tDiffuse, distortUV);
 
     //tex1からrgbを取り出す
     const rgb = tex1.rgb;
