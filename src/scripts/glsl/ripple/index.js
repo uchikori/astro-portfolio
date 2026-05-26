@@ -13,7 +13,17 @@ import {
   TextureLoader,
 } from "three/webgpu";
 import { Mesh } from "three";
-import { add, Fn, log, mul, pass, texture, uniform, uv } from "three/tsl";
+import {
+  add,
+  Fn,
+  log,
+  mul,
+  pass,
+  texture,
+  uniform,
+  uv,
+  context,
+} from "three/tsl";
 import { viewport } from "../../helper";
 // import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
@@ -164,7 +174,10 @@ async function initRipplePass(world, mouseObj) {
 
     const rippleUv = add(vUv, mul(ripple.r, 0.1));
 
-    const color = texture(scenePass, rippleUv);
+    const color =
+      scenePass.isTextureNode || scenePass.isPassNode
+        ? texture(scenePass, rippleUv)
+        : scenePass.context({ uv: rippleUv });
 
     return color;
   });

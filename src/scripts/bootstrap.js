@@ -96,7 +96,7 @@ export async function init() {
     // 手前（z軸プラス方向）の初期値を設定（ニアクリップを考慮して400）
     heroObject.mesh.position.z = 500;
 
-    initDistortionPass(world);
+    // initDistortionPass(world);
 
     // z位置を0に戻すアニメーション
     tl.to(
