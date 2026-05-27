@@ -21,6 +21,8 @@ export default function Fragment(opt) {
     // 展開したのでトップレベルで受け取れる
     const { vUv, uniforms } = opt;
 
+    console.log(uniforms);
+
     const time = mul(uniforms.uTick, uniforms.uSpeed, 0.01);
 
     // ノイズの座標を計算

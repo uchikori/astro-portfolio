@@ -182,7 +182,7 @@ async function initRipplePass(world, mouseObj) {
     return color;
   });
 
-  // addPass(rippleEffect);
+  addPass(rippleEffect);
 
   return {
     rt,

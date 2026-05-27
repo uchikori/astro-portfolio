@@ -3,6 +3,7 @@ import Fragment from "./fragment";
 
 function initDistortionPass(world) {
   const o = world.getObjByEl(".bl_loadPP");
+  // world.removeObj(o, false);
   if (!o) return;
 
   // ポストプロセス用のエフェクト関数を定義 (通常のJS関数として引数を受け取る)
@@ -19,6 +20,19 @@ function initDistortionPass(world) {
 
   // ポストプロセスに登録
   world.addPass(distortionEffect);
+
+  function setProgress(value) {
+    o.uniforms.uProgress.value = value;
+  }
+
+  function removePass() {
+    world.removePass(distortionEffect);
+    o.material.dispose();
+    o.geometry.dispose();
+    // o.removeObj();
+  }
+
+  return { removePass, setProgress };
 }
 
 export { initDistortionPass };

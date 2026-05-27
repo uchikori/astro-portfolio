@@ -15,7 +15,7 @@ import menu from "./component/menu";
 import { registScrollAnimations } from "./component/scroll-animation";
 import { initDistortionPass } from "./glsl/distortion-text/pass";
 
-window.debug = enableDebugMode(0);
+window.debug = enableDebugMode(1);
 
 // デバッグモード:1=有効,0=無効
 function enableDebugMode(debug) {
@@ -71,79 +71,11 @@ export async function init() {
   // Worldを初期化
   await world.init(canvas, viewport);
 
-  loader.addLoadingAnimation((tl) => {
-    // エレメントを取得
-    const heroObject = world.getObjByEl(".js_hero_object");
-    const distortion = world.getObjByEl(".bl_loadPP");
-    if (!heroObject || !distortion) return;
+  addGUI();
 
-    // RenderTarget内の3Dモデルを取得
-    let targetModel = null;
-    if (heroObject.targetInfo) {
-      heroObject.targetInfo.scene.traverse((obj) => {
-        if (obj.isGroup && obj.name.includes("Scene")) {
-          targetModel = obj;
-        }
-      });
-    }
-
-    // レンダーターゲット内のモデルがあればそれを、なければmesh自体を回転させる
-    const animateTarget = targetModel || heroObject.mesh;
-    if (!animateTarget) return;
-
-    const startY = animateTarget.rotation.y;
-
-    // 手前（z軸プラス方向）の初期値を設定（ニアクリップを考慮して400）
-    heroObject.mesh.position.z = 500;
-
-    // initDistortionPass(world);
-
-    // z位置を0に戻すアニメーション
-    tl.to(
-      distortion.uniforms.uProgress,
-      {
-        value: 1,
-        duration: 1,
-        ease: "power3.out",
-      },
-      "<",
-    )
-      .to(
-        heroObject.mesh.position,
-        {
-          z: 0,
-          duration: 2,
-          ease: "power3.out",
-        },
-        "<",
-      )
-      // 回転アニメーション
-      .to(
-        animateTarget.rotation,
-        {
-          y: startY + Math.PI * 2,
-          duration: 1,
-          ease: "power3.out",
-        },
-        "<",
-      );
+  await import("./page/home.js").then(({ default: initHome }) => {
+    initHome({ world, mouse, menu, loader, viewport, scroller });
   });
-
-  mountNavBtnHandler(
-    ".bl_fv_slider",
-    ".bl_fv .js_navBtn__prev",
-    ".bl_fv .js_navBtn__next",
-    ".bl_fv_shader",
-  );
-
-  mountReflectBtnHandler(
-    ".bl_reflect_slider",
-    ".bl_reflect .js_navBtn__prev",
-    ".bl_reflect .js_navBtn__next",
-    ".bl_reflect_ul",
-  );
-
-  // mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
 
   mouse.init(false, true);
 
@@ -161,7 +93,7 @@ export async function init() {
 
   registScrollAnimations();
 
-  await initRipplePass(world, mouse);
+  // await initRipplePass(world, mouse);
 
   //マウスパーティクルを初期化
   // await initMouseParticles(world, mouse);
@@ -174,7 +106,9 @@ export async function init() {
 
   //ロード完了後のアクション
   mouse.makeVisible();
+}
 
+function addGUI() {
   // デバッグモードの場合
   if (window.debug) {
     gui.add(world.addOrbitControlGUI);
