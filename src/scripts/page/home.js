@@ -1,8 +1,8 @@
 console.log("home module loaded");
-// import {
-//   mountNavBtnHandler,
-//   mountReflectBtnHandler,
-// } from "../component/slide-hundler";
+import {
+  mountNavBtnHandler,
+  mountReflectBtnHandler,
+} from "../component/slide-hundler";
 // import { initDistortionPass } from "../glsl/distortion-text/pass";
 // import { initRipplePass } from "../glsl/ripple";
 
