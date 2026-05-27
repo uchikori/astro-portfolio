@@ -2,7 +2,7 @@ import { Float32BufferAttribute, PlaneGeometry } from "three/webgpu";
 import { Ob } from "../Ob";
 import Fragment from "./fragment.js";
 import Vertex from "./vertex.js";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 import { attribute } from "three/tsl";
 
 export default class extends Ob {

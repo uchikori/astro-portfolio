@@ -1,7 +1,7 @@
 import { Ob } from "../Ob";
 import Fragment from "./fragment";
 import Vertex from "./vertex";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 import { uniform } from "three/tsl";
 
 export default class extends Ob {

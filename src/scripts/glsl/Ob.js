@@ -7,7 +7,9 @@ import {
 } from "three/webgpu";
 
 import loader from "../component/loader";
-import { INode, utils, viewport } from "../helper";
+import { INode } from "../helper/INode";
+import { utils } from "../helper/utils";
+import { viewport } from "../helper/viewport";
 import gsap from "gsap";
 
 class Ob {

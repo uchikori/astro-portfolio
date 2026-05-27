@@ -4,7 +4,7 @@ import { Ob } from "../Ob";
 import Vertex from "./vertex.js";
 import Fragment from "./fragment.js";
 
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 import {
   Float32BufferAttribute,
   InstancedBufferAttribute,

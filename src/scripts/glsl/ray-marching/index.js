@@ -1,7 +1,7 @@
 import { Ob } from "../Ob";
 import Fragment from "./fragment";
 import Vertex from "./vertex";
-import { viewport, utils } from "../../helper";
+import { viewport } from "../../helper/viewport";
 import { uniform } from "three/tsl";
 import gsap from "gsap";
 

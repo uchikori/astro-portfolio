@@ -2,7 +2,7 @@ import { Ob } from "../Ob.js";
 import Vertex, { getHoleScale } from "./vertex.js";
 import Fragment from "./fragment.js";
 
-import { utils } from "../../helper/index.js";
+import { utils } from "../../helper/utils";
 import mouse from "../../component/mouse";
 import {
   Float32BufferAttribute,

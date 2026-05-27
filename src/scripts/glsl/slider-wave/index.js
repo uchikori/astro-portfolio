@@ -10,7 +10,7 @@ import {
 import { Ob } from "../Ob";
 import Fragment from "./fragment";
 import Vertex from "./vertex";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 import { uniform, vec4 } from "three/tsl";
 import { DoubleSide } from "three";
 

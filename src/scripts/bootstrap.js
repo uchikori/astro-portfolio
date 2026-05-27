@@ -1,5 +1,7 @@
 import world from "./glsl/world";
-import { viewport, gui, INode } from "./helper";
+import { viewport } from "./helper/viewport";
+import { gui } from "./helper/gui";
+import { INode } from "./helper/INode";
 import scroller from "./component/scroller";
 import mouse from "./component/mouse";
 import loader from "./component/loader";
@@ -13,20 +15,9 @@ function enableDebugMode(debug) {
   return debug && import.meta.env.DEV;
 }
 
-let homeModulePromise = null;
-
-function preloadHomeModule() {
-  if (!homeModulePromise) {
-    homeModulePromise = import("./page/home.js");
-  }
-  return homeModulePromise;
-}
-
 export async function init() {
   //WebGLオブジェクトを格納するためのオブジェクト
   const canvas = INode.getElement("#canvas");
-  // 動的importを先に開始して、後段の重い初期化中にチャンク取得を進める
-  preloadHomeModule();
 
   // デバッグモードの場合
   if (window.debug) {
@@ -75,42 +66,14 @@ export async function init() {
 
   addGUI();
 
-  // const pages = import.meta.glob("./page/*.js", { eager: true });
+  const pages = import.meta.glob("./page/*.js", { eager: true });
 
-  // console.log(pages);
+  console.log(pages);
 
-  // const loadPage = async (name) => {
-  //   const module = pages[`./page/${name}.js`];
+  const loadPage = async (name) => {
+    const module = pages[`./page/${name}.js`];
 
-  //   module.default({
-  //     world,
-  //     mouse,
-  //     menu,
-  //     loader,
-  //     viewport,
-  //     scroller,
-  //   });
-  // };
-
-  try {
-    let module;
-    try {
-      module = await preloadHomeModule();
-    } catch (firstError) {
-      console.error(
-        "[bootstrap] first home import failed, retrying once...",
-        firstError,
-      );
-      homeModulePromise = null;
-      module = await preloadHomeModule();
-    }
-
-    if (typeof module?.default !== "function") {
-      throw new Error(
-        "[bootstrap] home module default export is not a function",
-      );
-    }
-    await module.default({
+    module.default({
       world,
       mouse,
       menu,
@@ -118,9 +81,9 @@ export async function init() {
       viewport,
       scroller,
     });
-  } catch (e) {
-    console.error("[bootstrap] initHome failed", e);
-  }
+  };
+
+  loadPage("home");
 
   // await import("./page/home.js").then(({ default: initHome }) => {
   //   return initHome({ world, mouse, menu, loader, viewport, scroller });

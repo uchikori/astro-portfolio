@@ -1,5 +1,4 @@
 import {
-  BoxGeometry,
   MeshToonMaterial,
   MeshBasicMaterial,
   MeshStandardMaterial,
@@ -7,7 +6,6 @@ import {
 import { Ob } from "../Ob";
 import Fragment from "./fragment";
 import Vertex from "./vertex";
-import { gui } from "../../helper";
 import { uniform } from "three/tsl";
 
 export default class extends Ob {
@@ -92,8 +90,14 @@ export default class extends Ob {
     // マテリアルのプロパティをデバッグ（MeshStandardMaterialの場合のみ）
     this.mesh.traverse((child) => {
       if (child.material && child.material.isMeshStandardMaterial) {
-        folder.add(child.material, "roughness", 0, 1).step(0.01).name("Roughness");
-        folder.add(child.material, "metalness", 0, 1).step(0.01).name("Metalness");
+        folder
+          .add(child.material, "roughness", 0, 1)
+          .step(0.01)
+          .name("Roughness");
+        folder
+          .add(child.material, "metalness", 0, 1)
+          .step(0.01)
+          .name("Metalness");
       }
     });
 
@@ -101,9 +105,18 @@ export default class extends Ob {
     this.targetInfo?.scene.traverse((obj) => {
       if (obj.isGroup && obj.name.includes("Scene")) {
         const rotFolder = folder.addFolder("Rotation");
-        rotFolder.add(obj.rotation, "x", -Math.PI, Math.PI).step(0.01).name("Rotate X");
-        rotFolder.add(obj.rotation, "y", -Math.PI, Math.PI).step(0.01).name("Rotate Y");
-        rotFolder.add(obj.rotation, "z", -Math.PI, Math.PI).step(0.01).name("Rotate Z");
+        rotFolder
+          .add(obj.rotation, "x", -Math.PI, Math.PI)
+          .step(0.01)
+          .name("Rotate X");
+        rotFolder
+          .add(obj.rotation, "y", -Math.PI, Math.PI)
+          .step(0.01)
+          .name("Rotate Y");
+        rotFolder
+          .add(obj.rotation, "z", -Math.PI, Math.PI)
+          .step(0.01)
+          .name("Rotate Z");
       }
     });
   }
