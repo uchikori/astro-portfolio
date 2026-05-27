@@ -3,17 +3,8 @@ import { viewport, gui, INode } from "./helper";
 import scroller from "./component/scroller";
 import mouse from "./component/mouse";
 import loader from "./component/loader";
-import gsap from "gsap";
-import {
-  mountNavBtnHandler,
-  mountReflectBtnHandler,
-  mountScrollHandler,
-} from "./component/slide-hundler";
-import { initRipplePass } from "./glsl/ripple";
-import { initMouseParticles } from "./glsl/mouse-particles";
 import menu from "./component/menu";
 import { registScrollAnimations } from "./component/scroll-animation";
-import { initDistortionPass } from "./glsl/distortion-text/pass";
 
 window.debug = enableDebugMode(1);
 
@@ -106,13 +97,18 @@ export async function init() {
     try {
       module = await preloadHomeModule();
     } catch (firstError) {
-      console.error("[bootstrap] first home import failed, retrying once...", firstError);
+      console.error(
+        "[bootstrap] first home import failed, retrying once...",
+        firstError,
+      );
       homeModulePromise = null;
       module = await preloadHomeModule();
     }
 
     if (typeof module?.default !== "function") {
-      throw new Error("[bootstrap] home module default export is not a function");
+      throw new Error(
+        "[bootstrap] home module default export is not a function",
+      );
     }
     await module.default({
       world,

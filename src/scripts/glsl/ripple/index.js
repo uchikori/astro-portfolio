@@ -24,7 +24,7 @@ import {
   uv,
   context,
 } from "three/tsl";
-import { viewport } from "../../helper";
+import { viewport } from "../../helper/viewport";
 // import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 class Ripple {

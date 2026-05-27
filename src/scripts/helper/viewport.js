@@ -1,5 +1,3 @@
-import world from "../glsl/world";
-
 const viewport = {
   init,
   isMobile,
