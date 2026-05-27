@@ -1,7 +1,6 @@
 import gsap from "gsap";
 import world from "../glsl/world";
-import { INode } from "../helper";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { INode } from "../helper/INode";
 
 function mountNavBtnHandler(
   sliderSelector,
