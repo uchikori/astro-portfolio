@@ -1,6 +1,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { INode, utils, viewport } from "../helper";
+import { INode } from "../helper/INode";
+import { viewport } from "../helper/viewport";
 import world from "../glsl/world";
 import { initRipplePass } from "../glsl/ripple";
 import mouse from "./mouse";

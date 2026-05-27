@@ -1,5 +1,7 @@
 import { Vector2 } from "three/webgpu";
-import { viewport, INode, utils } from "../helper";
+import { INode } from "../helper/INode";
+import { viewport } from "../helper/viewport";
+import { utils } from "../helper/utils";
 import { handlers } from "./mouse-animation";
 
 //現在位置

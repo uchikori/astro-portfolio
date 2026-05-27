@@ -4,7 +4,7 @@ import { Ob } from "../Ob";
 import Vertex from "./vertex";
 import Fragment from "./fragment";
 import { uniform, vec2 } from "three/tsl";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 
 export default class extends Ob {
   setupUniforms() {

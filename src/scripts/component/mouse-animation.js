@@ -1,4 +1,4 @@
-import { INode } from "../helper";
+import { INode } from "../helper/INode";
 
 const highlight = {
   enter: (mouse, event) => {

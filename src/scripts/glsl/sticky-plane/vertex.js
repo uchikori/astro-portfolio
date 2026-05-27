@@ -1,5 +1,5 @@
 import { vec3, add, mul, positionLocal, sub, clamp } from "three/tsl";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 
 export default function vertex(opt) {
   const { vUv, uniforms, vDelay } = opt;

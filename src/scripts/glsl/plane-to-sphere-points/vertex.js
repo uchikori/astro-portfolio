@@ -1,6 +1,6 @@
 import { mul, sub, clamp, Fn, mix } from "three/tsl";
 
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 
 export default function Vertex(options) {
   return Fn(() => {
@@ -14,11 +14,7 @@ export default function Vertex(options) {
     } = options;
 
     const delay = utils.backInOut(
-      clamp(
-        mul(uniforms.uProgress, 2.0).sub(aInstanceDelay),
-        0.0,
-        1.0,
-      ),
+      clamp(mul(uniforms.uProgress, 2.0).sub(aInstanceDelay), 0.0, 1.0),
     );
 
     const pos = mix(

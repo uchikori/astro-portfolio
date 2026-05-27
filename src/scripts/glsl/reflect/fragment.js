@@ -12,7 +12,7 @@ import {
   vec4,
 } from "three/tsl";
 
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 export default function Fragment(opt) {
   return Fn(() => {
     // 展開したのでトップレベルで受け取れる

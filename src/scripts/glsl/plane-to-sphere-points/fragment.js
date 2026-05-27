@@ -16,7 +16,7 @@ import {
   mul,
   uv,
 } from "three/tsl";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 
 export default function Fragment(options) {
   return Fn(() => {

@@ -1,5 +1,5 @@
-import { utils } from "../helper";
-import { INode } from "../helper";
+import { utils } from "../helper/utils";
+import { INode } from "../helper/INode";
 import mouse from "../component/mouse";
 import {
   WebGPURenderer,

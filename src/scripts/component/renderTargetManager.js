@@ -14,7 +14,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
 import { PointLight, AmbientLight, DirectionalLight } from "three/webgpu";
 import { RGBAFormat } from "three";
-import { gui } from "../helper";
+import { gui } from "../helper/gui";
 
 /**
  * レンダーターゲットマネージャー

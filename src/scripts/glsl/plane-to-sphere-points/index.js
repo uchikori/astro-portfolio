@@ -9,7 +9,7 @@ import {
 import { Ob } from "../Ob.js";
 import Fragment from "./fragment.js";
 import Vertex from "./vertex.js";
-import { utils } from "../../helper/index.js";
+import { utils } from "../../helper/utils.js";
 import { add, attribute, mul, positionLocal, uniform } from "three/tsl";
 
 export default class extends Ob {

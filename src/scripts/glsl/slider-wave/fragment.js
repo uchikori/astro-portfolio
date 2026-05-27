@@ -13,7 +13,7 @@ import {
   vec2,
   vec4,
 } from "three/tsl";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 import { varying } from "./vertex";
 export default function Fragment(opt) {
   return Fn(() => {

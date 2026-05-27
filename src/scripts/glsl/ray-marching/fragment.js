@@ -23,7 +23,7 @@ import {
   vec3,
   vec4,
 } from "three/tsl";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 
 function rotate(v, axis, angle) {
   return utils.rotate3D(v, axis, angle);

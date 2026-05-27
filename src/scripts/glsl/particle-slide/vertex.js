@@ -1,5 +1,5 @@
 import { Fn, mul, positionLocal, add, sub } from "three/tsl";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 
 export default function Vertex(options) {
   return Fn(() => {

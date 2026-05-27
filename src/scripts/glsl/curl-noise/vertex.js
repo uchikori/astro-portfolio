@@ -1,5 +1,5 @@
 import { Fn, mul, positionLocal, add, sub, abs, vec3 } from "three/tsl";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 
 const varying = {};
 export default function Vertex(options) {

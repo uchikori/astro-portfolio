@@ -1,5 +1,5 @@
 import { length, mix, mul, smoothstep, sub, texture, vec4 } from "three/tsl";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 
 export default function Fragment(options) {
   const { aInstanceUV, uniforms } = options;

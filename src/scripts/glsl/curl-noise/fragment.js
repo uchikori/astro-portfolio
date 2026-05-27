@@ -1,6 +1,5 @@
 import { mix, texture } from "three/tsl";
-import { varying } from "./vertex";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 export default function fragment(options) {
   const { aInstanceUV, uniforms } = options;
 

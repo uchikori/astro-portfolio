@@ -9,7 +9,7 @@ import {
 import { Ob } from "../Ob.js";
 import Fragment from "./fragment.js";
 import Vertex from "./vertex.js";
-import { INode, utils } from "../../helper/index.js";
+import { INode } from "../../helper/INode.js";
 import {
   add,
   attribute,
@@ -21,7 +21,7 @@ import {
   vec2,
 } from "three/tsl";
 import gsap from "gsap";
-import { viewport } from "../../helper/index.js";
+import { viewport } from "../../helper/viewport.js";
 
 export default class extends Ob {
   delayVertices;

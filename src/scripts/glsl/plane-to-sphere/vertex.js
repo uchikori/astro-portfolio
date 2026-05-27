@@ -11,7 +11,7 @@ import {
   vec3,
 } from "three/tsl";
 
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 
 const varying = {};
 

@@ -1,5 +1,5 @@
 import { mix, mul, sub, step, add, texture, vec2, Fn } from "three/tsl";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 
 export default function fragment(options) {
   return Fn(() => {

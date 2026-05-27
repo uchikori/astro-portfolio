@@ -15,7 +15,7 @@ import {
   PI,
 } from "three/tsl";
 
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 
 export default function vertex(opt) {
   return Fn(() => {

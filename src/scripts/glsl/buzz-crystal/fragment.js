@@ -18,7 +18,7 @@ import {
   exp,
   texture,
 } from "three/tsl";
-import { utils } from "../../helper";
+import { utils } from "../../helper/utils";
 
 export default function fragment(options) {
   const { vUv, uniforms } = options;

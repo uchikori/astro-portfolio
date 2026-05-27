@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import ScrollSmoother from "gsap/ScrollSmoother";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { INode } from "../helper";
+import { INode } from "../helper/INode";
 
 const scroller = {
   init,
