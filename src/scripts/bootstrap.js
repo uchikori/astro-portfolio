@@ -73,9 +73,22 @@ export async function init() {
 
   addGUI();
 
-  await import("./page/home.js").then(({ default: initHome }) => {
-    initHome({ world, mouse, menu, loader, viewport, scroller });
-  });
+  const pages = await import.meta.glob("./page/*.js");
+
+  const loadPage = async (name) => {
+    const module = await pages[`./page/${name}.js`]();
+
+    module.default({
+      world,
+      mouse,
+      menu,
+      loader,
+      viewport,
+      scroller,
+    });
+  };
+
+  await loadPage("home");
 
   mouse.init(false, true);
 

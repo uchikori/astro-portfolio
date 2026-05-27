@@ -3,6 +3,7 @@ import {
   mountReflectBtnHandler,
 } from "../component/slide-hundler";
 import { initDistortionPass } from "../glsl/distortion-text/pass";
+import { initRipplePass } from "../glsl/ripple";
 
 export default async function ({
   world,
