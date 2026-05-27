@@ -66,28 +66,28 @@ export async function init() {
 
   addGUI();
 
-  const pages = import.meta.glob("./page/*.js", { eager: true });
+  // const pages = import.meta.glob("./page/*.js", { eager: true });
 
-  console.log(pages);
+  // console.log(pages);
 
-  const loadPage = async (name) => {
-    const module = pages[`./page/${name}.js`];
+  // const loadPage = async (name) => {
+  //   const module = pages[`./page/${name}.js`];
 
-    module.default({
-      world,
-      mouse,
-      menu,
-      loader,
-      viewport,
-      scroller,
-    });
-  };
+  //   module.default({
+  //     world,
+  //     mouse,
+  //     menu,
+  //     loader,
+  //     viewport,
+  //     scroller,
+  //   });
+  // };
 
-  loadPage("home");
+  // loadPage("home");
 
-  // await import("./page/home.js").then(({ default: initHome }) => {
-  //   return initHome({ world, mouse, menu, loader, viewport, scroller });
-  // });
+  await import("./page/home.js").then(({ default: initHome }) => {
+    return initHome({ world, mouse, menu, loader, viewport, scroller });
+  });
 
   mouse.init(false, true);
 
