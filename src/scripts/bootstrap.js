@@ -22,56 +22,20 @@ function enableDebugMode(debug) {
   return debug && import.meta.env.DEV;
 }
 
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+let homeModulePromise = null;
 
-function withTimeout(promise, timeoutMs, errorMessage) {
-  let timerId;
-  const timeoutPromise = new Promise((_, reject) => {
-    timerId = setTimeout(() => {
-      reject(new Error(errorMessage));
-    }, timeoutMs);
-  });
-
-  return Promise.race([promise, timeoutPromise]).finally(() => {
-    clearTimeout(timerId);
-  });
-}
-
-async function loadHomeModule({
-  maxRetries = 2,
-  timeoutMs = 12000,
-  retryDelayMs = 500,
-} = {}) {
-  let lastError = null;
-
-  for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
-    try {
-      const module = await withTimeout(
-        import("./page/home.js"),
-        timeoutMs,
-        `[bootstrap] dynamic import timeout (${timeoutMs}ms): ./page/home.js`,
-      );
-      return module;
-    } catch (error) {
-      lastError = error;
-      console.error(
-        `[bootstrap] failed to import home module (attempt ${attempt}/${maxRetries + 1})`,
-        error,
-      );
-      if (attempt <= maxRetries) {
-        await delay(retryDelayMs * attempt);
-      }
-    }
+function preloadHomeModule() {
+  if (!homeModulePromise) {
+    homeModulePromise = import("./page/home.js");
   }
-
-  throw lastError;
+  return homeModulePromise;
 }
 
 export async function init() {
   //WebGLオブジェクトを格納するためのオブジェクト
   const canvas = INode.getElement("#canvas");
+  // 動的importを先に開始して、後段の重い初期化中にチャンク取得を進める
+  preloadHomeModule();
 
   // デバッグモードの場合
   if (window.debug) {
@@ -138,7 +102,15 @@ export async function init() {
   // };
 
   try {
-    const module = await loadHomeModule();
+    let module;
+    try {
+      module = await preloadHomeModule();
+    } catch (firstError) {
+      console.error("[bootstrap] first home import failed, retrying once...", firstError);
+      homeModulePromise = null;
+      module = await preloadHomeModule();
+    }
+
     if (typeof module?.default !== "function") {
       throw new Error("[bootstrap] home module default export is not a function");
     }
