@@ -1,3 +1,4 @@
+console.log("home module loaded");
 import {
   mountNavBtnHandler,
   mountReflectBtnHandler,
@@ -13,6 +14,7 @@ export default async function ({
   viewport,
   scroller,
 }) {
+  console.log("initHome start");
   // each page
   mountNavBtnHandler(
     ".bl_fv_slider",

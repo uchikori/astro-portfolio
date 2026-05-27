@@ -73,14 +73,28 @@ export async function init() {
 
   addGUI();
 
-  const pages = await import.meta.glob("./page/*.js", { eager: true });
+  // const pages = import.meta.glob("./page/*.js", { eager: true });
 
-  console.log(pages);
+  // console.log(pages);
 
-  const loadPage = async (name) => {
-    const module = await pages[`./page/${name}.js`];
+  // const loadPage = async (name) => {
+  //   const module = pages[`./page/${name}.js`];
 
-    module.default({
+  //   module.default({
+  //     world,
+  //     mouse,
+  //     menu,
+  //     loader,
+  //     viewport,
+  //     scroller,
+  //   });
+  // };
+
+  try {
+    console.log("before import");
+    const module = await import("./page/home.js");
+    console.log("after import");
+    await module.default({
       world,
       mouse,
       menu,
@@ -88,9 +102,14 @@ export async function init() {
       viewport,
       scroller,
     });
-  };
+    console.log("after init");
+  } catch (e) {
+    console.error(e);
+  }
 
-  await loadPage("home");
+  // await import("./page/home.js").then(({ default: initHome }) => {
+  //   return initHome({ world, mouse, menu, loader, viewport, scroller });
+  // });
 
   mouse.init(false, true);
 
