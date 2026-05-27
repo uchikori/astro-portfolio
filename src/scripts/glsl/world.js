@@ -11,6 +11,7 @@ import {
   LinearSRGBColorSpace,
   PostProcessing,
 } from "three/webgpu";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import RenderTargetManager from "../component/renderTargetManager";
 import { Ob } from "./Ob";
 import { pass } from "three/tsl";
@@ -360,24 +361,17 @@ let orbitControl;
 
 //OrbitControlの追加
 function _attachOrbitControl() {
-  import("three/examples/jsm/controls/OrbitControls.js").then(
-    ({ OrbitControls }) => {
-      //OrbitControlのインスタンス化
-      orbitControl = new OrbitControls(world.camera, world.renderer.domElement);
-      // canvasのz-indexを100に設定(-1のままだとマウスでドラッグできないため)
-      const el = world.renderer.domElement;
-      el.style.zIndex = 100;
+  //OrbitControlのインスタンス化
+  orbitControl = new OrbitControls(world.camera, world.renderer.domElement);
+  // canvasのz-indexを100に設定(-1のままだとマウスでドラッグできないため)
+  const el = world.renderer.domElement;
+  el.style.zIndex = 100;
 
-      //もし親要素がpin-spacerクラスを持っていたら
-      if (
-        el.parentElement &&
-        el.parentElement.classList.contains("pin-spacer")
-      ) {
-        //親要素のz-indexを100に設定
-        el.parentElement.style.zIndex = 100;
-      }
-    },
-  );
+  //もし親要素がpin-spacerクラスを持っていたら
+  if (el.parentElement && el.parentElement.classList.contains("pin-spacer")) {
+    //親要素のz-indexを100に設定
+    el.parentElement.style.zIndex = 100;
+  }
 }
 //OrbitControlの削除
 function _detachOrbitControl() {

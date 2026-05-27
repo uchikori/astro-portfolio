@@ -25,6 +25,7 @@ import {
 } from "three/tsl";
 
 import { viewport } from "../../helper";
+import { gui } from "../../helper/gui";
 
 class ParticleSystem {
   constructor(count = 500) {
@@ -219,11 +220,9 @@ async function initMouseParticles(world, mouseObj) {
   world.addPass(particleEffect);
 
   if (window.debug) {
-    import("../../helper/gui").then(({ gui }) => {
-      gui.add((lilGUI) => {
-        const folder = lilGUI.addFolder("MouseParticles");
-        particles.debug(folder);
-      });
+    gui.add((lilGUI) => {
+      const folder = lilGUI.addFolder("MouseParticles");
+      particles.debug(folder);
     });
   }
 
