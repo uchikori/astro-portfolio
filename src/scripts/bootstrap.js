@@ -22,6 +22,53 @@ function enableDebugMode(debug) {
   return debug && import.meta.env.DEV;
 }
 
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function withTimeout(promise, timeoutMs, errorMessage) {
+  let timerId;
+  const timeoutPromise = new Promise((_, reject) => {
+    timerId = setTimeout(() => {
+      reject(new Error(errorMessage));
+    }, timeoutMs);
+  });
+
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    clearTimeout(timerId);
+  });
+}
+
+async function loadHomeModule({
+  maxRetries = 2,
+  timeoutMs = 12000,
+  retryDelayMs = 500,
+} = {}) {
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
+    try {
+      const module = await withTimeout(
+        import("./page/home.js"),
+        timeoutMs,
+        `[bootstrap] dynamic import timeout (${timeoutMs}ms): ./page/home.js`,
+      );
+      return module;
+    } catch (error) {
+      lastError = error;
+      console.error(
+        `[bootstrap] failed to import home module (attempt ${attempt}/${maxRetries + 1})`,
+        error,
+      );
+      if (attempt <= maxRetries) {
+        await delay(retryDelayMs * attempt);
+      }
+    }
+  }
+
+  throw lastError;
+}
+
 export async function init() {
   //WebGLオブジェクトを格納するためのオブジェクト
   const canvas = INode.getElement("#canvas");
@@ -91,9 +138,10 @@ export async function init() {
   // };
 
   try {
-    console.log("before import");
-    const module = await import("./page/home.js");
-    console.log("after import");
+    const module = await loadHomeModule();
+    if (typeof module?.default !== "function") {
+      throw new Error("[bootstrap] home module default export is not a function");
+    }
     await module.default({
       world,
       mouse,
@@ -102,9 +150,8 @@ export async function init() {
       viewport,
       scroller,
     });
-    console.log("after init");
   } catch (e) {
-    console.error(e);
+    console.error("[bootstrap] initHome failed", e);
   }
 
   // await import("./page/home.js").then(({ default: initHome }) => {
