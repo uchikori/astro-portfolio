@@ -73,7 +73,7 @@ export async function init() {
 
   addGUI();
 
-  const pages = await import.meta.glob("./page/*.js");
+  const pages = await import.meta.glob("./page/*.js", { eager: true });
 
   const loadPage = async (name) => {
     const module = await pages[`./page/${name}.js`]();
