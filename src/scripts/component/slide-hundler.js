@@ -86,7 +86,12 @@ function mountReflectBtnHandler(
   });
 }
 
-function mountScrollHandler(world, sliderSelector, triggerSelector, textSelector) {
+function mountScrollHandler(
+  world,
+  sliderSelector,
+  triggerSelector,
+  textSelector,
+) {
   const slider = world.getObjByEl(sliderSelector);
   const slideUl = INode.getElement(textSelector);
 
