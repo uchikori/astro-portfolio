@@ -1,4 +1,6 @@
 import "../styles/style.scss";
 import { init } from "./bootstrap";
 
-await init();
+void init().catch((error) => {
+  console.error(error);
+});

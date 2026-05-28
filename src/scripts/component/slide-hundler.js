@@ -1,8 +1,8 @@
 import gsap from "gsap";
-import world from "../glsl/world";
 import { INode } from "../helper/INode";
 
 function mountNavBtnHandler(
+  world,
   sliderSelector,
   prevBtnSelector,
   nextBtnSelector,
@@ -33,6 +33,7 @@ function mountNavBtnHandler(
 }
 
 function mountReflectBtnHandler(
+  world,
   sliderSelector,
   prevBtnSelector,
   nextBtnSelector,
@@ -85,7 +86,7 @@ function mountReflectBtnHandler(
   });
 }
 
-function mountScrollHandler(sliderSelector, triggerSelector, textSelector) {
+function mountScrollHandler(world, sliderSelector, triggerSelector, textSelector) {
   const slider = world.getObjByEl(sliderSelector);
   const slideUl = INode.getElement(textSelector);
 

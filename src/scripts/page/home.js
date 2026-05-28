@@ -17,6 +17,7 @@ export default async function ({
   console.log("initHome start");
   // each page
   mountNavBtnHandler(
+    world,
     ".bl_fv_slider",
     ".bl_fv .js_navBtn__prev",
     ".bl_fv .js_navBtn__next",
@@ -24,6 +25,7 @@ export default async function ({
   );
 
   mountReflectBtnHandler(
+    world,
     ".bl_reflect_slider",
     ".bl_reflect .js_navBtn__prev",
     ".bl_reflect .js_navBtn__next",
@@ -74,7 +76,7 @@ export default async function ({
         onComplete: async () => {
           removePass();
           // ロード完了後にリプルエフェクトを追加
-          await initRipplePass(world, mouse);
+          await initRipplePass(world, mouse, viewport);
           // ロード完了後にマウスパーティクルを追加
           // await initMouseParticles(world, mouse);
         },

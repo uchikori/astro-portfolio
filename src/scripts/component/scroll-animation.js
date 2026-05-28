@@ -3,7 +3,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { INode } from "../helper/INode";
 import { viewport } from "../helper/viewport";
 import world from "../glsl/world";
-import { initRipplePass } from "../glsl/ripple";
 import mouse from "./mouse";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -298,7 +297,12 @@ async function ripple(el) {
   if (viewport.isMobile()) return;
 
   //リプルパスを初期化(ポストプロセスエフェクト)
-  const { addPass, removePass } = await initRipplePass(world, mouse);
+  const { initRipplePass } = await import("../glsl/ripple");
+  const { addPass, removePass } = await initRipplePass(
+    world,
+    mouse,
+    viewport,
+  );
 
   ScrollTrigger.create({
     trigger: el,

@@ -24,7 +24,6 @@ import {
   uv,
   context,
 } from "three/tsl";
-import { viewport } from "../../helper/viewport";
 // import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 class Ripple {
@@ -75,7 +74,7 @@ class Ripple {
   }
 }
 
-async function initRipplePass(world, mouseObj) {
+async function initRipplePass(world, mouseObj, viewport) {
   const scene = new Scene();
   scene.background = new Color(0x000000);
 
