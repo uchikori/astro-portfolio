@@ -6,15 +6,27 @@ import { initDistortionPass } from "../glsl/distortion-text/pass";
 import { initRipplePass } from "../glsl/ripple";
 
 let world = null;
+let mouse = null;
+let menu = null;
+let loader = null;
+let viewport = null;
+let scroller = null;
+
 export default async function ({
   world: _world,
-  mouse,
-  menu,
-  loader,
-  viewport,
-  scroller,
+  mouse: _mouse,
+  menu: _menu,
+  loader: _loader,
+  viewport: _viewport,
+  scroller: _scroller,
 }) {
   world = _world;
+  mouse = _mouse;
+  menu = _menu;
+  loader = _loader;
+  viewport = _viewport;
+  scroller = _scroller;
+
   // each page
   mountNavBtnHandler(
     world,
