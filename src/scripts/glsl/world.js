@@ -99,16 +99,17 @@ async function _initObjects(viewport) {
   const els = INode.qsAll("[data-webgl]");
 
   // // eager: true を指定してビルド時にモジュールをすべて読み込んでおく（本番環境でのハングアップ防止）
-  const modules = import.meta.glob("./{*/index.js,*/index.ts}", {
-    eager: true,
-  });
+  const modules = import.meta.glob("./{*/index.js,*/index.ts}");
 
   // // 各要素の初期化を並列実行
   const prms = els.map(async (el) => {
     const type = INode.getDS(el, "webgl");
-    const module = modules[`./${type}/index.js`];
-
     try {
+      const loadModule =
+        modules[`./${type}/index.js`] ?? modules[`./${type}/index.ts`];
+      if (!loadModule) return null;
+
+      const module = await loadModule();
       const LoadedOb = module?.default;
       if (!LoadedOb) return null;
 
