@@ -10,12 +10,13 @@ import ArrowLink from "../ui/ArrowLink.astro";
     <video
       id="js-kv-video"
       class="bl_hero_video kv-img"
-      autoplay
       muted
-      loop
       playsinline
-      data-scroll-trigger="pin,blur,playHTMLVideo"
+      autoplay
+      loop
+      data-scroll-trigger="pin,blur,"
       data-pin-trigger=".js_hero"
+      preload="auto"
     >
       <source
         media="(max-width: 59.9375em)"
@@ -106,11 +107,15 @@ import ArrowLink from "../ui/ArrowLink.astro";
     if (video.currentSrc !== location.origin + newSrc) {
       video.src = newSrc;
       video.load();
-      video.play();
+      video.play().catch((err) => {
+        console.warn("Autoplay was prevented or interrupted:", err);
+      });
     }
   }
 
   if (video && mq) {
+    // Run once on initial load to set the correct src
+    updateVideoSrc(mq);
     mq.addEventListener("change", updateVideoSrc);
   }
 </script>

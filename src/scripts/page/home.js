@@ -89,7 +89,7 @@ function loadAnimation(tl) {
       onComplete: async () => {
         removePass();
         // ロード完了後にリプルエフェクトを追加
-        await initRipplePass(world, mouse, viewport);
+        // await initRipplePass(world, mouse, viewport);
         // ロード完了後にマウスパーティクルを追加
         // await initMouseParticles(world, mouse);
       },

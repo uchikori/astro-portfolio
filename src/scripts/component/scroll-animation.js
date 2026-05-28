@@ -298,11 +298,7 @@ async function ripple(el) {
 
   //リプルパスを初期化(ポストプロセスエフェクト)
   const { initRipplePass } = await import("../glsl/ripple");
-  const { addPass, removePass } = await initRipplePass(
-    world,
-    mouse,
-    viewport,
-  );
+  const { addPass, removePass } = await initRipplePass(world, mouse, viewport);
 
   ScrollTrigger.create({
     trigger: el,

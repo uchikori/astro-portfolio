@@ -158,7 +158,16 @@ async function loadVideo(url) {
   incrementTotal();
 
   return new Promise((resolve) => {
-    const video = document.createElement("video");
+    // const video = document.createElement("video");
+
+    const video = INode.htmlToEl(`<video
+    autoplay
+    loop
+    muted
+    playsinline
+    defaultMuted
+    crossorigin="anonymous"
+    ></video>`);
 
     video.oncanplay = () => {
       //textureを読み込み
@@ -169,7 +178,9 @@ async function loadVideo(url) {
       tex.magFilter = LinearFilter;
       tex.minFilter = LinearFilter;
       tex.colorSpace = SRGBColorSpace;
-      video.play();
+      video.play().catch((err) => {
+        console.warn("Video play failed or was prevented:", err);
+      });
 
       video.oncanplay = null;
       resolve(tex);
@@ -179,16 +190,16 @@ async function loadVideo(url) {
       console.error(`Failed to load video: ${url}`);
       // 失敗してもカウントは進めないと全体が止まる
       incrementProgress();
-      resolve(null);
+      reject();
     };
 
     video.src = url;
-    video.muted = true;
-    video.autoplay = true;
-    video.loop = true;
-    video.playsInline = true;
-    video.defaultMuted = true;
-    video.load(); // 明示的に読み込みを開始
+    // video.muted = true;
+    // video.autoplay = true;
+    // video.loop = true;
+    // video.playsInline = true;
+    // video.defaultMuted = true;
+    // video.load(); // 明示的に読み込みを開始
   });
 }
 
