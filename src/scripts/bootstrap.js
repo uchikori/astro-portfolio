@@ -19,6 +19,12 @@ export async function init() {
   //WebGLオブジェクトを格納するためのオブジェクト
   const canvas = INode.getElement("#canvas");
 
+  // pageTypeを取得
+  const pageEl = INode.getElement("#pageContainer");
+  const pageType = INode.getDS(pageEl, "pageType");
+
+  console.log(pageType);
+
   // デバッグモードの場合
   if (window.debug) {
     await gui.init();
@@ -85,8 +91,9 @@ export async function init() {
 
   // loadPage("home");
 
-  await import("./page/home.js").then(({ default: initHome }) => {
-    return initHome({ world, mouse, menu, loader, viewport, scroller });
+  // 下層ページ固有の処理JSを動的インポート
+  await import(`./page/${pageType}.js`).then(({ default: init }) => {
+    return init({ world, mouse, menu, loader, viewport, scroller });
   });
 
   mouse.init(false, true);

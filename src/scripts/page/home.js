@@ -1,4 +1,3 @@
-console.log("home module loaded");
 import {
   mountNavBtnHandler,
   mountReflectBtnHandler,
@@ -6,15 +5,16 @@ import {
 import { initDistortionPass } from "../glsl/distortion-text/pass";
 import { initRipplePass } from "../glsl/ripple";
 
+let world = null;
 export default async function ({
-  world,
+  world: _world,
   mouse,
   menu,
   loader,
   viewport,
   scroller,
 }) {
-  console.log("initHome start");
+  world = _world;
   // each page
   mountNavBtnHandler(
     world,
@@ -34,73 +34,73 @@ export default async function ({
 
   // mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
   loader.addLoadingAnimation(loadAnimation);
+}
 
-  function loadAnimation(tl) {
-    // エレメントを取得
-    const heroObject = world.getObjByEl(".js_hero_object");
-    const distortion = world.getObjByEl(".bl_loadPP");
-    if (!heroObject || !distortion) return;
+function loadAnimation(tl) {
+  // エレメントを取得
+  const heroObject = world.getObjByEl(".js_hero_object");
+  const distortion = world.getObjByEl(".bl_loadPP");
+  if (!heroObject || !distortion) return;
 
-    // RenderTarget内の3Dモデルを取得
-    let targetModel = null;
-    if (heroObject.targetInfo) {
-      heroObject.targetInfo.scene.traverse((obj) => {
-        if (obj.isGroup && obj.name.includes("Scene")) {
-          targetModel = obj;
-        }
-      });
-    }
+  // RenderTarget内の3Dモデルを取得
+  let targetModel = null;
+  if (heroObject.targetInfo) {
+    heroObject.targetInfo.scene.traverse((obj) => {
+      if (obj.isGroup && obj.name.includes("Scene")) {
+        targetModel = obj;
+      }
+    });
+  }
 
-    // レンダーターゲット内のモデルがあればそれを、なければmesh自体を回転させる
-    const animateTarget = targetModel || heroObject.mesh;
-    if (!animateTarget) return;
+  // レンダーターゲット内のモデルがあればそれを、なければmesh自体を回転させる
+  const animateTarget = targetModel || heroObject.mesh;
+  if (!animateTarget) return;
 
-    const startY = animateTarget.rotation.y;
+  const startY = animateTarget.rotation.y;
 
-    // 手前（z軸プラス方向）の初期値を設定（ニアクリップを考慮して400）
-    heroObject.mesh.position.z = 500;
+  // 手前（z軸プラス方向）の初期値を設定（ニアクリップを考慮して400）
+  heroObject.mesh.position.z = 500;
 
-    const { removePass, setProgress } = initDistortionPass(world);
-    const distortionProgress = { value: 0 };
+  const { removePass, setProgress } = initDistortionPass(world);
+  const distortionProgress = { value: 0 };
 
-    // z位置を0に戻すアニメーション
-    tl.to(
-      distortionProgress,
+  // z位置を0に戻すアニメーション
+  tl.to(
+    distortionProgress,
+    {
+      value: 1,
+      duration: 1,
+      ease: "power3.out",
+      onUpdate: () => {
+        setProgress(distortionProgress.value);
+      },
+      onComplete: async () => {
+        removePass();
+        // ロード完了後にリプルエフェクトを追加
+        await initRipplePass(world, mouse, viewport);
+        // ロード完了後にマウスパーティクルを追加
+        // await initMouseParticles(world, mouse);
+      },
+    },
+    "<",
+  )
+    .to(
+      heroObject.mesh.position,
       {
-        value: 1,
-        duration: 1,
+        z: 0,
+        duration: 2,
         ease: "power3.out",
-        onUpdate: () => {
-          setProgress(distortionProgress.value);
-        },
-        onComplete: async () => {
-          removePass();
-          // ロード完了後にリプルエフェクトを追加
-          await initRipplePass(world, mouse, viewport);
-          // ロード完了後にマウスパーティクルを追加
-          // await initMouseParticles(world, mouse);
-        },
       },
       "<",
     )
-      .to(
-        heroObject.mesh.position,
-        {
-          z: 0,
-          duration: 2,
-          ease: "power3.out",
-        },
-        "<",
-      )
-      // 回転アニメーション
-      .to(
-        animateTarget.rotation,
-        {
-          y: startY + Math.PI * 2,
-          duration: 1,
-          ease: "power3.out",
-        },
-        "<",
-      );
-  }
+    // 回転アニメーション
+    .to(
+      animateTarget.rotation,
+      {
+        y: startY + Math.PI * 2,
+        duration: 1,
+        ease: "power3.out",
+      },
+      "<",
+    );
 }

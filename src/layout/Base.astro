@@ -1,5 +1,5 @@
 ---
-const { title = "Astro" } = Astro.props;
+const { title = "Astro", pageType } = Astro.props;
 import "../styles/style.scss";
 import Loader from "../components/common/Loader.astro";
 import Aside from "../components/common/Aside.astro";
@@ -49,7 +49,7 @@ import LoadPP from "../components/webgl/LoadPP.astro";
       <LoadPP />
       <div id="smooth-wrapper">
         <div id="smooth-content">
-          <div id="pageContainer">
+          <div id="pageContainer" data-page-type={pageType}>
             <slot />
           </div>
           <Footer />
