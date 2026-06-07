@@ -4,11 +4,10 @@ import Kv from "../components/sections/Kv.astro";
 import Fv from "../components/sections/Fv.astro";
 import Reflect from "../components/webgl/Reflect.astro";
 import Vision from "../components/sections/Vision.astro";
-import Diverse from "../components/sections/diverse.astro";
 import Service from "../components/sections/Service.astro";
 ---
 
-<Base title="Astro-home" pageType="home">
+<Base title="Astro-home" pageType="home" bodyClass="home">
   <Kv />
   <Service />
 
@@ -63,7 +62,7 @@ import Service from "../components/sections/Service.astro";
 
     <!-- <div>
       <h2>particle-slide</h2>
-      <div class="bl_particleSlide">
+      <div class="bl_particleSlide" style="position:relative">
         <div
           class="image"
           data-webgl="particle-slide"

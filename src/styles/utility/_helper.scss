@@ -47,7 +47,18 @@
   position: relative;
 }
 
+//
 .hl_webglObject {
   width: 100% !important;
   height: 100% !important;
 }
+
+// ホバー不可
+.hl_disableHover {
+  pointer-events: none !important;
+
+  .el_mousePointer {
+    opacity: 0 !important;
+  }
+}
+

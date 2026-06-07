@@ -1,0 +1,191 @@
+---
+import Base from "../layout/Base.astro";
+---
+
+<Base title="Astro-diverse" pageType="diverse" bodyClass="diverse">
+  <section class="top">
+    <div class="top__inner hl_contentWidthNarrow">
+      <h2 class="top__title" data-mouse="highlight" data-mouse-scale="3">
+        DIVERSE
+      </h2>
+      <p class="top__subtitle">技術を磨いて、新しい世界への扉を開こう。</p>
+      <div class="top__img-wrap">
+        <img
+          id="particles"
+          class="top__img"
+          data-webgl="particle-slide"
+          data-tex-1="/img/diverse_image_2.jpeg"
+          data-mouse="highlight"
+          data-mouse-scale="3"
+          alt=""
+        />
+      </div>
+    </div>
+  </section>
+  <section class="info" data-scroll-trigger="reversal,ripple">
+    <div class="info__inner hl_contentWidthNarrow">
+      <h3 class="info__title" data-mouse="highlight" data-mouse-scale="2">
+        COMPANY
+      </h3>
+      <div class="info__content">
+        <div class="info__item">
+          <p class="info__label">Name</p>
+          <p class="info__text">Not Equal</p>
+        </div>
+        <div class="info__item">
+          <p class="info__label">Founded</p>
+          <p class="info__text">April 1, 2023</p>
+        </div>
+        <div class="info__item">
+          <p class="info__label">Founder</p>
+          <p class="info__text">CodeMafia</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="info office">
+    <div class="info__inner hl_contentWidthNarrow">
+      <h3 class="info__title" data-mouse="highlight" data-mouse-scale="2">
+        OFFICE
+      </h3>
+      <div class="info__content">
+        <div class="info__item">
+          <p class="info__label">Headquaters</p>
+          <p class="info__text">Kyoto</p>
+        </div>
+        <div class="info__item">
+          <p class="info__label">Contact</p>
+          <p class="info__text">info@not-equal.dev</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style lang="scss">
+  @use "../styles/global" as *;
+  @use "../styles/utility" as *;
+  ::global(.diverse) {
+    .bc {
+      margin-top: 60px;
+      @include mq("xl") {
+        margin-top: 95px;
+        font-size: to-rem(16px);
+      }
+
+      &__lists {
+        display: flex;
+        align-items: center;
+      }
+
+      &__dot {
+        background-color: var(--c-text);
+        width: 3px;
+        height: 3px;
+        margin: 0 1em;
+        border-radius: 50%;
+      }
+
+      &__anker {
+        color: var(--c-gray);
+        font-weight: bold;
+        &.current {
+          color: var(--c-main);
+        }
+      }
+    }
+
+    .top {
+      text-align: left;
+      @include mq("xl") {
+        text-align: center;
+      }
+
+      &__title {
+        margin-bottom: 4rem;
+      }
+
+      &__subtitle {
+        @extend .font-16-24;
+        margin-bottom: 2em;
+      }
+
+      &__img-wrap {
+        position: relative;
+        width: 100%;
+
+        & .fv_image {
+          opacity: 0;
+        }
+      }
+    }
+
+    & .info {
+      margin-top: to-rem(120px);
+      @include mq("xl") {
+        margin-top: to-rem(100px);
+      }
+
+      &__inner {
+        @include mq("xl") {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+
+      &__title {
+        font-size: fluid-text(28px, 36px);
+        margin-bottom: to-rem(25px);
+        line-height: 1;
+      }
+
+      &__content {
+        flex-basis: 100%;
+        @include mq("xl") {
+          flex-basis: 75%;
+        }
+      }
+
+      &__item {
+        display: flex;
+        align-items: center;
+        padding: to-rem(28px) 0;
+        gap: to-rem(85px);
+        @include mq("xl") {
+          border-top: 1px solid var(--c-gray);
+          padding: to-rem(20px) 0px;
+        }
+
+        &:last-child {
+          border-bottom: 1px solid var(--c-gray);
+        }
+      }
+
+      &__label {
+        margin-bottom: 0;
+        width: to-rem(180px);
+        @include mq("xl") {
+          font-size: to-rem(22px);
+          margin-bottom: to-rem(10px);
+        }
+      }
+
+      &__text {
+        font-size: to-rem(18px);
+      }
+    }
+
+    & .office {
+      margin-top: to-rem(70px);
+      @include mq("xl") {
+      }
+    }
+
+    & .footer {
+      margin-top: to-rem(280px);
+      @include mq("xl") {
+        margin-top: to-rem(200px);
+      }
+    }
+  }
+</style>

@@ -27,6 +27,8 @@ export default async function ({
   viewport = _viewport;
   scroller = _scroller;
 
+  world.addRaycastingTarget(".bl_media_media .hl_webglObject");
+
   // each page
   mountNavBtnHandler(
     world,

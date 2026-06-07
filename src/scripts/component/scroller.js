@@ -5,46 +5,11 @@ import { INode } from "../helper/INode";
 
 const scroller = {
   init,
+  scrolling: false,
 };
 //ScrollTrigger処理
 function init() {
   gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
-
-  // ScrollTrigger.create({
-  //   trigger: "body",
-  //   start: "top top",
-  //   end: "bottom top",
-  //   pin: "#canvas",
-  //   pinSpacing: false,
-  //   markers: true,
-  // });
-  /**
-   * FVのビデオをスクロールで変化させる
-   */
-  // const video = INode.getElement(".js_hero");
-  // const videoContent = INode.getElement("#js-kv-video");
-
-  // if (video || videoContent) {
-  //   // ScrollTrigger.create({
-  //   //   trigger: ".js_hero",
-  //   //   start: "top top",
-  //   //   end: "bottom top",
-  //   //   pin: videoContent,
-  //   //   pinSpacing: false,
-  //   //   markers: true,
-  //   // });
-  //   gsap.to(videoContent, {
-  //     opacity: 0,
-  //     filter: "blur(20px)",
-  //     scrollTrigger: {
-  //       trigger: ".js_hero",
-  //       start: "top top",
-  //       end: "bottom top",
-  //       scrub: true, // スクロールに同期
-  //       markers: true,
-  //     },
-  //   });
-  // }
 
   // ScrollSmootherの初期化;
   return ScrollSmoother.create({
@@ -53,31 +18,53 @@ function init() {
     smooth: 1.5, // 滑らかさ（0-3推奨）
     effects: true, // data-speed属性を有効化
     smoothTouch: 0.1, // モバイルでの滑らかさ
+
+    //
+    onUpdate: (self) => {
+      _onScroll();
+    },
   });
 
   const el = INode.getElement("[data-webgl]");
+}
 
-  // const meshX = os[0].mesh.position.x;
-  // const animation = {
-  //   rotation: 0,
-  //   x: meshX,
-  // };
-  // gsap.to(animation, {
-  //   rotation: Math.PI * 2,
-  //   x: meshX + 600,
-  //   scrollTrigger: {
-  //     trigger: el,
-  //     start: "center 80%",
-  //     end: "center 20%",
-  //     scrub: true,
-  //     pin: true,
-  //     markers: true,
-  //   },
-  //   onUpdate() {
-  //     os[0].mesh.position.x = animation.x;
-  //     os[0].mesh.rotation.z = animation.rotation;
-  //   },
-  // });
+//クラス名
+const marker = "hl_disableHover";
+//スクロール中にbodyに追加するクラス
+const bodyClassList = document.body.classList;
+//タイムアウトID
+let timeoutId = null;
+
+/**
+ * スクロール中の処理
+ */
+function _onScroll() {
+  ScrollTrigger.update();
+
+  //スクロール中にクラスを追加
+  _disableHover(50);
+}
+
+/**
+ * マウスカーソルの無効化
+ */
+function _disableHover(duration = 200) {
+  //クラスが追加されていない場合
+  if (!bodyClassList.contains(marker)) {
+    // クラスを追加
+    bodyClassList.add(marker);
+
+    //スクロールフラグをtrueに
+    scroller.scrolling = true;
+
+    //以前のタイムアウトをクリア
+    clearTimeout(timeoutId);
+    //1秒後にクラスを削除
+    timeoutId = setTimeout(() => {
+      bodyClassList.remove(marker);
+      scroller.scrolling = false;
+    }, duration);
+  }
 }
 
 export default scroller;

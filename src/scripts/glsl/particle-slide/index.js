@@ -222,12 +222,12 @@ export default class extends Ob {
       duration,
       ease: "none",
       onStart: () => {
-        // this.DOM.el.nextElementSibling?.remove();
-        this.DOM.childMediaEls.forEach((el) => {
-          el.style.opacity = 0;
-          el.pause?.();
-        });
-        this.mesh.visible = true;
+        //子要素を非表示
+        this.DOM.el.nextElementSibling?.remove();
+        // this.DOM.childMediaEls.forEach((el) => {
+        //   el.style.opacity = 0;
+        //   el.pause?.();
+        // });
         this.mesh.visible = true;
       },
       onComplete: () => {
@@ -235,19 +235,26 @@ export default class extends Ob {
         this.uniforms.texCurrent = this.uniforms.texNext;
         // progressを0に戻す
         this.uniforms.uProgress.value = 0;
-        // // 次のテクスチャの画像要素を取得
-        // const imgEl = nextTex.source.data;
-        // // 親要素を取得
-        // const parentElement = this.DOM.el.parentElement;
+        // 次のテクスチャの画像要素を取得
+        const imgEl = nextTex.source.data;
+        imgEl.classList.add("js_particleChild");
 
-        const activeEl = this.getChildMediaEl(_idx - 1);
-        activeEl.style.opacity = 1;
+        // 親要素を取得
+        const parentElement = this.DOM.el.parentElement;
+        parentElement.append(imgEl);
+
+        // const activeEl = this.getChildMediaEl(_idx - 1);
+        // activeEl.style.opacity = 1;
         // 親要素に画像要素の複製を追加（他のコンポーネントと共有されている場合があるため）
         // parentElement.append(imgEl.cloneNode(true));
         // メッシュを非表示
         this.mesh.visible = false;
         // 実行中フラグを戻す
         this.running = false;
+
+        if (imgEl.paused) {
+          imgEl.play?.();
+        }
       },
     });
   }
@@ -257,28 +264,28 @@ export default class extends Ob {
   }
 
   afterInit() {
-    // this.goTo(0, 0);
-    let isFirst = true;
-    this.texes.forEach((tex) => {
-      const mediaEl = tex.source.data.cloneNode(true);
-      //クラス名を追加
-      mediaEl.classList.add("js_particleChild");
-      // tex1以外は非表示にする
-      if (!isFirst) {
-        mediaEl.style.opacity = 0;
-      }
-      isFirst = false;
-      // 親要素を取得
-      const parentElement = this.DOM.el.parentElement;
-      // childMediaElsに追加
-      this.DOM.childMediaEls.push(mediaEl);
-      // 親要素に画像要素の複製を追加
-      parentElement.append(mediaEl);
-    });
-    // メッシュを1フレーム描画させてシェーダーのコンパイルを済ませてから非表示にする
-    requestAnimationFrame(() => {
-      this.mesh.visible = false;
-    });
+    this.goTo(0, 0);
+    // let isFirst = true;
+    // this.texes.forEach((tex) => {
+    //   const mediaEl = tex.source.data.cloneNode(true);
+    //   //クラス名を追加
+    //   mediaEl.classList.add("js_particleChild");
+    //   // tex1以外は非表示にする
+    //   if (!isFirst) {
+    //     mediaEl.style.opacity = 0;
+    //   }
+    //   isFirst = false;
+    //   // 親要素を取得
+    //   const parentElement = this.DOM.el.parentElement;
+    //   // childMediaElsに追加
+    //   this.DOM.childMediaEls.push(mediaEl);
+    //   // 親要素に画像要素の複製を追加
+    //   parentElement.append(mediaEl);
+    // });
+    // // メッシュを1フレーム描画させてシェーダーのコンパイルを済ませてから非表示にする
+    // requestAnimationFrame(() => {
+    //   this.mesh.visible = false;
+    // });
   }
 
   resize() {

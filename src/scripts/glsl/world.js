@@ -17,6 +17,8 @@ import RenderTargetManager from "../component/renderTargetManager";
 import { Ob } from "./Ob";
 import { pass } from "three/tsl";
 import gsap from "gsap";
+import Stats from "stats-js";
+import scroller from "../component/scroller";
 
 //Worldオブジェクト
 const world = {
@@ -43,7 +45,11 @@ const world = {
   renderActions: new Set(),
   addRenderAction,
   removeRenderAction,
+  raycastingMeshes: [],
+  addRaycastingTarget,
 };
+
+let stats;
 
 async function init(canvas, viewport) {
   //WebGPURenderer
@@ -51,6 +57,7 @@ async function init(canvas, viewport) {
     canvas,
     alpha: true,
     antialias: true,
+    debug: window.debug,
   });
 
   world.renderer.setSize(viewport.width, viewport.height, false);
@@ -81,6 +88,12 @@ async function init(canvas, viewport) {
 
   // メッシュオブジェクトの初期化
   await _initObjects(viewport);
+
+  if (window.debug) {
+    stats = new Stats();
+    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3: memory
+    document.body.appendChild(stats.dom);
+  }
 }
 
 //カメラの設定
@@ -240,15 +253,27 @@ async function updateCamera(viewport) {
   // world.camera.updateProjectionMatrix();
 }
 
-//レイキャスティング
+/**
+ * レイキャスティング
+ * @returns {void}
+ */
 function raycast() {
+  // タッチデバイスまたはレイキャスティングの対象となるメッシュがない場合は終了
+  if (
+    utils.isTouchDevices ||
+    world.raycastingMeshes.length === 0 ||
+    scroller.scrolling
+  )
+    return;
+
   const clipPos = mouse.getClipPos();
 
   // Raycasterをカメラとマウスポインタの位置に基づいて更新します。
   world.raycaster.setFromCamera(clipPos, world.camera);
 
+  const meshes = world.raycastingMeshes;
   // レイと交差したメッシュオブジェクトを配列として格納
-  const intersects = world.raycaster.intersectObjects(world.scene.children);
+  const intersects = world.raycaster.intersectObjects(meshes);
   //交差したオブジェクトの最前面に存在するメッシュを取得
   const intersect = intersects[0];
 
@@ -283,10 +308,40 @@ function raycast() {
 }
 
 /**
+ * レイキャスティングの対象となるメッシュを追加する関数
+ * @param {string} selector - レイキャスティングの対象となるメッシュのセレクタ
+ * @returns {void}
+ */
+function addRaycastingTarget(selector) {
+  //セレクタからオブジェクトを取得
+  const o = getObjByEl(selector);
+  console.log(o);
+  //オブジェクトが存在しなければ処理を終了
+  if (!o) return;
+
+  //o.meshをworld.raycastingMeshesに追加
+  world.raycastingMeshes.push(o.mesh);
+}
+
+/**
+ * レイキャスティングの対象となるメッシュを削除する関数
+ * @param {Mesh} mesh - レイキャスティングの対象となるメッシュ
+ * @returns {void}
+ */
+function removeRaycastingMesh(mesh) {
+  const idx = world.raycastingMeshes.indexOf(mesh);
+  if (idx !== -1) {
+    world.raycastingMeshes.splice(idx, 1);
+  }
+}
+
+/**
  * requestAnimationFrameを繰り返し呼び出す関数
  */
 function render() {
   requestAnimationFrame(render);
+
+  stats?.begin();
 
   world.tick++;
 
@@ -323,6 +378,8 @@ function render() {
 
   // OrbitControlsの更新
   world.renderTargetManager.updateControls();
+
+  stats?.end();
 }
 
 function dispose() {

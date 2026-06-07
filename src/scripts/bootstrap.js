@@ -23,8 +23,6 @@ export async function init() {
   const pageEl = INode.getElement("#pageContainer");
   const pageType = INode.getDS(pageEl, "pageType");
 
-  console.log(pageType);
-
   // デバッグモードの場合
   if (window.debug) {
     await gui.init();

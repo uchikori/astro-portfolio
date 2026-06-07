@@ -1,5 +1,5 @@
 ---
-const { title = "Astro", pageType } = Astro.props;
+const { title = "Astro", pageType, bodyClass } = Astro.props;
 import "../styles/style.scss";
 import Loader from "../components/common/Loader.astro";
 import Aside from "../components/common/Aside.astro";
@@ -40,7 +40,7 @@ import LoadPP from "../components/webgl/LoadPP.astro";
     />
     <slot name="head" />
   </head>
-  <body>
+  <body class={bodyClass}>
     <Loader />
     <div id="globalContainer">
       <Header />
