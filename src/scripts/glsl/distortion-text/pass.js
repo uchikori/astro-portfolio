@@ -1,5 +1,5 @@
 import { uv, uniform, vec4 } from "three/tsl";
-import Fragment from "./fragment";
+import Fragment from "#/glsl/distortion-text/fragment";
 
 function initDistortionPass(world) {
   const o = world.getObjByEl(".bl_loadPP");

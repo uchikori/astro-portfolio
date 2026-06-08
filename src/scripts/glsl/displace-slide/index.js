@@ -1,10 +1,10 @@
 import gsap from "gsap";
 import { Vector2, MirroredRepeatWrapping } from "three";
-import { Ob } from "../Ob";
-import Vertex from "./vertex";
-import Fragment from "./fragment";
+import { Ob } from "#/glsl/Ob";
+import Vertex from "#/glsl/displace-slide/vertex";
+import Fragment from "#/glsl/displace-slide/fragment";
 import { uniform, vec2 } from "three/tsl";
-
+s;
 export default class extends Ob {
   setupTexes(uniforms) {
     this.texes.forEach((tex, key) => {

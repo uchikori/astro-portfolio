@@ -1,9 +1,9 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { INode } from "../helper/INode";
-import { viewport } from "../helper/viewport";
-import world from "../glsl/world";
-import mouse from "./mouse";
+import { INode } from "#/helper/INode";
+import { viewport } from "#/helper/viewport";
+import world from "#/glsl/world";
+import mouse from "#/component/mouse";
 
 gsap.registerPlugin(ScrollTrigger);
 

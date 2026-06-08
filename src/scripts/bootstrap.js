@@ -1,12 +1,13 @@
-import world from "./glsl/world";
-import { viewport } from "./helper/viewport";
-import { gui } from "./helper/gui";
-import { INode } from "./helper/INode";
-import scroller from "./component/scroller";
-import mouse from "./component/mouse";
-import loader from "./component/loader";
-import menu from "./component/menu";
-import { registScrollAnimations } from "./component/scroll-animation";
+import world from "#/glsl/world";
+import { viewport } from "#/helper/viewport";
+import { gui } from "#/helper/gui";
+import { INode } from "#/helper/INode";
+import scroller from "#/component/scroller";
+import mouse from "#/component/mouse";
+import loader from "#/component/loader";
+import menu from "#/component/menu";
+import { registScrollAnimations } from "#/component/scroll-animation";
+import { utils } from "#/helper/utils";
 
 window.debug = enableDebugMode(1);
 
@@ -41,6 +42,8 @@ export async function init() {
   const smoother = scroller.init();
 
   loader.init();
+
+  await utils.definePerformanceMode();
 
   // ローダーアニメーションの追加
   const loading = INode.getElement(".js_loader");

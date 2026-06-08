@@ -11,6 +11,7 @@ import {
   AxesHelper,
   LinearSRGBColorSpace,
   PostProcessing,
+  Color,
 } from "three/webgpu";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import RenderTargetManager from "../component/renderTargetManager";
@@ -51,7 +52,7 @@ const world = {
 
 let stats;
 
-async function init(canvas, viewport) {
+async function init(canvas, viewport, background = "none") {
   //WebGPURenderer
   world.renderer = new WebGPURenderer({
     canvas,
@@ -74,6 +75,7 @@ async function init(canvas, viewport) {
 
   //シーンを作成
   world.scene = new Scene();
+  world.scene.background = background === "none" ? null : new Color(background);
 
   //カメラを作成
   world.camera = _setupPerspectiveCamera(viewport);
@@ -179,6 +181,13 @@ function addObj(o) {
 
 //メッシュオブジェクトの削除
 function removeObj(o, dispose = true) {
+  //oがObのインスタンスでなければ
+  if (!(o instanceof Ob)) {
+    //DOM要素からオブジェクトを取得
+    o = getObjByEl(o);
+    //オブジェクトが存在しなければ処理を終了
+    if (!o) return;
+  }
   world.scene.remove(o.mesh);
   // oがosの配列の何番目かを探す
   const idx = world.os.indexOf(o);
@@ -293,7 +302,10 @@ function raycast() {
     const { uHover, uMouse } = uniforms;
 
     // 交差したメッシュオブジェクトとoのmeshが同一なら
-    if (intersect?.object === mesh) {
+    if (
+      intersect?.object === mesh ||
+      mesh.getObjectById(intersect?.object.id)
+    ) {
       //uMouseのvalueに交差したオブジェクトのUV値を格納
       uMouse.value = intersect.uv;
       //終了値を1.0に設定
@@ -315,12 +327,20 @@ function raycast() {
 function addRaycastingTarget(selector) {
   //セレクタからオブジェクトを取得
   const o = getObjByEl(selector);
-  console.log(o);
   //オブジェクトが存在しなければ処理を終了
   if (!o) return;
 
-  //o.meshをworld.raycastingMeshesに追加
-  world.raycastingMeshes.push(o.mesh);
+  // メッシュがグループでない場合（childrenが空の場合）
+  if (o.mesh.children.length === 0) {
+    //o.meshをworld.raycastingMeshesに追加
+    world.raycastingMeshes.push(o.mesh);
+  } else {
+    //グループの場合
+    //子要素をすべて取得
+    const meshes = o.mesh.children;
+    //スプレッド構文で配列を展開して追加
+    world.raycastingMeshes.push(...meshes);
+  }
 }
 
 /**

@@ -1,9 +1,8 @@
 import {
   mountNavBtnHandler,
   mountReflectBtnHandler,
-} from "../component/slide-hundler";
-import { initDistortionPass } from "../glsl/distortion-text/pass";
-import { initRipplePass } from "../glsl/ripple";
+} from "#/component/slide-hundler";
+import { initDistortionPass } from "#/glsl/distortion-text/pass";
 
 let world = null;
 let mouse = null;
@@ -45,6 +44,10 @@ export default async function ({
     ".bl_reflect .js_navBtn__next",
     ".bl_reflect_ul",
   );
+
+  // heroObjectを固定
+  // const heroObject = world.getObjByEl(".js_hero_object");
+  // heroObject.fixed = true;
 
   // mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
   loader.addLoadingAnimation(loadAnimation);

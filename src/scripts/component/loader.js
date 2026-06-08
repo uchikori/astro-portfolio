@@ -3,7 +3,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { LinearFilter, TextureLoader, SRGBColorSpace } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { VideoTexture } from "three/webgpu";
-import { INode } from "../helper/INode";
+import { INode } from "#/helper/INode";
 
 gsap.registerPlugin(ScrollTrigger);
 

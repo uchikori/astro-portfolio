@@ -156,6 +156,7 @@ class Ob {
       uTexes: {},
       uTick: uniform(0),
       uProgress: uniform(0),
+      uAlpha: uniform(0),
     };
   }
 
@@ -281,6 +282,9 @@ class Ob {
 
   //オブジェクトの位置を更新する処理
   scroll() {
+    //Fixedオブジェクトの場合は処理をスキップ
+    if (this.fixed) return;
+
     const {
       DOM: { el },
       mesh,

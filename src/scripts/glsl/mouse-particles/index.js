@@ -24,8 +24,8 @@ import {
   texture,
 } from "three/tsl";
 
-import { viewport } from "../../helper/viewport";
-import { gui } from "../../helper/gui";
+import { viewport } from "#/helper/viewport";
+import { gui } from "#/helper/gui";
 
 class ParticleSystem {
   constructor(count = 500) {

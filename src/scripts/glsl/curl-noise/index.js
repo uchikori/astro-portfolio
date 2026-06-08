@@ -1,10 +1,10 @@
 import gsap from "gsap";
 
-import { Ob } from "../Ob.js";
-import Vertex from "./vertex.js";
-import Fragment from "./fragment.js";
+import { Ob } from "#/glsl/Ob";
+import Vertex from "#/glsl/curl-noise/vertex";
+import Fragment from "#/glsl/curl-noise/fragment";
 
-import { utils } from "../../helper/utils";
+import { utils } from "#/helper/utils";
 import {
   Float32BufferAttribute,
   InstancedBufferAttribute,

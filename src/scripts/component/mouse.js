@@ -1,8 +1,8 @@
 import { Vector2 } from "three/webgpu";
-import { INode } from "../helper/INode";
-import { viewport } from "../helper/viewport";
-import { utils } from "../helper/utils";
-import { handlers } from "./mouse-animation";
+import { INode } from "#/helper/INode";
+import { viewport } from "#/helper/viewport";
+import { utils } from "#/helper/utils";
+import { handlers } from "#/component/mouse-animation";
 
 //現在位置
 let current = {};

@@ -3,9 +3,9 @@ import {
   MeshBasicMaterial,
   MeshStandardMaterial,
 } from "three/webgpu";
-import { Ob } from "../Ob";
-import Fragment from "./fragment";
-import Vertex from "./vertex";
+import { Ob } from "#/glsl/Ob";
+import Fragment from "#/glsl/normal/fragment";
+import Vertex from "#/glsl/normal/vertex";
 import { uniform } from "three/tsl";
 
 export default class extends Ob {

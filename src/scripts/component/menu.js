@@ -1,5 +1,5 @@
 import gsap from "gsap";
-import { INode } from "../helper/INode";
+import { INode } from "#/helper/INode";
 
 const menu = {
   init,

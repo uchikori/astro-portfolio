@@ -1,7 +1,7 @@
 import gsap from "gsap";
-import { Ob } from "../Ob";
-import Fragment from "./fragment";
-import Vertex from "./vertex";
+import { Ob } from "#/glsl/Ob";
+import Fragment from "#/glsl/distortion-text/fragment";
+import Vertex from "#/glsl/distortion-text/vertex";
 import { uniform, vec4 } from "three/tsl";
 
 export default class extends Ob {

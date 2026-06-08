@@ -1,9 +1,9 @@
-import { Ob } from "../Ob.js";
-import Vertex, { getHoleScale } from "./vertex.js";
-import Fragment from "./fragment.js";
+import { Ob } from "#/glsl/Ob.js";
+import Vertex, { getHoleScale } from "#/glsl/mouse-particle/vertex.js";
+import Fragment from "#/glsl/mouse-particle/fragment.js";
 
-import { utils } from "../../helper/utils";
-import mouse from "../../component/mouse";
+import { utils } from "#/helper/utils";
+import mouse from "#/component/mouse";
 import {
   Float32BufferAttribute,
   InstancedBufferAttribute,

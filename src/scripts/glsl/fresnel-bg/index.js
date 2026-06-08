@@ -1,10 +1,21 @@
-import { Ob } from "../Ob";
-import Fragment from "./fragment";
-import Vertex from "./vertex";
-import { utils } from "../../helper/utils";
+import { Ob } from "#/glsl/Ob";
+import Fragment from "#/glsl/fresnel-bg/fragment";
+import Vertex from "#/glsl/fresnel-bg/vertex";
+import { utils } from "#/helper/utils";
 import { uniform } from "three/tsl";
 
 export default class extends Ob {
+  beforeCreateMesh() {
+    if (utils.isLowPerformanceMode()) {
+      if (window.debug) {
+        console.log(this.DOM.el);
+      }
+      this.scene.remove(this.mesh);
+      throw new Error(
+        "低パフォーマンスモードのためメッシュを生成しませんでした",
+      );
+    }
+  }
   setupUniforms() {
     const _uniforms = super.setupUniforms();
     _uniforms.uReversal = uniform(0.0);

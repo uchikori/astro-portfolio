@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import ScrollSmoother from "gsap/ScrollSmoother";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { INode } from "../helper/INode";
+import { INode } from "#/helper/INode";
 
 const scroller = {
   init,
@@ -24,8 +24,6 @@ function init() {
       _onScroll();
     },
   });
-
-  const el = INode.getElement("[data-webgl]");
 }
 
 //クラス名

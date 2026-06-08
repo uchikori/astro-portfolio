@@ -31,6 +31,7 @@ import {
 } from "three/tsl";
 import { Quaternion, Vector3, Vector4 } from "three/webgpu";
 import { detect as detectBrowser } from "detect-browser";
+import { getGPUTier } from "detect-gpu";
 
 const browser = detectBrowser();
 
@@ -43,6 +44,35 @@ const isTouchDevices = Boolean(
     (window.DocumentTouch && document instanceof DocumentTouch),
 );
 
+/**
+ * パフォーマンスモードを定義する
+ * @param {number} tier - パフォーマンスレベル
+ * @param {number} fps - フレームレート
+ */
+let _isHighPerformanceMode;
+async function definePerformanceMode(_tier = 3, _fps = 60) {
+  const gpuTier = await getGPUTier();
+  //debugモード時はコンソールに出力
+  if (window.debug) {
+    console.log(gpuTier);
+  }
+
+  //ハイパフォーマンスモードか判定
+  _isHighPerformanceMode = gpuTier.tier >= _tier && gpuTier.fps >= _fps;
+}
+
+/**
+ * 低パフォーマンスモードかどうか判定する
+ * @returns {boolean}
+ */
+function isLowPerformanceMode() {
+  return !_isHighPerformanceMode;
+}
+
+/**
+ * Safariかどうか判定する
+ * @returns {boolean}
+ */
 function isSafari() {
   return browser.name === "safari";
 }
@@ -740,6 +770,8 @@ function pointTo(_mesh, originalDir, targetDir) {
 }
 
 const utils = {
+  definePerformanceMode,
+  isLowPerformanceMode,
   backInOut,
   coverUv,
   cubicInOut,
