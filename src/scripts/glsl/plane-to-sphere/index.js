@@ -1,28 +1,9 @@
-import {
-  BufferGeometry,
-  Float32BufferAttribute,
-  Group,
-  InstancedBufferAttribute,
-  InstancedMesh,
-  PlaneGeometry,
-  SphereGeometry,
-} from "three/webgpu";
-import { Ob } from "../Ob.js";
-import Fragment from "./fragment.js";
-import Vertex from "./vertex.js";
-import { INode } from "../../helper/INode.js";
-import {
-  add,
-  attribute,
-  distance,
-  mul,
-  positionLocal,
-  sub,
-  uniform,
-  vec2,
-} from "three/tsl";
+import { Group, PlaneGeometry, SphereGeometry } from "three/webgpu";
+import { Ob } from "#/glsl/Ob.js";
+import Fragment from "#/glsl/plane-to-sphere/fragment";
+import Vertex from "#/glsl/plane-to-sphere/vertex";
+import { attribute, uniform } from "three/tsl";
 import gsap from "gsap";
-import { viewport } from "../../helper/viewport.js";
 
 export default class extends Ob {
   delayVertices;

@@ -1,6 +1,6 @@
-import { utils } from "../helper/utils";
-import { INode } from "../helper/INode";
-import mouse from "../component/mouse";
+import { utils } from "#/helper/utils";
+import { INode } from "#/helper/INode";
+import mouse from "#/component/mouse";
 import {
   WebGPURenderer,
   Scene,
@@ -14,12 +14,12 @@ import {
   Color,
 } from "three/webgpu";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import RenderTargetManager from "../component/renderTargetManager";
-import { Ob } from "./Ob";
+import RenderTargetManager from "#/component/renderTargetManager";
+import { Ob } from "#/glsl/Ob";
 import { pass } from "three/tsl";
 import gsap from "gsap";
 import Stats from "stats-js";
-import scroller from "../component/scroller";
+import scroller from "#/component/scroller";
 
 //Worldオブジェクト
 const world = {

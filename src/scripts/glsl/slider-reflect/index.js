@@ -1,14 +1,8 @@
-import {
-  Group,
-  Mesh,
-  PlaneGeometry,
-  Vector3,
-  VideoTexture,
-} from "three/webgpu";
-import { Ob } from "../Ob";
-import Fragment from "./fragment";
-import Vertex from "./vertex";
-import { utils } from "../../helper/utils";
+import { Group, Mesh, PlaneGeometry, VideoTexture } from "three/webgpu";
+import { Ob } from "#/glsl/Ob";
+import Fragment from "#/glsl/slider-reflect/fragment";
+import Vertex from "#/glsl/slider-reflect/vertex";
+import { utils } from "#/helper/utils";
 import { uniform } from "three/tsl";
 
 export default class extends Ob {

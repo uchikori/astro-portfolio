@@ -6,11 +6,11 @@ import {
   Vector3,
   VideoTexture,
 } from "three/webgpu";
-import { Ob } from "../Ob";
-import Fragment from "./fragment";
-import Vertex from "./vertex";
-import { viewport } from "../../helper/viewport";
-import { utils } from "../../helper/utils";
+import { Ob } from "#/glsl/Ob";
+import Fragment from "#/glsl/slider-world/fragment";
+import Vertex from "#/glsl/slider-world/vertex";
+import { viewport } from "#/helper/viewport";
+import { utils } from "#/helper/utils";
 import { uniform } from "three/tsl";
 import { DoubleSide } from "three";
 import gsap from "gsap";

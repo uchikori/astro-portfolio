@@ -1,7 +1,7 @@
-import { Ob } from "../Ob";
-import Fragment from "./fragment";
-import Vertex from "./vertex";
-import { viewport } from "../../helper/viewport";
+import { Ob } from "#/glsl/Ob";
+import Fragment from "#/glsl/ray-marching/fragment";
+import Vertex from "#/glsl/ray-marching/vertex";
+import { viewport } from "#/helper/viewport";
 import { uniform } from "three/tsl";
 import gsap from "gsap";
 

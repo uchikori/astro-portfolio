@@ -1,6 +1,6 @@
-import { Ob } from "../Ob";
-import Fragment from "./fragment";
-import Vertex from "./vertex";
+import { Ob } from "#/glsl/Ob";
+import Fragment from "#/glsl/template/fragment";
+import Vertex from "#/glsl/template/vertex";
 
 export default class extends Ob {
   setupVertex(options) {

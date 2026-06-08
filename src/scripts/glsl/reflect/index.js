@@ -1,7 +1,7 @@
 import { uniform } from "three/tsl";
-import { Ob } from "../Ob";
-import Fragment from "./fragment";
-import Vertex from "./vertex";
+import { Ob } from "#/glsl/Ob";
+import Fragment from "#/glsl/reflect/fragment";
+import Vertex from "#/glsl/reflect/vertex";
 import { Group } from "three/webgpu";
 
 export default class extends Ob {

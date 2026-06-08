@@ -6,10 +6,10 @@ import {
   PlaneGeometry,
   SphereGeometry,
 } from "three/webgpu";
-import { Ob } from "../Ob.js";
-import Fragment from "./fragment.js";
-import Vertex from "./vertex.js";
-import { utils } from "../../helper/utils.js";
+import { Ob } from "#/glsl/Ob.js";
+import Fragment from "#/glsl/plane-to-sphere-points/fragment.js";
+import Vertex from "#/glsl/plane-to-sphere-points/vertex.js";
+import { utils } from "#/helper/utils.js";
 import { add, attribute, mul, positionLocal, uniform } from "three/tsl";
 
 export default class extends Ob {

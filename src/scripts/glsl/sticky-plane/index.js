@@ -1,8 +1,8 @@
 import { Float32BufferAttribute, PlaneGeometry } from "three/webgpu";
-import { Ob } from "../Ob";
-import Fragment from "./fragment.js";
-import Vertex from "./vertex.js";
-import { utils } from "../../helper/utils";
+import { Ob } from "#/glsl/Ob";
+import Fragment from "#/glsl/sticky-plane/fragment.js";
+import Vertex from "#/glsl/sticky-plane/vertex.js";
+import { utils } from "#/helper/utils";
 import { attribute } from "three/tsl";
 
 export default class extends Ob {

@@ -1,16 +1,8 @@
-import {
-  CylinderGeometry,
-  Group,
-  Mesh,
-  MeshBasicNodeMaterial,
-  PlaneGeometry,
-  Vector3,
-  VideoTexture,
-} from "three/webgpu";
-import { Ob } from "../Ob";
-import Fragment from "./fragment";
-import Vertex from "./vertex";
-import { utils } from "../../helper/utils";
+import { Group, Mesh, PlaneGeometry } from "three/webgpu";
+import { Ob } from "#/glsl/Ob";
+import Fragment from "#/glsl/slider-wave/fragment";
+import Vertex from "#/glsl/slider-wave/vertex";
+import { utils } from "#/helper/utils";
 import { uniform, vec4 } from "three/tsl";
 import { DoubleSide } from "three";
 

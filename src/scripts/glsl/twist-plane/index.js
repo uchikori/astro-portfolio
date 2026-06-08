@@ -1,11 +1,11 @@
 import gsap from "gsap";
 import { PlaneGeometry, Float32BufferAttribute } from "three";
 
-import { Ob } from "../Ob";
-import Vertex from "./vertex";
-import Fragment from "./fragment";
+import { Ob } from "#/glsl/Ob";
+import Vertex from "#/glsl/twist-plane/vertex";
+import Fragment from "#/glsl/twist-plane/fragment";
 
-import { utils } from "../../helper/utils";
+import { utils } from "#/helper/utils";
 import { attribute } from "three/tsl";
 
 export default class extends Ob {
