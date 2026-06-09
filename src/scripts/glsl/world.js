@@ -96,6 +96,8 @@ async function init(canvas, viewport, background = "none") {
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3: memory
     document.body.appendChild(stats.dom);
   }
+
+  _bindEvents();
 }
 
 //カメラの設定
@@ -530,6 +532,18 @@ function addRenderAction(callback) {
  */
 function removeRenderAction(callback) {
   world.renderActions.delete(callback);
+}
+
+/**
+ * イベントハンドラをバインドする関数
+ */
+function _bindEvents() {
+  //windowにフォーカスした時、IOS端末だったらリロード
+  window.addEventListener("focus", () => {
+    if (utils.isIOS()) {
+      window.location.reload();
+    }
+  });
 }
 
 export default world;

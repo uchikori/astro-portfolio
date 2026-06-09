@@ -85,10 +85,14 @@ async function loadAllAssets() {
 
     const loadFn = /\.(mp4|webm|ogg|mov)$/.test(url) ? loadVideo : loadImg;
 
-    prms = loadFn(url).then((tex) => {
-      //textureCasheにURLとtexture情報をセットにして格納
-      textureCache.set(url, tex);
-    });
+    prms = loadFn(url)
+      .then((tex) => {
+        //textureCasheにURLとtexture情報をセットにして格納
+        textureCache.set(url, tex);
+      })
+      .catch((e) => {
+        console.error(`Media Could not Download: ${url}`, e);
+      });
 
     texPrms.push(prms);
   });
@@ -121,16 +125,23 @@ let _progressAction = null;
 async function loadImg(url) {
   // 読み込み対象の画像の総数を計算
   incrementTotal();
-  //textureを読み込み
-  const tex = await texLoader.loadAsync(url);
-  // 読み込み完了枚数を計算
-  incrementProgress();
 
-  tex.magFilter = LinearFilter;
-  tex.minFilter = LinearFilter;
-  tex.needsUpdate = false;
+  try {
+    //textureを読み込み
+    const tex = await texLoader.loadAsync(url);
 
-  return tex;
+    tex.magFilter = LinearFilter;
+    tex.minFilter = LinearFilter;
+    tex.needsUpdate = false;
+
+    return tex;
+  } catch {
+    //tryの処理でエラーが出ても
+    throw new Error();
+  } finally {
+    //読み込み完了枚数を計算
+    incrementProgress();
+  }
 }
 
 /**
@@ -157,7 +168,7 @@ async function loadVideo(url) {
   // 読み込み対象の画像の総数を計算
   incrementTotal();
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     // const video = document.createElement("video");
 
     const video = INode.htmlToEl(`<video
@@ -192,7 +203,6 @@ async function loadVideo(url) {
       incrementProgress();
       reject();
     };
-
     video.src = url;
     // video.muted = true;
     // video.autoplay = true;

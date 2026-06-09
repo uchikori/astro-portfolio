@@ -44,6 +44,16 @@ const isTouchDevices = Boolean(
     (window.DocumentTouch && document instanceof DocumentTouch),
 );
 
+function isIOS() {
+  const userAgent = navigator.userAgent;
+
+  if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 /**
  * パフォーマンスモードを定義する
  * @param {number} tier - パフォーマンスレベル
@@ -791,5 +801,6 @@ const utils = {
   pointTo,
   isTouchDevices,
   isSafari,
+  isIOS,
 };
 export { utils };

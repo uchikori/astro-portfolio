@@ -1,5 +1,6 @@
 ---
 const { href = "/", text = "View More", class: className = "" } = Astro.props;
+const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
 ---
 
 <a
@@ -18,14 +19,14 @@ const { href = "/", text = "View More", class: className = "" } = Astro.props;
   >
     <rect x="0.5" y="0.5" width="71" height="71" rx="35.5" stroke="var(--c-text)"
     ></rect>
-    <g clip-path="url(#clip0_826_1656)">
+    <g clip-path={`url(#${uniqueId})`}>
       <path
         d="M39.0149 42L39 41.9809L43.641 36.0003L39 30.0191L39.0149 30H41.3419L46 35.9997L41.3419 41.9989L39.0149 42Z"
         fill="var(--c-text)"></path>
       <path d="M26 35H45V37H26V35Z" fill="var(--c-text)"></path>
     </g>
     <defs>
-      <clipPath id="clip0_826_1656">
+      <clipPath id={uniqueId}>
         <rect
           width="12"
           height="20"

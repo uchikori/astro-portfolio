@@ -3,6 +3,9 @@ import { Image } from "astro:assets";
 
 //alignの初期値を'right'に設定
 const { align = "right", prevLabel = "前へ", nextLabel = "次へ" } = Astro.props;
+
+const uniqueIdPrev = `clip_prev_${Math.floor(Math.random() * 100000000)}`;
+const uniqueIdNext = `clip_next_${Math.floor(Math.random() * 100000000)}`;
 ---
 
 <div class:list={["bl_nav", { "is-left": align === "left" }]}>
@@ -26,14 +29,14 @@ const { align = "right", prevLabel = "前へ", nextLabel = "次へ" } = Astro.pr
         height="71"
         rx="35.5"
         stroke="var(--c-text)"></rect>
-      <g clip-path="url(#clip0_826_1656)">
+      <g clip-path={`url(#${uniqueIdPrev})`}>
         <path
           d="M39.0149 42L39 41.9809L43.641 36.0003L39 30.0191L39.0149 30H41.3419L46 35.9997L41.3419 41.9989L39.0149 42Z"
           fill="var(--c-text)"></path>
         <path d="M26 35H45V37H26V35Z" fill="var(--c-text)"></path>
       </g>
       <defs>
-        <clipPath id="clip0_826_1656">
+        <clipPath id={uniqueIdPrev}>
           <rect
             width="12"
             height="20"
@@ -63,14 +66,14 @@ const { align = "right", prevLabel = "前へ", nextLabel = "次へ" } = Astro.pr
         height="71"
         rx="35.5"
         stroke="var(--c-text)"></rect>
-      <g clip-path="url(#clip0_826_1656)">
+      <g clip-path={`url(#${uniqueIdNext})`}>
         <path
           d="M39.0149 42L39 41.9809L43.641 36.0003L39 30.0191L39.0149 30H41.3419L46 35.9997L41.3419 41.9989L39.0149 42Z"
           fill="var(--c-text)"></path>
         <path d="M26 35H45V37H26V35Z" fill="var(--c-text)"></path>
       </g>
       <defs>
-        <clipPath id="clip0_826_1656">
+        <clipPath id={uniqueIdNext}>
           <rect
             width="12"
             height="20"

@@ -39,7 +39,7 @@ export async function init() {
   viewport.init(canvas);
 
   //ScrollTriggerを初期化＆ScrollSmootherを受け取る
-  const smoother = scroller.init();
+  const smoother = scroller.init(utils.isTouchDevices);
 
   loader.init();
 
