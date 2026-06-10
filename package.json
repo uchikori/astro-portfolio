@@ -17,6 +17,7 @@
     "glsl-rotate": "^2.0.1",
     "gsap": "^3.13.0",
     "lil-gui": "^0.21.0",
+    "sharp": "^0.34.5",
     "smooth-scrollbar": "^8.8.4",
     "stats-js": "^1.0.1",
     "swiper": "^12.2.0",
