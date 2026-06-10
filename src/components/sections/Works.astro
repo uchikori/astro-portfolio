@@ -1,0 +1,251 @@
+---
+import SectionTitle from "../ui/SectionTitle.astro";
+import PrevNextBtn from "../ui/prevNextBtn.astro";
+import BilingualBtn from "../ui/BilingualBtn.astro";
+
+import ContentPanel from "../ui/ContentPanel.astro";
+import thumbnail from "../../assets/img/slider/slider_1.png";
+import "swiper/css";
+---
+
+<section class="bl_works js_works">
+  <div class="bl_works_inner hl_contentWidth">
+    <SectionTitle en="Works" ja="制作物" class="bl_works_title" />
+    <div class="bl_works_body">
+      <div class="bl_works_content">
+        <p class="bl_works_text font-16-20">
+          これまでに手がけてきたWebサイトやデザインの制作実績をご紹介します。<br
+          />
+          お客様の目的や課題に合わせて、 企画・デザイン・構築まで一貫して対応しています。
+        </p>
+        <div class="bl_works_links">
+          <BilingualBtn
+            href="/category/client"
+            ja="業務委託で制作したWebサイト"
+            en="CLIENT WORKS"
+          />
+          <BilingualBtn
+            href="/category/private"
+            ja="個人で制作したあれこれ"
+            en="PRIVATE WORKS"
+          />
+          <BilingualBtn
+            href="/category/3dcg"
+            ja="趣味の3DCG制作"
+            en="3DCG WORKS"
+          />
+        </div>
+      </div>
+      <div class="bl_works_slider swiper bl_swiper js_works_slider">
+        <ul class="bl_works_list swiper-wrapper bl_swiper_wrapper">
+          <li class="bl_works_listItem swiper-slide">
+            <a href="/">
+              <ContentPanel
+                title="医療法人HSR様 Webサイト制作"
+                tags={["WordPress", "医療・介護"]}
+                thumbnail={thumbnail}
+              />
+            </a>
+          </li>
+          <li class="bl_works_listItem swiper-slide">
+            <a href="/">
+              <ContentPanel
+                title="医療法人HSR様 Webサイト制作"
+                tags={["WordPress", "医療・介護"]}
+                thumbnail={thumbnail}
+              />
+            </a>
+          </li>
+          <li class="bl_works_listItem swiper-slide">
+            <a href="/">
+              <ContentPanel
+                title="医療法人HSR様 Webサイト制作"
+                tags={["WordPress", "医療・介護"]}
+                thumbnail={thumbnail}
+              />
+            </a>
+          </li>
+          <li class="bl_works_listItem swiper-slide">
+            <a href="/">
+              <ContentPanel
+                title="医療法人HSR様 Webサイト制作"
+                tags={["WordPress", "医療・介護"]}
+                thumbnail={thumbnail}
+              />
+            </a>
+          </li>
+          <li class="bl_works_listItem swiper-slide">
+            <a href="/">
+              <ContentPanel
+                title="医療法人HSR様 Webサイト制作"
+                tags={["WordPress", "医療・介護"]}
+                thumbnail={thumbnail}
+              />
+            </a>
+          </li>
+          <li class="bl_works_listItem swiper-slide">
+            <a href="/">
+              <ContentPanel
+                title="医療法人HSR様 Webサイト制作"
+                tags={["WordPress", "医療・介護"]}
+                thumbnail={thumbnail}
+              />
+            </a>
+          </li>
+        </ul>
+        <div class="bl_swiper_nav">
+          <div class="bl_swiper_pagination"></div>
+          <PrevNextBtn
+            nextClass="bl_swiper_navNext"
+            prevClass="bl_swiper_navPrev"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+  .bl_works {
+    &_inner {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(80px);
+    }
+    &_body {
+      display: flex;
+      gap: to-rem(100px);
+      order: 2;
+      @include mq("xl") {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: to-rem(64px);
+      }
+    }
+    &_content {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(80px);
+      max-width: to-rem(500px);
+      width: calc(500 / 1500) * 100%;
+      flex-shrink: 0;
+
+      @include mq("xl") {
+        display: contents;
+      }
+
+      @include mq(md) {
+        width: 100%;
+      }
+    }
+    ::global(.bl_works_title) {
+      @include mq("xl") {
+        order: 1;
+      }
+    }
+    &_text {
+      line-height: 2;
+      @include mq("xl") {
+        order: 2;
+      }
+    }
+    &_links {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(24px);
+      @include mq("xl") {
+        order: 4;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      @include mq(md) {
+        width: 100%;
+      }
+    }
+    &_slider {
+      overflow: hidden;
+      width: auto;
+      flex-grow: 1;
+      min-width: 0;
+      margin-right: calc(50% - 50vw);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: to-rem(60px);
+
+      @include mq("xl") {
+        width: 100%;
+        order: 3;
+        margin-right: 0;
+      }
+
+      @media (max-width: 600px) {
+        overflow: visible;
+        gap: 0;
+        display: block;
+      }
+    }
+
+    &_list {
+      // gap: to-rem(120px);
+      // @include mq("xl") {
+      //   gap: to-rem(60px);
+      // }
+      @media (max-width: 600px) {
+        width: auto !important;
+        flex-direction: column;
+        gap: to-rem(24px);
+        transform: none !important;
+      }
+    }
+    &_listItem {
+      max-width: calc(710 / 1240) * 100%;
+
+      @include mq("xl") {
+        max-width: calc((100% - to-rem(60px)) / 2);
+      }
+
+      @media (max-width: 600px) {
+        width: 100% !important;
+        height: auto !important;
+        margin-right: 0 !important;
+        max-width: none;
+        flex-shrink: 1;
+      }
+    }
+
+    .bl_swiper {
+      &_nav {
+        width: calc(1160 / 1240) * 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        @media (max-width: 600px) {
+          display: none;
+        }
+      }
+      &_pagination {
+        display: flex;
+        gap: to-rem(10px);
+        ::global(.swiper-pagination-bullet) {
+          display: block;
+          width: to-rem(40px);
+          height: 4px;
+          background-color: var(--c-text);
+        }
+        ::global(.swiper-pagination-bullet-active) {
+          display: block;
+          width: to-rem(64px);
+          height: 4px;
+          background-color: $c-orange;
+        }
+      }
+      ::global(.swiper-notification) {
+        display: none;
+      }
+    }
+  }
+</style>

@@ -1,0 +1,56 @@
+---
+const { title, tags, thumbnail } = Astro.props;
+import { Picture } from "astro:assets";
+import Tag from "../ui/Tag.astro";
+---
+
+<div class="bl_contentPanel">
+  <figure class="bl_contentPanel_thumbnail">
+    <Picture
+      src={thumbnail}
+      formats={["avif", "webp"]}
+      widths={[375, 710, 1420]}
+      sizes="(max-width: 768px) 100vw, 1420px"
+      alt="サンプル画像"
+      width={710}
+      height={335}
+      loading="lazy"
+    />
+  </figure>
+  <ul class="bl_contentPanel_tags">
+    {tags.map((tag: string) => <Tag category={tag} />)}
+  </ul>
+  <h3 class="bl_contentPanel_title font-16-24">{title}</h3>
+</div>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_contentPanel {
+    display: flex;
+    flex-direction: column;
+    gap: to-rem(24px);
+    padding-bottom: to-rem(16px);
+    border-bottom: solid 1px var(--c-text);
+    &_thumbnail {
+      width: 100%;
+      aspect-ratio: 2/1;
+      overflow: hidden;
+      picture {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    &_tags {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: to-rem(16px);
+    }
+    &_title {
+      color: var(--c-text);
+      font-weight: 500;
+    }
+  }
+</style>

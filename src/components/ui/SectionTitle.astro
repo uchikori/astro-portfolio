@@ -4,7 +4,7 @@ const {
   ja,
   class: className = "",
   enClass = "font-48-80 hl_uppercase",
-  jaClass = "bl_sectiontitle_en font-16-20",
+  jaClass = "bl_sectiontitle_ja font-16-20",
 } = Astro.props;
 
 // 最初の1文字をアクセントカラーにするための分割
@@ -26,6 +26,7 @@ const remaining = en.slice(1);
   .bl_sectiontitle {
     h2 {
       letter-spacing: 0.15em;
+      white-space: nowrap;
     }
     & > span {
       display: flex;

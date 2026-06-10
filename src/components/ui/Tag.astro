@@ -1,0 +1,40 @@
+---
+interface Props {
+  category?: string;
+  link?: string;
+  href?: string;
+}
+
+const { category = "WordPress", href, link = href } = Astro.props;
+const TagElement = link ? "a" : "span";
+---
+
+<li class="el_tag_wrapper">
+  <TagElement href={link} class="el_tag font-12-16">
+    {category}
+  </TagElement>
+</li>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .el_tag_wrapper {
+    display: inline-block;
+  }
+
+  .el_tag {
+    display: inline-block;
+    padding: to-rem(5px) to-rem(16px);
+    border-radius: 8px;
+    color: var(--c-text);
+    border: solid 1px var(--c-text);
+    display: flex;
+    align-items: center;
+    gap: to-rem(4px);
+    text-decoration: none;
+    &:before {
+      content: "#";
+    }
+  }
+</style>

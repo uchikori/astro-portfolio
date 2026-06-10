@@ -2,7 +2,13 @@
 import { Image } from "astro:assets";
 
 //alignの初期値を'right'に設定
-const { align = "right", prevLabel = "前へ", nextLabel = "次へ" } = Astro.props;
+const {
+  align = "right",
+  prevLabel = "前へ",
+  nextLabel = "次へ",
+  prevClass,
+  nextClass,
+} = Astro.props;
 
 const uniqueIdPrev = `clip_prev_${Math.floor(Math.random() * 100000000)}`;
 const uniqueIdNext = `clip_next_${Math.floor(Math.random() * 100000000)}`;
@@ -10,7 +16,7 @@ const uniqueIdNext = `clip_next_${Math.floor(Math.random() * 100000000)}`;
 
 <div class:list={["bl_nav", { "is-left": align === "left" }]}>
   <button
-    class="el_navBtn el_navBtn__prev js_navBtn__prev"
+    class:list={["el_navBtn el_navBtn__prev js_navBtn__prev", prevClass]}
     data-mouse="stuck"
     aria-label={prevLabel}
   >
@@ -47,7 +53,7 @@ const uniqueIdNext = `clip_next_${Math.floor(Math.random() * 100000000)}`;
     </svg>
   </button>
   <button
-    class="el_navBtn el_navBtn__next js_navBtn__next"
+    class:list={["el_navBtn el_navBtn__next js_navBtn__next", nextClass]}
     data-mouse="stuck"
     aria-label={nextLabel}
   >

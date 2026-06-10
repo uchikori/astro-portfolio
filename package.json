@@ -19,6 +19,7 @@
     "lil-gui": "^0.21.0",
     "smooth-scrollbar": "^8.8.4",
     "stats-js": "^1.0.1",
+    "swiper": "^12.2.0",
     "three": "^0.181.2"
   },
   "devDependencies": {

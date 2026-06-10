@@ -1,0 +1,47 @@
+---
+const { href = "/", ja = "", en = "", class: className = "" } = Astro.props;
+---
+
+<a href={href} class:list={["el_bilingualBtn", className]}>
+  <div class="el_bilingualBtn_inner">
+    <span class="font-12-14">{ja}</span>
+    <span class="font-24-32">{en}</span>
+  </div>
+</a>
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .el_bilingualBtn {
+    max-width: 100%;
+    width: 26rem;
+    padding: to-rem(10px) to-rem(16px) to-rem(4px) to-rem(24px);
+    background-color: var(--c-main);
+    color: $c-dark;
+    display: flex;
+    position: relative;
+
+    &_inner {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      width: 100%;
+    }
+    .font-24-32 {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      width: 100%;
+      gap: to-rem(16px);
+      &:after {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        border-left: to-rem(28px) solid transparent;
+        border-bottom: to-rem(28px) solid $c-dark;
+      }
+    }
+  }
+</style>

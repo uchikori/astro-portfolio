@@ -3,6 +3,7 @@ import {
   mountReflectBtnHandler,
 } from "#/component/slide-hundler";
 import { initDistortionPass } from "#/glsl/distortion-text/pass";
+import { initWorksSwiper } from "#/component/works-swiper";
 
 let world = null;
 let mouse = null;
@@ -51,6 +52,7 @@ export default async function ({
 
   // mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
   loader.addLoadingAnimation(loadAnimation);
+  initWorksSwiper();
 }
 
 function loadAnimation(tl) {
