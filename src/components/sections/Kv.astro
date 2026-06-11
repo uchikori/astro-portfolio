@@ -131,8 +131,8 @@ import ArrowLink from "../ui/ArrowLink.astro";
       top: 0;
       left: 0;
       width: 100%;
-      height: 100svh;
-      // height: auto;
+      // height: 100svh;
+      height: 100lvh;
     }
 
     @keyframes floating {
@@ -295,10 +295,13 @@ import ArrowLink from "../ui/ArrowLink.astro";
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: fluid-text(48px, 64px, 375px, 1920px);
       }
       &_text {
+        margin-top: fluid-text(30px, 40px);
         line-height: 2;
+      }
+      ::global(.el_link) {
+        margin-top: fluid-text(48px, 64px);
       }
     }
   }
@@ -308,14 +311,10 @@ import ArrowLink from "../ui/ArrowLink.astro";
     top: 0;
     left: 0;
     width: 100%;
-    height: 100svh;
+    height: 100%;
     // aspect-ratio: 16/9;
     object-fit: cover;
     z-index: -2;
     pointer-events: none;
-
-    @include mq(lg) {
-      height: 100svh;
-    }
   }
 </style>

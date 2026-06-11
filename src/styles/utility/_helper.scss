@@ -24,6 +24,11 @@
   margin-inline: auto;
   max-width: to-rem(1760px);
 }
+.hl_contentWidthMiddle {
+  width: calc(358 / 390) * 100%;
+  margin-inline: auto;
+  max-width: to-rem(1560px);
+}
 
 // PC画面の横幅指定（narrow）
 .hl_contentWidthNarrow {
@@ -61,4 +66,3 @@
     opacity: 0 !important;
   }
 }
-

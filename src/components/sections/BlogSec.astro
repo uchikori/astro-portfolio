@@ -1,0 +1,139 @@
+---
+import SectionTitle from "../ui/SectionTitle.astro";
+import ArrowLink from "../ui/ArrowLink.astro";
+import Card from "../ui/Card.astro";
+import thumbnail from "../../assets/img/blog/blog_1.png";
+import BilingualBtn from "../ui/BilingualBtn.astro";
+---
+
+<section class="bl_blog js_blog">
+  <div class="bl_blog_inner hl_contentWidthMiddle">
+    <div class="bl_blog_header">
+      <SectionTitle en="Blog" ja="ブログ" class="bl_blog_title" />
+      <ArrowLink href="/web-tips" />
+    </div>
+    <ul class="bl_blog_list">
+      <li class="bl_blog_item">
+        <a href="/">
+          <Card
+            title="Three.jsのPointLightの明るさが変わって戸惑った話"
+            category="WebGL"
+            thumbnail={thumbnail}
+            date="2026-05-14"
+          />
+        </a>
+      </li>
+      <li class="bl_blog_item">
+        <a href="/">
+          <Card
+            title="WordPress ブロックエディター 使い方入門｜全ブロックの操作手順まとめ"
+            category="開発"
+            thumbnail={thumbnail}
+            date="2026-01-16"
+          />
+        </a>
+      </li>
+      <li class="bl_blog_item">
+        <a href="/">
+          <Card
+            title="WordPressをヘッドレスCMSにする前に知っておきたい『開発・運用の落とし穴』"
+            category="開発"
+            thumbnail={thumbnail}
+            date="2025-12-01"
+          />
+        </a>
+      </li>
+      <li class="bl_blog_item">
+        <a href="/">
+          <Card
+            title="初心者でも簡単！WordPressのデータ移行を「WP Import Export Lite」で自動化する手順"
+            category="運用"
+            thumbnail={thumbnail}
+            date="2025-10-14"
+          />
+        </a>
+      </li>
+      <li class="bl_blog_item">
+        <a href="/">
+          <Card
+            title="「なんとなく」は失敗のもと！ Webサイト制作でデザインコンセプトが重要な理由"
+            category="戦略"
+            thumbnail={thumbnail}
+            date="2025-09-01"
+          />
+        </a>
+      </li>
+      <li class="bl_blog_item">
+        <a href="/">
+          <Card
+            title="Webサイト制作はワイヤーフレームから始めよう！失敗しないための必須知識"
+            category="設計"
+            thumbnail={thumbnail}
+            date="2025-09-19"
+          />
+        </a>
+      </li>
+      <li class="bl_blog_item">
+        <a href="/">
+          <Card
+            title="初心者でも理解できる！Git・GitHubとは？"
+            category="開発"
+            thumbnail={thumbnail}
+            date="2025-09-09"
+          />
+        </a>
+      </li>
+      <li class="bl_blog_item">
+        <a href="/">
+          <Card
+            title="WordPressをヘッドレスCMS化して爆速サイトを作る方法【Astroでの構築例】"
+            category="開発"
+            thumbnail={thumbnail}
+            date="2025-08-20"
+          />
+        </a>
+      </li>
+    </ul>
+    <BilingualBtn
+      href="/web-tips"
+      ja="全ての記事を見る"
+      en="View All Articles"
+      class="hl_smVisible"
+    />
+  </div>
+</section>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_blog {
+    padding: fluid-text(120px, 160px) 0;
+    &_header {
+      display: flex;
+      align-items: flex-end;
+      gap: fluid-text(30px, 100px);
+      @include mq("lg") {
+        ::global(.el_link) {
+          display: none;
+        }
+      }
+    }
+    &_list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(to-rem(360px), 1fr));
+      gap: fluid-text(40px, 80px) to-rem(40px);
+      margin-top: fluid-text(30px, 80px);
+    }
+    &_item {
+      a {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+    }
+    ::global(.el_bilingualBtn) {
+      margin-top: fluid-text(30px, 80px);
+    }
+  }
+</style>

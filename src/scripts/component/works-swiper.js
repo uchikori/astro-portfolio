@@ -22,6 +22,7 @@ export function initWorksSwiper() {
       spaceBetween: 60,
       loop: true,
       grabCursor: true,
+      speed: 1000,
 
       pagination: {
         el: ".bl_swiper_pagination",

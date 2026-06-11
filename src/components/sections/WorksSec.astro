@@ -108,13 +108,89 @@ import "swiper/css";
 <style lang="scss">
   @use "../../styles/utility" as *;
   @use "../../styles/global" as *;
+  @keyframes fluid-anim {
+    0% {
+      border-radius: 65% 35% 55% 45% / 55% 50% 55% 45%;
+    }
+    12.5% {
+      border-radius: 60% 75% 40% 80% / 70% 70% 60% 65%;
+    }
+    25% {
+      border-radius: 55% 95% 65% 90% / 75% 65% 85% 70%;
+    }
+    37.5% {
+      border-radius: 60% 40% 50% 45% / 60% 40% 60% 40%;
+    }
+    50% {
+      border-radius: 55% 95% 65% 90% / 75% 65% 85% 70%;
+    }
+    62.5% {
+      border-radius: 60% 40% 50% 45% / 60% 40% 60% 40%;
+    }
+    75% {
+      border-radius: 60% 75% 40% 80% / 70% 70% 60% 65%;
+    }
+    87.5% {
+      border-radius: 40% 60% 55% 45% / 50% 60% 40% 50%;
+    }
+    100% {
+      border-radius: 65% 35% 55% 45% / 55% 50% 55% 45%;
+    }
+  }
+
   .bl_works {
+    padding: fluid-text(0px, 160px) 0;
+    position: relative;
+
+    &:before {
+      content: "";
+      display: block;
+      width: 43rem;
+      aspect-ratio: 1;
+      margin: 0 auto;
+      border-radius: 61% 39% 16% 84% / 57% 72% 28% 43%;
+      animation: fluid-anim var(--fluid-duration, 20s) infinite
+        cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      background: var(--c-fluid1);
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translate(-30%, -20%) rotate(0deg);
+      filter: blur(4rem);
+      z-index: -1;
+      transition: transform 0.8s ease-in-out;
+      @include mq("md") {
+        display: none;
+      }
+    }
+    &:after {
+      content: "";
+      display: block;
+      width: 32rem;
+      aspect-ratio: 1;
+      margin: 0 auto;
+      border-radius: 61% 39% 16% 84% / 57% 72% 28% 43%;
+      animation: fluid-anim var(--fluid-duration, 20s) infinite
+        cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      background: var(--c-fluid2);
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      transform: translate(50%, 50%) rotate(0deg);
+      filter: blur(4rem);
+      z-index: -1;
+      transition: transform 0.8s ease-in-out;
+      @include mq("md") {
+        display: none;
+      }
+    }
+
     &_inner {
       display: flex;
       flex-direction: column;
-      gap: to-rem(80px);
     }
     &_body {
+      margin-top: fluid-text(30px, 40px);
       display: flex;
       gap: to-rem(100px);
       order: 2;
@@ -217,6 +293,9 @@ import "swiper/css";
     }
 
     .bl_swiper {
+      &_wrapper {
+        transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+      }
       &_nav {
         width: calc(1160 / 1240) * 100%;
         display: flex;

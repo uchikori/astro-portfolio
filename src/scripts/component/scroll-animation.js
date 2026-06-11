@@ -249,16 +249,21 @@ function reversal(el) {
     "--c-sec": "rgba(218,218,218,0.8)",
     "--c-main": "#fff",
     "--c-bg": "#110028",
+    "--c-fluid1": "#236c71",
+    "--c-fluid2": "#6A2371",
   });
   ScrollTrigger.create({
     trigger: el,
     start: "top center",
+    end: "bottom center",
     onEnter() {
       gsap.to(":root", {
         "--c-text": "#110028",
         "--c-sec": "rgba(218,218,218,0.8)",
         "--c-main": "#fff",
         "--c-bg": "#DDDCDC",
+        "--c-fluid1": "#9AD6DA",
+        "--c-fluid2": "#CD9FD2",
       });
     },
     onLeave() {
@@ -267,6 +272,8 @@ function reversal(el) {
         "--c-sec": "rgba(218,218,218,0.8)",
         "--c-main": "#fff",
         "--c-bg": "#110028",
+        "--c-fluid1": "#236c71",
+        "--c-fluid2": "#6A2371",
       });
     },
     onEnterBack() {
@@ -275,6 +282,8 @@ function reversal(el) {
         "--c-sec": "rgba(218,218,218,0.8)",
         "--c-main": "#fff",
         "--c-bg": "#DDDCDC",
+        "--c-fluid1": "#9AD6DA",
+        "--c-fluid2": "#CD9FD2",
       });
     },
     onLeaveBack() {
@@ -283,6 +292,8 @@ function reversal(el) {
         "--c-sec": "rgba(218,218,218,0.8)",
         "--c-main": "#fff",
         "--c-bg": "#110028",
+        "--c-fluid1": "#236c71",
+        "--c-fluid2": "#6A2371",
       });
     },
   });

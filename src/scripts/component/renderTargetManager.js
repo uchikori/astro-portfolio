@@ -50,14 +50,14 @@ class RenderTargetManager {
     };
 
     // デバイスピクセル比を考慮してサイズを計算
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = 1;
     const width = rect.width * dpr;
     const height = rect.height * dpr;
 
     // レンダーターゲットを作成
     targetInfo.renderTarget = new RenderTarget(width, height, {
       format: RGBAFormat, // RGBAフォーマットで透明をサポート
-      samples: 4, // アンチエイリアス（MSAA）を有効にする
+      // samples: 4, // アンチエイリアス（MSAA）を有効にする
     });
     // targetInfo.renderTarget = new RenderTarget(3840, 3840, {
     //   format: RGBAFormat, // RGBAフォーマットで透明をサポート

@@ -37,7 +37,7 @@ import ArrowLink from "../../components/ui/ArrowLink.astro";
   @use "../../styles/utility" as *;
 
   .bl_service {
-    padding: fluid-text(120px, 160px) 0;
+    padding: fluid-text(80px, 160px) 0;
     &_inner {
       display: flex;
       flex-direction: column;
@@ -67,13 +67,16 @@ import ArrowLink from "../../components/ui/ArrowLink.astro";
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: fluid-text(48px, 64px, 375px, 1920px);
       @include mq(lg) {
         width: 100%;
         max-width: 100%;
       }
+      ::global(.el_link) {
+        margin-top: fluid-text(48px, 64px);
+      }
     }
     &_text {
+      margin-top: fluid-text(30px, 40px);
       line-height: 2;
     }
     &_media {

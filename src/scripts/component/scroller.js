@@ -12,15 +12,29 @@ const scroller = {
 function init(disableScrollSmoother = false) {
   gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
-  // ScrollSmootherの初期化（disableScrollSmootherがtrueの場合はスムーススクロールを無効化するが、ScrollSmoother自体は初期化する）
+  if (disableScrollSmoother) {
+    // スマホ: ScrollSmootherを使わず、ネイティブスクロールで動作
+    // ScrollTriggerのスクロールイベントで_onScrollを実行
+    ScrollTrigger.addEventListener("scrollEnd", _onScroll);
+    ScrollTrigger.addEventListener("scroll", _onScroll);
+
+    // ScrollSmootherはwrapper/content構造の維持のために初期化するが、smoothingは完全に無効
+    return ScrollSmoother.create({
+      wrapper: "#smooth-wrapper",
+      content: "#smooth-content",
+      smooth: 0,
+      effects: true, // data-speed属性を有効化
+      smoothTouch: false,
+    });
+  }
+
+  // PC: ScrollSmootherのスムーススクロールを有効化
   return ScrollSmoother.create({
     wrapper: "#smooth-wrapper",
     content: "#smooth-content",
-    smooth: disableScrollSmoother ? 0 : 1.5, // スムーススクロールの無効化
+    smooth: 1.5,
     effects: true, // data-speed属性を有効化
-    smoothTouch: disableScrollSmoother ? false : 0.1, // モバイルでのスムーススクロールの無効化
 
-    //
     onUpdate: (self) => {
       _onScroll();
     },
@@ -38,7 +52,7 @@ let timeoutId = null;
  * スクロール中の処理
  */
 function _onScroll() {
-  ScrollTrigger.update();
+  // ScrollTrigger.update();
 
   // タッチデバイスでなければスクロール中にクラスを追加してホバーを無効化する
   if (!utils.isTouchDevices) {
