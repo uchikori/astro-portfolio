@@ -2,7 +2,12 @@
 const { href = "/", ja = "", en = "", class: className = "" } = Astro.props;
 ---
 
-<a href={href} class:list={["el_bilingualBtn", className]}>
+<a
+  href={href}
+  class:list={["el_bilingualBtn", className]}
+  data-mouse="highlight"
+  data-mouse-scale="2"
+>
   <div class="el_bilingualBtn_inner">
     <span class="font-12-14">{ja}</span>
     <span class="font-24-32">{en}</span>
@@ -20,6 +25,18 @@ const { href = "/", ja = "", en = "", class: className = "" } = Astro.props;
     color: $c-dark;
     display: flex;
     position: relative;
+    transition: all 0.3s ease;
+    @media (hover: hover) {
+      &:hover {
+        background-color: $c-orange;
+        color: $c-white;
+        transition: all 0.3s ease;
+        .font-24-32:after {
+          border-bottom: to-rem(28px) solid $c-white;
+          transition: all 0.3s ease;
+        }
+      }
+    }
 
     &_inner {
       display: flex;
@@ -41,6 +58,7 @@ const { href = "/", ja = "", en = "", class: className = "" } = Astro.props;
         height: 0;
         border-left: to-rem(28px) solid transparent;
         border-bottom: to-rem(28px) solid $c-dark;
+        transition: all 0.3s ease;
       }
     }
   }
