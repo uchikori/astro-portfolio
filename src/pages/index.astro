@@ -7,6 +7,11 @@ import Vision from "../components/sections/Vision.astro";
 import ServiceSec from "../components/sections/ServiceSec.astro";
 import WorksSec from "../components/sections/WorksSec.astro";
 import BlogSec from "../components/sections/BlogSec.astro";
+import Banner from "../components/ui/Banner.astro";
+import MailIcon from "../assets/img/icon/mail.svg";
+import CalculateIcon from "../assets/img/icon/calculator.svg";
+import FlickerText from "../components/ui/FlickerText.astro";
+import Marquee from "../components/ui/Marquee.astro";
 ---
 
 <Base title="Astro-home" pageType="home" bodyClass="home">
@@ -14,123 +19,54 @@ import BlogSec from "../components/sections/BlogSec.astro";
   <ServiceSec />
   <WorksSec />
   <BlogSec />
-
-  <div class="ly_wrapper">
-    <!-- <Fv /> -->
-    <!-- <Vision /> -->
-    <!-- <Diverse /> -->
-
-    <!-- <div>
-      <h2>video</h2>
-      <div
-        class="image"
-        data-webgl="template"
-        data-tex-1="/movie/kv_noise_converted.mp4"
+  <section class="bl_bannerSec">
+    <div class="bl_bannerSec_inner hl_contentWidthMiddle">
+      <Banner
+        link="/price"
+        ja="料金表"
+        en="price"
+        text="作りたいWebサイトの大枠が既に決まっている方は、こちらで概算金額を算出できます。"
+        annotaion="あくまでも目安としての金額となりますのでご了承ください。"
       >
-      </div>
-    </div> -->
+        <CalculateIcon slot="icon" />
+      </Banner>
+      <Banner
+        link="/contact"
+        ja="お問い合わせ"
+        en="contact"
+        text="Webサイト立ち上げのご相談、お見積りのご依頼（無料）などお気軽にお問い合わせください。"
+      >
+        <MailIcon slot="icon" />
+      </Banner>
+    </div>
+  </section>
 
-    <!-- <div>
-      <h2>distortion-text</h2>
-      <h2 class="el_sectionTitle">
-        <span
-          class="el_sectionTitle_text"
-          data-webgl="distortion-text"
-          data-tex-1="/img/headline/VISION.png">VISION</span
-        >
-      </h2>
-    </div> -->
+  <Marquee>
+    <p class="bl_marquee_text font-48-80">
+      PASSION BECOMES
+      <FlickerText text="DESIGN." class="hl_accentColor" />
+      DESIGN BECOMES
+      <FlickerText text="EMOTION." class="hl_accentColor" />
+    </p>
+  </Marquee>
 
-    <!-- <div>
-      <h2>curl-noise</h2>
-      <div class="bl_particleSlide">
-        <div
-          class="image"
-          data-webgl="curl-noise"
-          data-tex-1="/img/slider/slider_1.jpg"
-          data-tex-2="/movie/beach.mp4"
-        >
-        </div>
-      </div>
-    </div> -->
-
-    <!-- <div>
-      <h2>plane-to-sphere</h2>
-      <img data-webgl="plane-to-sphere" data-tex-1="/img/slider/slider_1.jpg" />
-    </div> -->
-
-    <!-- <div>
-      <h2>gray-pic</h2>
-      <img data-webgl="gray-pic" data-tex-1="/img/slider/slider_1.jpg" />
-    </div> -->
-
-    <!-- <div>
-      <h2>particle-slide</h2>
-      <div class="bl_particleSlide" style="position:relative">
-        <div
-          class="image"
-          data-webgl="particle-slide"
-          data-tex-1="/img/slider/slider_1.jpg"
-          data-tex-2="/img/slider/slider_2.jpg"
-          data-tex-3="/img/slider/slider_3.jpg"
-          data-tex-4="/img/slider/slider_4.jpg"
-          data-tex-5="/img/slider/slider_5.jpg"
-        >
-        </div>
-      </div>
-    </div> -->
-
-    <!-- <div>
-      <h2>sticky-plane</h2>
-      <img data-webgl="sticky-plane" data-tex-1="/img/slider/slider_1.jpg" />
-    </div> -->
-
-    <!-- <div>
-      <h2>twist-plane</h2>
-      <img data-webgl="twist-plane" data-tex-1="/img/slider/slider_1.jpg" />
-    </div> -->
-
-    <!-- <div>
-      <h2>noise-slide</h2>
-      <img
-        data-webgl="noise-slide"
-        data-tex-1="/img/slider/slider_1.jpg"
-        data-tex-2="/img/slider/slider_2.jpg"
-      />
-    </div> -->
-
-    <!-- <div>
-      <h2>displace-slide</h2>
-      <img
-        data-webgl="displace-slide"
-        data-tex-1="/img/slider/slider_1.jpg"
-        data-tex-2="/img/slider/slider_2.jpg"
-        data-tex-disp="/img/disps/3.png"
-      />
-    </div> -->
-
-    <!-- <div
-      class="kickman"
-      data-webgl="normal"
-      data-model="/model/mixamo_walk.glb"
-      data-render-material="toon"
-    >
-    </div> -->
-  </div>
+  <div class="ly_wrapper"></div>
 </Base>
 
 <style lang="scss">
-  .ly_wrapper {
-    padding: 0 2rem;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 300px;
-    & > div {
-      width: 100%;
-      max-width: 1000px;
-    }
-  }
+  @use "../styles/utility" as *;
+  @use "../styles/global" as *;
+  // .ly_wrapper {
+  //   padding: 0 2rem;
+  //   display: flex;
+  //   flex-direction: column;
+  //   width: 100%;
+  //   gap: 300px;
+  //   & > div {
+  //     width: 100%;
+  //     max-width: 1000px;
+  //   }
+  // }
 
   .video {
     width: 300px;
@@ -150,5 +86,19 @@ import BlogSec from "../components/sections/BlogSec.astro";
     width: 50%;
     aspect-ratio: 1;
     margin-inline: auto;
+  }
+
+  .bl_bannerSec_inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(to-rem(300px), 1fr));
+    gap: to-rem(40px);
+  }
+
+  .bl_marquee_text {
+    color: $c-white;
+    font-size: fluid-text(32px, 64px);
+    font-weight: 700;
+    white-space: nowrap;
+    line-height: 1;
   }
 </style>

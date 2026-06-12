@@ -1,0 +1,96 @@
+---
+const { link, ja, en, text, annotaion = null } = Astro.props;
+
+const accent = en.charAt(0);
+const remaining = en.slice(1);
+
+import ViewMoreIcon from "../../assets/img/view_more.svg";
+---
+
+<a href={link} class="el_banner" data-mouse="highlight" data-mouse-scale="3">
+  <div class="el_banner_inner">
+    <div class="el_banner_body">
+      <h2 class="el_banner_title">
+        <span class="el_banner_ja font-12-16">{ja}</span>
+        <span class="el_banner_en font-32-56 hl_uppercase"
+          ><span class="hl_accentColor">{accent}</span>{remaining}</span
+        >
+      </h2>
+      <div class="el_banner_content">
+        <p class="el_banner_text font-14-20">{text}</p>
+        {annotaion && <p class="el_banner_annotation">{annotaion}</p>}
+      </div>
+    </div>
+    <ViewMoreIcon />
+    <div class="el_banner_icon"><slot name="icon" /></div>
+  </div>
+</a>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .el_banner {
+    max-width: 100%;
+    height: fluid-text(180px, 367px);
+    display: block;
+    padding: to-rem(24px) fluid-text(24px, 40px);
+    background: linear-gradient(135deg, #211a39 0%, #663193 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    color: $c-white;
+    &_inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    &_body {
+      height: 100%;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(32px);
+    }
+    &_title {
+      display: flex;
+      flex-direction: column;
+    }
+    &_ja {
+      font-weight: 500;
+    }
+    &_en {
+      line-height: 1;
+      font-weight: 500;
+    }
+    &_content {
+      max-width: 78%;
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(8px);
+      font-weight: 500;
+      @include mq("lg") {
+        display: none;
+      }
+    }
+    &_annotation {
+      font-size: to-rem(12px);
+    }
+    &_icon {
+      width: 55%;
+      max-width: to-rem(380px);
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: 0;
+      opacity: 0.08;
+      ::global(svg) {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+</style>

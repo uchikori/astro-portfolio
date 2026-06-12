@@ -1,0 +1,129 @@
+---
+interface Props {
+  /** スクロール速度（秒/1ループ）。小さいほど速い。デフォルト 20 */
+  duration?: number;
+  /** スクロール方向。"left" | "right"。デフォルト "left" */
+  direction?: "left" | "right";
+  /** アイテム間の隙間。デフォルト "4rem" */
+  gap?: string;
+}
+
+const { duration = 30, direction = "left", gap = "4rem" } = Astro.props;
+---
+
+<div
+  class="el_marquee"
+  data-direction={direction}
+  data-duration={duration}
+  style={`--gap: ${gap}; --duration: ${duration}s;`}
+>
+  <div class="el_marquee_track">
+    <div class="el_marquee_set">
+      <slot />
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    function setup(el) {
+      var track = el.querySelector(".el_marquee_track");
+      var set = el.querySelector(".el_marquee_set");
+      var duration = Number(el.dataset.duration) || 20;
+      var direction = el.dataset.direction || "left";
+
+      // セット幅を計測
+      var setW = set.getBoundingClientRect().width;
+      if (setW === 0) {
+        // 幅が0なら少し待ってリトライ
+        setTimeout(function () {
+          setup(el);
+        }, 100);
+        return;
+      }
+
+      // 画面を埋めるために必要なセット数を計算（+2で余裕を持つ）
+      var count = Math.ceil(window.innerWidth / setW) + 2;
+
+      // track を空にして必要数のセットを追加
+      track.innerHTML = "";
+      for (var i = 0; i < count; i++) {
+        var clone = set.cloneNode(true);
+        if (i > 0) clone.setAttribute("aria-hidden", "true");
+        track.appendChild(clone);
+      }
+
+      // CSS 変数でアニメーション幅を設定
+      var gapPx =
+        parseFloat(getComputedStyle(el).getPropertyValue("--gap")) || 64;
+      var unitW = setW; // 1セット分（gap はtrack の gap で管理）
+      el.style.setProperty("--unit-w", unitW + "px");
+
+      // アニメーション方向
+      var animName = direction === "right" ? "marquee-right" : "marquee-left";
+      track.style.animationName = animName;
+      track.style.animationDuration = duration + "s";
+      track.style.animationTimingFunction = "linear";
+      track.style.animationIterationCount = "infinite";
+    }
+
+    function initAll() {
+      document.querySelectorAll(".el_marquee").forEach(function (el) {
+        setup(el);
+      });
+    }
+
+    // DOMContentLoaded または即時実行
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initAll);
+    } else {
+      initAll();
+    }
+  })();
+</script>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  @keyframes marquee-left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      /* 1セット分だけ左にずらす（unitW = JS で設定） */
+      transform: translateX(calc(-1 * var(--unit-w) - var(--gap)));
+    }
+  }
+
+  @keyframes marquee-right {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(var(--unit-w) + var(--gap)));
+    }
+  }
+
+  .el_marquee {
+    width: 100%;
+    overflow: hidden;
+
+    ::global(.home) & {
+      margin-top: fluid-text(80px, 100px);
+    }
+
+    &_track {
+      display: flex;
+      gap: var(--gap);
+      width: max-content;
+      will-change: transform;
+    }
+
+    &_set {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+  }
+</style>

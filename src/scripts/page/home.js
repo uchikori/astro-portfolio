@@ -4,6 +4,7 @@ import {
 } from "#/component/slide-hundler";
 import { initDistortionPass } from "#/glsl/distortion-text/pass";
 import { initWorksSwiper } from "#/component/works-swiper";
+import { initMouseParticles } from "#/glsl/mouse-particles";
 
 let world = null;
 let mouse = null;
@@ -98,7 +99,7 @@ function loadAnimation(tl) {
         // ロード完了後にリプルエフェクトを追加
         // await initRipplePass(world, mouse, viewport);
         // ロード完了後にマウスパーティクルを追加
-        // await initMouseParticles(world, mouse);
+        await initMouseParticles(world, mouse);
       },
     },
     "<",
