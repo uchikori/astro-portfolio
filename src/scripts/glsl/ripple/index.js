@@ -59,7 +59,7 @@ class Ripple {
   animate() {
     const { mesh, material } = this;
     mesh.scale.x = mesh.scale.y = mesh.scale.x + 0.07;
-    material.opacity *= 0.97;
+    material.opacity *= 0.95;
     mesh.rotation.z += 0.003;
 
     if (material.opacity <= 0.01) {

@@ -5,6 +5,7 @@ import {
 import { initDistortionPass } from "#/glsl/distortion-text/pass";
 import { initWorksSwiper } from "#/component/works-swiper";
 import { initMouseParticles } from "#/glsl/mouse-particles";
+import { initRipplePass } from "#/glsl/ripple";
 
 let world = null;
 let mouse = null;
@@ -97,9 +98,9 @@ function loadAnimation(tl) {
       onComplete: async () => {
         removePass();
         // ロード完了後にリプルエフェクトを追加
-        // await initRipplePass(world, mouse, viewport);
+        await initRipplePass(world, mouse, viewport);
         // ロード完了後にマウスパーティクルを追加
-        await initMouseParticles(world, mouse);
+        // await initMouseParticles(world, mouse);
       },
     },
     "<",
