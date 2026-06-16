@@ -1,163 +1,117 @@
 ---
 import Base from "../layout/Base.astro";
+import bgAbout from "../assets/img/about/about_bg.png";
+import Picture from "astro/components/Picture.astro";
+import CircleImage from "../components/webgl/CircleImage.astro";
+import SectionTitle from "../components/ui/SectionTitle.astro";
+import Breadcrumb from "../components/ui/Breadcrumb.astro";
+import NormalSection from "../components/sections/NormalSection.astro";
 ---
 
-<script slot="head" src="https://cdn.tailwindcss.com"></script>
-<style slot="head">
-  :root {
-    --bg-dark: #1a1c2c;
-    --accent-orange: #ff6b35;
-  }
+<Base title="UCHIWAについて" pageType="about" bodyClass="about">
+  <div class="hl_contentWidthMiddle">
+    <CircleImage image="/img/about/about_bg.png" />
+    <div class="ly_pageWrapper">
+      <header class="ly_pageHeader">
+        <SectionTitle ja="UCHIWAについて" en="ABOUT" tag="h1" />
+        <hr />
+        <Breadcrumb />
+      </header>
 
-  body {
-    background-color: var(--bg-dark);
-    color: white;
-    font-family: "Helvetica Neue", Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 200vh;
-  }
+      <main class="ly_pageMain">
+        <div
+          class="bl_walkingMan"
+          data-webgl="normal"
+          data-model="/model/mixamo_walk.glb"
+          data-render-material="toon"
+          data-rotation-x="0"
+          data-rotation-y="45"
+          data-scroll-trigger="pin"
+          data-pin-trigger=".ly_pageMain"
+        >
+        </div>
+        <div class="bl_page_contents">
+          <NormalSection
+            title="UCHIWAについて"
+            contents={`北海道札幌市在住の山内友暉と申します。<br /><br />
+                        とにかく“作ることが好き”、“デザインが好き”、“コードを書くことが好き”そんな人間です。<br /><br />
+                        自分自身の「好き」という感情を原動力に、誰かの「心を動かす」モノを作りたい…<br />
+                        そんな野望を胸にお客様と2人3脚で作り上げていくことを心がけています。`}
+          />
+          <NormalSection
+            title="寄り道ばかりのキャリアが、<br/>いまの仕事につながっています。"
+            contents={`大学卒業後は東京の商社で、パッケージシステムの営業として働いていました。
+                      <br />
+                      その後北海道に戻り、ソフトウェア会社で約2年間、SEとしてプロジェクトの管理やシステム導入のサポートに携わりました。
+                      <br />
+                      <br />
+                      分野は違っても、これまでの経験はすべて今の仕事に活きていると感じています。
+                      <br />
+                      人とお話ししながら想いをくみ取り、まだ言葉になっていないニーズを形にしていくこと。
+                      <br />
+                      意見が合わないときも、話し合いを重ねてお互いが納得できるところを見つけること。
+                      <br />
+                      ものづくりは、そうしたやり取りの積み重ねで成り立っているのだと思います。
+                      <br />
+                      <br />
+                      「無駄な経験は一つもない」——そんな実感を持ちながら、会社員として働くかたわら、昔から好きだった“つくること”を諦めきれず、Webの知識や技術を独学で学び続けてきました。
+                      独立後は、制作会社様や個人のお客様とのご縁にも恵まれ、現在に至ります。`}
+          />
+        </div>
+      </main>
+    </div>
+    <!-- <Picture
+      src={bgAbout}
+      formats={["avif", "webp"]}
+      widths={[375, 710, 1920]}
+      sizes="(max-width: 768px) 100vw, 1920px"
+      alt="サンプル画像"
+      width={1560}
+      height={877}
+      loading="lazy"
+    /> -->
+  </div>
+</Base>
 
-  /* Grid Layout の肝となる部分 
-    */
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(10, 70px);
-    gap: 32px;
-    max-width: 1760px;
-    width: 91.66%;
-    margin: auto;
+<style lang="scss">
+  @use "../styles/utility" as *;
+  @use "../styles/global" as *;
+  .ly_pageWrapper {
+    padding: fluid-text(74px, 200px) 0 to-rem(100px) 0;
     position: relative;
-  }
-
-  /* 左側の人物写真 */
-  .person-img {
-    grid-column: 1 / 5; /* 1列目から5列目まで */
-    grid-row: 2 / 10; /* 2行目から9行目まで */
-    z-index: 2;
-    box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-  }
-
-  .person-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(100%);
-  }
-
-  /* 中央（背景寄り）の3Dモデル画像 */
-  .model-img {
-    grid-column: 3 / 10; /* 4列目から10列目まで（人物と重なる） */
-    grid-row: 1 / 8; /* 1行目から7行目まで */
-    z-index: 1;
-    opacity: 0.8;
-    background: #333; /* 画像がない場合のフォールバック */
-  }
-
-  .model-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* ABOUT テキスト */
-  .about-title {
-    grid-column: 7 / 9;
-    grid-row: 6;
-    z-index: 3;
-    font-size: 4rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    align-self: end;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  /* 説明文テキスト */
-  .description {
-    grid-column: 7 / 11;
-    grid-row: 7 / 8;
-    z-index: 3;
-    padding-top: 20px;
-    font-size: 0.9rem;
-    line-height: 1.8;
-    color: #ccc;
-  }
-
-  /* 背景の薄いテキスト装飾（UCHIWA...） */
-  .bg-text {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 8rem;
-    font-weight: 900;
-    color: rgba(255, 255, 255, 0.03);
-    pointer-events: none;
-    white-space: nowrap;
     z-index: 0;
   }
 
-  /* モバイル対応 */
-  @media (max-width: 768px) {
-    .grid-container {
-      display: flex;
+  .ly_pageHeader {
+    display: flex;
+    flex-direction: column;
+    gap: to-rem(40px);
+  }
+
+  .ly_pageMain {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: to-rem(80px) 0;
+
+    @include mq("lg") {
       flex-direction: column;
-      grid-template-rows: auto;
-    }
-    .person-img,
-    .model-img,
-    .about-title,
-    .description {
-      grid-column: auto;
-      grid-row: auto;
-      width: 100%;
-      margin-bottom: 20px;
-    }
-    .about-title {
-      font-size: 2.5rem;
+      align-items: center;
     }
   }
+
+  .bl_walkingMan {
+    max-width: 80%;
+    width: 600px;
+    aspect-ratio: 1;
+  }
+
+  .bl_page_contents {
+    width: 100%;
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+    gap: fluid-text(120px, 360px);
+  }
 </style>
-
-<Base title="About Section - Grid Layout" pageType="home">
-  <div class="grid-container">
-    <!-- 背後の装飾文字 -->
-    <div class="bg-text">UCHIWA</div>
-
-    <!-- 左側の人物画像 -->
-    <div class="person-img">
-      <img
-        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop"
-        alt="Person"
-        onerror="this.src='https://via.placeholder.com/500x700?text=Person+Image'"
-      />
-    </div>
-
-    <!-- 重なる3D/制作物画像 -->
-    <div class="model-img">
-      <img
-        src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1000&auto=format&fit=crop"
-        alt="3D Model"
-        onerror="this.src='https://via.placeholder.com/800x600?text=Work+Image'"
-      />
-    </div>
-
-    <!-- タイトル -->
-    <h2 class="about-title">ABOUT</h2>
-
-    <!-- 説明文 -->
-    <div class="description">
-      <p>北海道札幌市の個人事業のWebデザイナー。</p>
-      <p>
-        「UCHIWA Creative
-        Studio」という屋号で道内・道外問わず、全国のお客様のWebサイト作りに携わらせて頂いております。
-      </p>
-    </div>
-  </div>
-</Base>

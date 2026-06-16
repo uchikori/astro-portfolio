@@ -1,0 +1,41 @@
+---
+const { title, contents, tag: Tag = "h2", class: className = "" } = Astro.props;
+---
+
+<section class:list={["bl_section", className]}>
+  {
+    title ? (
+      <Tag class="bl_section_title font-24-32" set:html={title} />
+    ) : (
+      <Tag class="bl_section_title font-24-32">
+        <slot name="title" />
+      </Tag>
+    )
+  }
+  {
+    contents ? (
+      <div class="bl_section_contents" set:html={contents} />
+    ) : (
+      <div class="bl_section_contents">
+        <slot />
+      </div>
+    )
+  }
+</section>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_section {
+    display: flex;
+    flex-direction: column;
+    gap: fluid-text(24px, 80px);
+    &_title {
+      font-weight: 500;
+    }
+    &_contents {
+      line-height: 2;
+    }
+  }
+</style>

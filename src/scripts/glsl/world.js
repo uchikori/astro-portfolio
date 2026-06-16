@@ -385,18 +385,17 @@ function render() {
   world.renderer.setRenderTarget(null);
   // world.renderer.render(world.scene, world.camera);
 
-  //ポストプロセスを適用して描画
-  world.postProcessing.render();
-
-  //レイキャスティング
-  // raycast();
-
   //スクロール処理
   for (let i = world.os.length - 1; i >= 0; i--) {
     const o = world.os[i];
     o.scroll();
     o.render(world.tick);
   }
+  //ポストプロセスを適用して描画
+  world.postProcessing.render();
+
+  //レイキャスティング
+  // raycast();
 
   // OrbitControlsの更新
   world.renderTargetManager.updateControls();

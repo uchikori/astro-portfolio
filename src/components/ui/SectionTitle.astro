@@ -2,6 +2,7 @@
 const {
   en,
   ja,
+  tag: Tag = "h2",
   class: className = "",
   enClass = "font-48-80 hl_uppercase",
   jaClass = "bl_sectiontitle_ja font-16-20",
@@ -12,10 +13,10 @@ const accent = en.charAt(0);
 const remaining = en.slice(1);
 ---
 
-<hgroup class:list={["bl_sectiontitle", className]} data-scroll-trigger="fade">
-  <h2 class:list={[enClass]}>
+<hgroup class:list={["bl_sectiontitle", className]}>
+  <Tag class:list={[enClass]}>
     <span class="hl_accentColor">{accent}</span>{remaining}
-  </h2>
+  </Tag>
   <span class:list={[jaClass]}>{ja}</span>
 </hgroup>
 

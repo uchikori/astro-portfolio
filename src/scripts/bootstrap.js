@@ -9,7 +9,7 @@ import menu from "#/component/menu";
 import { registScrollAnimations } from "#/component/scroll-animation";
 import { utils } from "#/helper/utils";
 
-window.debug = enableDebugMode(0);
+window.debug = enableDebugMode(1);
 
 // デバッグモード:1=有効,0=無効
 function enableDebugMode(debug) {

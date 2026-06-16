@@ -18,14 +18,37 @@ function init(disableScrollSmoother = false) {
     ScrollTrigger.addEventListener("scrollEnd", _onScroll);
     ScrollTrigger.addEventListener("scroll", _onScroll);
 
-    // ScrollSmootherはwrapper/content構造の維持のために初期化するが、smoothingは完全に無効
-    return ScrollSmoother.create({
-      wrapper: "#smooth-wrapper",
-      content: "#smooth-content",
-      smooth: 0,
-      effects: true, // data-speed属性を有効化
-      smoothTouch: false,
-    });
+    // ScrollSmootherは作成せず、モックオブジェクトを返すことでネイティブスクロールを維持する
+    return {
+      // メニュー展開時などのスクロール一時停止
+      paused: (value) => {
+        if (value) {
+          document.documentElement.style.overflow = "hidden";
+          document.body.style.overflow = "hidden";
+        } else {
+          document.documentElement.style.overflow = "";
+          document.body.style.overflow = "";
+        }
+      },
+      // 指定位置へスクロール
+      scrollTo: (target, smooth = true) => {
+        const top =
+          typeof target === "number"
+            ? target
+            : document.querySelector(target)?.offsetTop || 0;
+        window.scrollTo({
+          top,
+          behavior: smooth ? "smooth" : "auto",
+        });
+      },
+      // スクロール位置を取得
+      scrollTop: (value) => {
+        if (value !== undefined) {
+          window.scrollTo(0, value);
+        }
+        return window.scrollY;
+      },
+    };
   }
 
   // PC: ScrollSmootherのスムーススクロールを有効化

@@ -1,0 +1,23 @@
+---
+const { image } = Astro.props;
+---
+
+<div
+  class="bl_bg"
+  data-webgl="circle-image"
+  data-tex-1={image}
+  data-scroll-trigger="pin"
+  data-mesh-position-z="-1"
+>
+</div>
+
+<style lang="scss">
+  .bl_bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    aspect-ratio: 1560/877;
+    z-index: -1;
+  }
+</style>

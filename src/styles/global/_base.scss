@@ -1,5 +1,12 @@
 @use "./variables" as *;
+@use "./mq" as *;
 :root {
+  --c-text: #dddcdc;
+  --c-sec: rgba(218, 218, 218, 0.8);
+  --c-main: #fff;
+  --c-bg: #110028;
+  --c-fluid1: #236c71;
+  --c-fluid2: #6a2371;
   --c-black: #{$c-black};
   --c-white: #{$c-white};
   --c-gray: #{$c-gray};
@@ -48,3 +55,11 @@ img {
     opacity: 1;
   }
 }
+
+// [data-model] {
+//   pointer-events: auto;
+
+//   @include mq("lg") {
+//     pointer-events: none;
+//   }
+// }

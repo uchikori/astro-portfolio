@@ -86,10 +86,9 @@ function pin(el) {
   ScrollTrigger.create({
     trigger: triggerEl,
     start: "top top",
-    end: "bottom top",
+    end: "bottom center",
     pin: el,
     pinSpacing: false,
-    markers: true,
   });
 }
 
@@ -110,7 +109,6 @@ function blur(el) {
       start: "top top",
       end: "bottom top",
       scrub: true,
-      markers: true,
     },
   });
 }
