@@ -1,0 +1,112 @@
+---
+import Base from "../layout/Base.astro";
+import Picture from "astro/components/Picture.astro";
+import CircleImage from "../components/webgl/CircleImage.astro";
+import PageHeader from "../layout/PageHeader.astro";
+import PageWrapper from "../layout/PageWrapper.astro";
+import SectionTitle from "../components/ui/SectionTitle.astro";
+import bgService from "../assets/img/service/service_bg.png";
+---
+
+<Base title="事業内容" pageType="service" bodyClass="service">
+  <div class="hl_contentWidthMiddle">
+    <CircleImage image="/img/service/service_bg.png" />
+    <PageWrapper>
+      <PageHeader ja="事業内容" en="service" tag="h1" />
+
+      <main class="ly_pageMain">
+        <section class="bl_section">
+          <span
+            class="bl_section_decorativeText"
+            data-scroll-trigger="pin"
+            data-pin-trigger=".bl_section"
+            data-pin-start="top 20%"
+            data-pin-end="bottom 20%"
+          >
+            concept
+          </span>
+          <SectionTitle
+            title="Webサイトは「作るもの」ではなく、<br />事業を前に進めるための仕組みです。"
+            tag="h2"
+          />
+          <p class="bl_section_contents">
+            事業の想いはあるのに、<br />
+            それがうまく伝わらないと感じたことはありませんか。<br />
+            <br />
+            いまや誰でもホームページを持てる時代になりました。<br />
+            ノーコードツールを使えば、見た目だけなら簡単に整えられます。<br />
+            それでも「問い合わせが来ない」「価値が伝わらない」<br />
+            そんな悩みを抱える方は少なくありません。<br />
+            <br />
+            私が考えるWebデザインは、<br />
+            単にサイトを作ることでも、綺麗に見せることでもありません。<br />
+            何のために、誰に向けて、何を届けるのか。<br />
+            その整理から始めて、はじめて“伝わるサイト”になります。<br />
+            UCHIWA Creative Studioでは表現の前にコンセプト設計を行い、<br />
+            お客様のサービスの価値が正しく届くWebサイトを制作しています。
+          </p>
+        </section>
+      </main>
+    </PageWrapper>
+  </div>
+</Base>
+
+<style lang="scss">
+  @use "../styles/utility" as *;
+  @use "../styles/global" as *;
+
+  .hl_contentWidthMiddle {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .ly_pageMain {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: to-rem(80px) 0;
+
+    @include mq("lg") {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  .bl_section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: fluid-text(40px, 80px);
+    position: relative;
+    &_decorativeText {
+      display: block;
+      text-transform: uppercase;
+      font-size: fluid-text(56px, 200px);
+      line-height: 1;
+      color: var(--c-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateY(-50%);
+      z-index: 0;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      opacity: 0.16;
+      @include mq("md") {
+        position: relative;
+        transform: none;
+      }
+    }
+
+    :global(.bl_section_title),
+    &_contents {
+      position: relative;
+      z-index: 1;
+    }
+
+    &_contents {
+      line-height: 2;
+    }
+  }
+</style>

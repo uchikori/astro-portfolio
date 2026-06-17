@@ -31,6 +31,7 @@ const { currentLabel, items: manualItems } = Astro.props;
 // ルートとラベルのマッピング（ページを追加したらここに追記）
 const routeMap: Record<string, string> = {
   about: "UCHIWAについて",
+  service: "事業内容",
   diverse: "DIVERSE",
 };
 
@@ -89,9 +90,13 @@ if (manualItems && manualItems.length > 0) {
             ]}
           >
             {item.isCurrent ? (
-              <span aria-current="page">{item.label}</span>
+              <span aria-current="page" class="font-12-16">
+                {item.label}
+              </span>
             ) : (
-              <a href={item.href}>{item.label}</a>
+              <a href={item.href} class="font-12-16">
+                {item.label}
+              </a>
             )}
           </li>
         </>

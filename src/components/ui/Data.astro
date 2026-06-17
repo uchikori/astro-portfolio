@@ -1,0 +1,49 @@
+---
+const { dt, dd } = Astro.props;
+---
+
+<div class="bl_data_row">
+  <dt class="bl_data_dt">{dt}</dt>
+  <dd class="bl_data_dd" set:html={dd} />
+</div>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_data_row {
+    width: 100%;
+    display: flex;
+    font-size: to-rem(16px);
+    color: var(--c-text);
+    border-top: solid 1px var(--c-text);
+
+    &:last-child {
+      border-bottom: solid 1px var(--c-text);
+    }
+    @include mq("md") {
+      flex-direction: column;
+      border-top: none;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    dt {
+      width: 30%;
+      padding: fluid-text(12px, 24px) fluid-text(5px, 10px);
+      line-height: 1.5;
+      @include mq("md") {
+        width: 100%;
+        border-bottom: solid 1px var(--c-text);
+      }
+    }
+    dd {
+      padding: fluid-text(12px, 24px) fluid-text(5px, 10px);
+      line-height: 1.5;
+    }
+    :global(a) {
+      color: var(--c-text);
+      text-decoration: underline;
+    }
+  }
+</style>

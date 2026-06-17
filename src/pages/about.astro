@@ -1,22 +1,39 @@
 ---
 import Base from "../layout/Base.astro";
-import bgAbout from "../assets/img/about/about_bg.png";
 import Picture from "astro/components/Picture.astro";
 import CircleImage from "../components/webgl/CircleImage.astro";
-import SectionTitle from "../components/ui/SectionTitle.astro";
-import Breadcrumb from "../components/ui/Breadcrumb.astro";
 import NormalSection from "../components/sections/NormalSection.astro";
+import Data from "../components/ui/Data.astro";
+import PageHeader from "../layout/PageHeader.astro";
+import PageWrapper from "../layout/PageWrapper.astro";
+import gallery01 from "../assets/img/about/gallery_01.png";
+import gallery02 from "../assets/img/about/gallery_02.png";
+import gallery03 from "../assets/img/about/gallery_03.png";
+import gallery04 from "../assets/img/about/gallery_04.png";
+import gallery05 from "../assets/img/about/gallery_05.png";
+import gallery06 from "../assets/img/about/gallery_06.png";
+import gallery07 from "../assets/img/about/gallery_07.png";
+import gallery08 from "../assets/img/about/gallery_08.png";
+import gallery09 from "../assets/img/about/gallery_09.png";
+import gallery10 from "../assets/img/about/gallery_10.png";
+import gallery11 from "../assets/img/about/gallery_11.png";
+import gallery12 from "../assets/img/about/gallery_12.png";
+import gallery13 from "../assets/img/about/gallery_13.png";
+import gallery14 from "../assets/img/about/gallery_14.png";
+import gallery15 from "../assets/img/about/gallery_15.png";
+import gallery16 from "../assets/img/about/gallery_16.png";
+import gallery17 from "../assets/img/about/gallery_17.png";
+import gallery18 from "../assets/img/about/gallery_18.png";
+import gallery19 from "../assets/img/about/gallery_19.png";
+import gallery20 from "../assets/img/about/gallery_20.png";
+import Gallery from "../components/ui/Gallery.astro";
 ---
 
 <Base title="UCHIWAについて" pageType="about" bodyClass="about">
   <div class="hl_contentWidthMiddle">
     <CircleImage image="/img/about/about_bg.png" />
-    <div class="ly_pageWrapper">
-      <header class="ly_pageHeader">
-        <SectionTitle ja="UCHIWAについて" en="ABOUT" tag="h1" />
-        <hr />
-        <Breadcrumb />
-      </header>
+    <PageWrapper>
+      <PageHeader ja="UCHIWAについて" en="ABOUT" tag="h1" />
 
       <main class="ly_pageMain">
         <div
@@ -25,7 +42,7 @@ import NormalSection from "../components/sections/NormalSection.astro";
           data-model="/model/mixamo_walk.glb"
           data-render-material="toon"
           data-rotation-x="0"
-          data-rotation-y="45"
+          data-rotation-y="-45"
           data-scroll-trigger="pin"
           data-pin-trigger=".ly_pageMain"
         >
@@ -57,9 +74,357 @@ import NormalSection from "../components/sections/NormalSection.astro";
                       「無駄な経験は一つもない」——そんな実感を持ちながら、会社員として働くかたわら、昔から好きだった“つくること”を諦めきれず、Webの知識や技術を独学で学び続けてきました。
                       独立後は、制作会社様や個人のお客様とのご縁にも恵まれ、現在に至ります。`}
           />
+          <section class="bl_section">
+            <h2 class="bl_section_title font-24-32">事業概要</h2>
+            <dl class="bl_data">
+              <Data dt="屋号" dd="UCHIWA Creative Studio" />
+              <Data dt="事業形態" dd="個人事業主（フリーランス）" />
+              <Data dt="事業主" dd="山内友暉（YUKI YAMAUCHI）" />
+              <Data
+                dt="消費税区分"
+                dd="免税事業者（適格請求書は発行できません）"
+              />
+              <Data
+                dt="事業内容"
+                dd="Webサイト制作(サイトデザイン・コーディング・WordPress実装)"
+              />
+              <Data dt="住所" dd="北海道札幌市" />
+              <Data dt="MAIL" dd="info@uchiwa-design.net" />
+              <Data
+                dt="SNS"
+                dd=`<a
+                    href="https://x.com/KoriUchiwa"
+                    target="_blank"
+                    rel="noopener noreferrer">X</a
+                  >
+                  <a
+                    href="https://www.facebook.com/WEBdesigner.uchiwa"
+                    target="_blank"
+                    rel="noopener noreferrer">Facebook</a
+                  >
+                  <a
+                    href="https://www.instagram.com/uchiwa_cs/?hl=ja"
+                    target="_blank"
+                    rel="noopener noreferrer">Instagram</a
+                  >`
+              />
+            </dl>
+          </section>
+
+          <section class="bl_section hl_hasBB">
+            <div class="bl_section_group">
+              <h2 class="bl_section_title font-24-32">OFFの時間のUCHIWA</h2>
+              <p class="bl_section_contents">
+                こういう時間が、制作のバランスを保ってくれています。
+              </p>
+            </div>
+            <div class="bl_section_group">
+              <h3 class="bl_section_title">
+                <svg
+                  width="23"
+                  height="12"
+                  viewBox="0 0 23 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2.25 6C2.25 0 11.25 0 11.25 6C11.25 12 2.25 12 2.25 6ZM15.75 12C24.75 12 24.75 0 15.75 0H6.75C-2.25 0 -2.25 12 6.75 12"
+                    fill="white"></path>
+                </svg>
+
+                サウナ
+              </h3>
+              <p class="bl_section_contents">
+                打ち合わせや作業が続いて頭がいっぱいになると、サウナに行きます。<br
+                />
+                10分ほど何も考えずに座っていると、さっきまで悩んでいたレイアウトの答えが急に出てきたりします。
+                <br /><br />
+                だいたい「もっとシンプルでいい」という結論になります。
+              </p>
+              <Gallery className="bl_section_gallery">
+                <Picture
+                  src={gallery01}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="フミノサウナ01"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery02}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="フミノサウナ02"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery03}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="メープルロッジ"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery04}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="旭川サウナ オスパー"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+              </Gallery>
+            </div>
+            <div class="bl_section_group">
+              <h3 class="bl_section_title">
+                <svg
+                  width="23"
+                  height="12"
+                  viewBox="0 0 23 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2.25 6C2.25 0 11.25 0 11.25 6C11.25 12 2.25 12 2.25 6ZM15.75 12C24.75 12 24.75 0 15.75 0H6.75C-2.25 0 -2.25 12 6.75 12"
+                    fill="white"></path>
+                </svg>
+
+                バイク
+              </h3>
+              <p class="bl_section_contents">
+                バイクで特に目的もなく走るのが好きです。<br />
+                行き先を決めないほうが、不思議と良い景色に出会えます。<br /><br
+                />
+                サイト設計も少し似ていて、最初に形を決め込みすぎない方が、結果的に良い着地点に落ち着くことが多い気がしています。
+              </p>
+              <Gallery className="bl_section_gallery">
+                <Picture
+                  src={gallery05}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="白鳥大橋にて（室蘭）"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery06}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="望洋の丘（京極町）"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery07}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="美瑛の丘"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery08}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="青い池"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery09}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="洞爺湖サイロ展望台"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery10}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="どこか忘れた"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+              </Gallery>
+            </div>
+            <div class="bl_section_group">
+              <h3 class="bl_section_title">
+                <svg
+                  width="23"
+                  height="12"
+                  viewBox="0 0 23 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2.25 6C2.25 0 11.25 0 11.25 6C11.25 12 2.25 12 2.25 6ZM15.75 12C24.75 12 24.75 0 15.75 0H6.75C-2.25 0 -2.25 12 6.75 12"
+                    fill="white"></path>
+                </svg>
+
+                散歩
+              </h3>
+              <p class="bl_section_contents">
+                散歩はアイデア出しの時間です。<br />
+                近所をぐるぐる歩いているだけですが、考えが整理されるので意外と仕事に直結しています。
+                <br /><br />
+                たまに同じ道を3周くらいしているので、近所の人には少し不審に思われているかもしれません。
+              </p>
+              <Gallery className="bl_section_gallery">
+                <Picture
+                  src={gallery11}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="雨の日の大通公園"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery12}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="北海道庁旧本庁舎 赤れんが庁舎"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery13}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="旭山展望台からの札幌市の一望"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery14}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="野幌森林公園"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery15}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="北海道博物館"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery16}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="野幌森林公園（冬）"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+              </Gallery>
+            </div>
+            <div class="bl_section_group">
+              <h3 class="bl_section_title">
+                <svg
+                  width="23"
+                  height="12"
+                  viewBox="0 0 23 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2.25 6C2.25 0 11.25 0 11.25 6C11.25 12 2.25 12 2.25 6ZM15.75 12C24.75 12 24.75 0 15.75 0H6.75C-2.25 0 -2.25 12 6.75 12"
+                    fill="white"></path>
+                </svg>
+
+                サイクリング
+              </h3>
+              <p class="bl_section_contents">
+                天気のいい日は、遠くへ行くわけでもなく自転車でふらっと走ります。<br
+                />
+                徒歩だと少し遠く、バイクだと近すぎる距離がちょうど良くて、頭の中がゆっくり整っていきます。<br
+                /><br />
+                帰ってくる頃には、止まっていた作業の手が自然と動き出すことが多いです。
+              </p>
+              <Gallery className="bl_section_gallery">
+                <Picture
+                  src={gallery17}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="サイクリングロード"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery18}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="とある晴れた日"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery19}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="雨上がりの虹"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+                <Picture
+                  src={gallery20}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 980]}
+                  sizes="(max-width: 768px) 100vw, 980px"
+                  alt="桜"
+                  width={245}
+                  height={170}
+                  loading="lazy"
+                />
+              </Gallery>
+            </div>
+          </section>
         </div>
       </main>
-    </div>
+    </PageWrapper>
+
     <!-- <Picture
       src={bgAbout}
       formats={["avif", "webp"]}
@@ -76,17 +441,6 @@ import NormalSection from "../components/sections/NormalSection.astro";
 <style lang="scss">
   @use "../styles/utility" as *;
   @use "../styles/global" as *;
-  .ly_pageWrapper {
-    padding: fluid-text(74px, 200px) 0 to-rem(100px) 0;
-    position: relative;
-    z-index: 0;
-  }
-
-  .ly_pageHeader {
-    display: flex;
-    flex-direction: column;
-    gap: to-rem(40px);
-  }
 
   .ly_pageMain {
     width: 100%;
@@ -102,16 +456,66 @@ import NormalSection from "../components/sections/NormalSection.astro";
   }
 
   .bl_walkingMan {
-    max-width: 80%;
-    width: 600px;
+    width: 100%;
+    max-width: to-rem(560px);
     aspect-ratio: 1;
+    flex-shrink: 1;
+
+    @media (min-width: 960px) {
+      width: 45%;
+      max-width: to-rem(600px);
+      margin-top: to-rem(40px);
+    }
+
+    @include mq("lg") {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      transform: none !important;
+      width: 100% !important;
+      max-width: to-rem(360px) !important;
+      margin-inline: auto;
+      margin-bottom: to-rem(40px);
+    }
+  }
+
+  :global(.pin-spacer) {
+    @include mq("lg") {
+      width: 100% !important;
+      height: auto !important;
+      padding: 0 !important;
+    }
   }
 
   .bl_page_contents {
     width: 100%;
-    max-width: 760px;
+    max-width: to-rem(760px);
     display: flex;
     flex-direction: column;
     gap: fluid-text(120px, 360px);
+    flex-shrink: 1;
+
+    @media (min-width: 960px) {
+      width: 50%;
+    }
+  }
+
+  .bl_data {
+    @include mq("md") {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(16px);
+    }
+  }
+
+  .bl_section_title {
+    font-size: to-rem(20px);
+    display: flex;
+    gap: to-rem(10px);
+    align-items: center;
+  }
+  .bl_section_contents {
+    margin-top: to-rem(24px);
+    line-height: 2;
   }
 </style>

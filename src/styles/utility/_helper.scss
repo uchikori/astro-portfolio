@@ -66,3 +66,24 @@
     opacity: 0 !important;
   }
 }
+
+//border-bottom
+.hl_hasBB {
+  border-bottom: solid 1px var(--c-text);
+}
+//border-top
+.hl_hasBT {
+  border-top: solid 1px var(--c-text);
+}
+//border-left
+.hl_hasBL {
+  border-left: solid 1px var(--c-text);
+}
+//border-right
+.hl_hasBR {
+  border-right: solid 1px var(--c-text);
+}
+//border-all
+.hl_hasB {
+  border: solid 1px var(--c-text);
+}

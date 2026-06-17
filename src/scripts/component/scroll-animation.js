@@ -83,10 +83,13 @@ function pin(el) {
   // セレクターの指定があればその要素を取得、なければ親要素をデフォルトにする
   const triggerEl = triggerSelector ? INode.qs(triggerSelector) : el.parentNode;
 
+  const startPos = INode.getDS(el, "pinStart") || "top top";
+  const endPos = INode.getDS(el, "pinEnd") || "bottom center";
+
   ScrollTrigger.create({
     trigger: triggerEl,
-    start: "top top",
-    end: "bottom center",
+    start: startPos,
+    end: endPos,
     pin: el,
     pinSpacing: false,
   });

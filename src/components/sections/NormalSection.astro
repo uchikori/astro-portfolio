@@ -1,20 +1,21 @@
 ---
+import SectionTitle from "../ui/SectionTitle.astro";
 const { title, contents, tag: Tag = "h2", class: className = "" } = Astro.props;
 ---
 
 <section class:list={["bl_section", className]}>
   {
     title ? (
-      <Tag class="bl_section_title font-24-32" set:html={title} />
+      <SectionTitle title={title} tag={Tag} class:list={["font-24-32"]} />
     ) : (
-      <Tag class="bl_section_title font-24-32">
+      <SectionTitle tag={Tag} class:list={["font-24-32"]}>
         <slot name="title" />
-      </Tag>
+      </SectionTitle>
     )
   }
   {
     contents ? (
-      <div class="bl_section_contents" set:html={contents} />
+      <p class="bl_section_contents" set:html={contents} />
     ) : (
       <div class="bl_section_contents">
         <slot />
@@ -27,15 +28,15 @@ const { title, contents, tag: Tag = "h2", class: className = "" } = Astro.props;
   @use "../../styles/utility" as *;
   @use "../../styles/global" as *;
 
-  .bl_section {
+  $base: ".bl_section";
+
+  :global(.bl_section) {
     display: flex;
     flex-direction: column;
     gap: fluid-text(24px, 80px);
-    &_title {
-      font-weight: 500;
-    }
-    &_contents {
-      line-height: 2;
-    }
+  }
+
+  :global(.bl_section_title) {
+    font-weight: 500;
   }
 </style>

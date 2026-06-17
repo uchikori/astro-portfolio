@@ -1,0 +1,22 @@
+---
+const { ja, en, tag } = Astro.props;
+import BilingualTitle from "../components/ui/BilingualTitle.astro";
+import Breadcrumb from "../components/ui/Breadcrumb.astro";
+---
+
+<header class="ly_pageHeader">
+  <BilingualTitle ja={ja} en={en} tag={tag} />
+  <hr />
+  <Breadcrumb />
+</header>
+
+<style lang="scss">
+  @use "../styles/utility" as *;
+  @use "../styles/global" as *;
+
+  .ly_pageHeader {
+    display: flex;
+    flex-direction: column;
+    gap: to-rem(40px);
+  }
+</style>
