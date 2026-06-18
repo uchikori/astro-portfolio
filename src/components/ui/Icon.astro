@@ -1,0 +1,60 @@
+---
+const { icon } = Astro.props;
+
+import web from "../../assets/img/icon/web.svg";
+import lightning from "../../assets/img/icon/lightning-bolt.svg";
+import cart from "../../assets/img/icon/cart.svg";
+import config from "../../assets/img/icon/config.svg";
+import chat from "../../assets/img/icon/chat.svg";
+import compass from "../../assets/img/icon/compass.svg";
+import document from "../../assets/img/icon/document.svg";
+import design from "../../assets/img/icon/design.svg";
+import code from "../../assets/img/icon/code.svg";
+import rocket from "../../assets/img/icon/rocket.svg";
+import handshake from "../../assets/img/icon/handshake.svg";
+import filter from "../../assets/img/icon/filter.svg";
+import Image from "astro/components/Image.astro";
+
+// 各アイコンをマッピング
+const icons = {
+  web,
+  lightning,
+  cart,
+  config,
+  chat,
+  compass,
+  document,
+  design,
+  code,
+  rocket,
+  handshake,
+  filter,
+};
+
+const currentIcon = icons[icon];
+---
+
+<figure class="el_icon">
+  {currentIcon && <Image src={currentIcon} alt={icon} width={32} height={32} />}
+</figure>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+  .el_icon {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    :global(.bl_serviceItem) & {
+      width: 3.5rem;
+      background: #d9d9d9;
+      border-radius: to-rem(12px);
+    }
+
+    img {
+      width: 2rem;
+      height: auto;
+    }
+  }
+</style>

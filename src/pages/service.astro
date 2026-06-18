@@ -6,22 +6,27 @@ import PageHeader from "../layout/PageHeader.astro";
 import PageWrapper from "../layout/PageWrapper.astro";
 import SectionTitle from "../components/ui/SectionTitle.astro";
 import bgService from "../assets/img/service/service_bg.png";
+import CardWithNumber from "../components/ui/CardWithNumber.astro";
+import Icon from "../components/ui/Icon.astro";
+import CheckIcon from "../assets/img/icon/check.svg";
+const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
 ---
 
 <Base title="事業内容" pageType="service" bodyClass="service">
   <div class="hl_contentWidthMiddle">
-    <CircleImage image="/img/service/service_bg.png" />
+    <CircleImage image="/img/service/service_bg.webp" />
     <PageWrapper>
       <PageHeader ja="事業内容" en="service" tag="h1" />
 
       <main class="ly_pageMain">
-        <section class="bl_section">
+        <section class="bl_section concept">
           <span
             class="bl_section_decorativeText"
             data-scroll-trigger="pin"
-            data-pin-trigger=".bl_section"
-            data-pin-start="top 20%"
-            data-pin-end="bottom 20%"
+            data-pin-trigger=".bl_section.concept"
+            data-pin-start="top center"
+            data-pin-end="bottom center"
+            aria-hidden="true"
           >
             concept
           </span>
@@ -46,6 +51,255 @@ import bgService from "../assets/img/service/service_bg.png";
             お客様のサービスの価値が正しく届くWebサイトを制作しています。
           </p>
         </section>
+        <section class="bl_section issue">
+          <span
+            class="bl_section_decorativeText"
+            data-scroll-trigger="pin"
+            data-pin-trigger=".bl_section.issue"
+            data-pin-start="top 20%"
+            data-pin-end="bottom 20%"
+            aria-hidden="true"
+          >
+            issue
+          </span>
+          <SectionTitle
+            title="Webサイトについて、こんな悩みはありませんか？"
+            tag="h2"
+          />
+          <ul class="bl_cardList">
+            <CardWithNumber
+              content="何を載せればよいのか分からず、制作の話が前に進まない"
+            />
+            <CardWithNumber
+              content="情報を整理できず、文章や構成を決められない"
+            />
+            <CardWithNumber
+              content="専門用語が多く、制作会社とのやり取りに不安がある"
+            />
+            <CardWithNumber
+              content="公開後の更新方法が分からず、サイトが放置気味になっている"
+            />
+            <CardWithNumber
+              content="自分たちで内容を修正したいが、触るのが怖い"
+            />
+            <CardWithNumber content="WordPressやECの管理・保守に不安がある" />
+            <CardWithNumber
+              content="サイトが古く感じるが、どこを直せばいいか判断できない"
+            />
+            <CardWithNumber
+              content="既存サービス（Wix / ページビルダー等）から移行したい"
+            />
+          </ul>
+        </section>
+        <section class="bl_section organize">
+          <span
+            class="bl_section_decorativeText"
+            data-scroll-trigger="pin"
+            data-pin-trigger=".bl_section.organize"
+            data-pin-start="top 20%"
+            data-pin-end="bottom 20%"
+            aria-hidden="true"
+          >
+            organize
+          </span>
+          <SectionTitle title="作る前に、整理するところから始めます" tag="h2" />
+          <p class="bl_section_contents">
+            Webサイトの成果は、デザインや技術よりも<br />
+            「何のために作るのか」が明確かどうかで大きく変わります。<br />
+            UCHIWA Creative Studioでは、いきなり制作に入るのではなく、<br />
+            誰に・何を・どのように届けるのかを整理する<br />
+            コンセプト設計からスタートします。
+          </p>
+        </section>
+        <section class="bl_section services">
+          <span
+            class="bl_section_decorativeText"
+            data-scroll-trigger="pin"
+            data-pin-trigger=".bl_section.services"
+            data-pin-start="top 20%"
+            data-pin-end="bottom 20%"
+            aria-hidden="true"
+          >
+            services
+          </span>
+          <SectionTitle title="提供サービス" tag="h2" />
+          <ul class="bl_serviceList">
+            <li class="bl_serviceItem bl_serviceList_item">
+              <div class="bl_serviceItem_header">
+                <span class="bl_serviceItem_num"></span>
+                <Icon class="bl_serviceItem_icon" icon="web" />
+              </div>
+              <div class="bl_serviceItem_contents">
+                <h3 class="bl_serviceItem_title font-24-32">
+                  コーポレートサイト制作
+                </h3>
+                <p class="bl_serviceItem_contents_description">
+                  はじめてのホームページ制作やリニューアルに。<br />
+                  更新しやすく、社内で運用できるサイトを構築します。
+                </p>
+              </div>
+              <div class="bl_serviceItem_recommended">
+                <span class="bl_serviceItem_recommended_title"
+                  >こんな方向け：</span
+                >
+                <p class="bl_serviceItem_recommended_text">
+                  中小企業・店舗・個人事業
+                </p>
+              </div>
+              <hr />
+
+              <ul class="bl_serviceItem_details">
+                <li class="bl_serviceItem_details_item">
+                  <CheckIcon />
+                  WordPress構築
+                </li>
+                <li class="bl_serviceItem_details_item">
+                  <CheckIcon />
+                  スマホ対応
+                </li>
+                <li class="bl_serviceItem_details_item">
+                  <CheckIcon />
+                  更新マニュアル
+                </li>
+              </ul>
+            </li>
+            <li class="bl_serviceItem bl_serviceList_item">
+              <div class="bl_serviceItem_header">
+                <span class="bl_serviceItem_num"></span>
+                <Icon class="bl_serviceItem_icon" icon="lightning" />
+              </div>
+              <div class="bl_serviceItem_contents">
+                <h3 class="bl_serviceItem_title font-24-32">
+                  高速サイト構築（Jamstack / Headless CMS）
+                </h3>
+                <p class="bl_serviceItem_contents_description">
+                  表示速度・セキュリティ・保守性に優れた次世代型Webサイト。<br
+                  />
+                  改ざんリスクを抑えながら、CMSによる更新も可能です。
+                </p>
+              </div>
+              <div class="bl_serviceItem_recommended">
+                <span class="bl_serviceItem_recommended_title"
+                  >こんな方向け：</span
+                >
+                <p class="bl_serviceItem_recommended_text">
+                  IT企業・採用サイト・ブランディングサイト
+                </p>
+              </div>
+              <hr />
+
+              <ul class="bl_serviceItem_details">
+                <li class="bl_serviceItem_details_item">
+                  <CheckIcon />
+                  Jamstack / Headless CMS
+                </li>
+                <li class="bl_serviceItem_details_item">
+                  <CheckIcon />
+                  高速静的ホスティング（Vercel / Netlify 等）
+                </li>
+                <li class="bl_serviceItem_details_item">
+                  <CheckIcon />
+                  高セキュリティ
+                </li>
+              </ul>
+            </li>
+            <li class="bl_serviceItem bl_serviceList_item">
+              <div class="bl_serviceItem_header">
+                <span class="bl_serviceItem_num"></span>
+                <Icon class="bl_serviceItem_icon" icon="cart" />
+              </div>
+              <div class="bl_serviceItem_contents">
+                <h3 class="bl_serviceItem_title font-24-32">
+                  ECサイト制作（Welcart）
+                </h3>
+                <p class="bl_serviceItem_contents_description">
+                  Shopifyの月額費用や販売手数料を抑え、<br />
+                  自社に最適化したオリジナルECサイトを構築します。
+                </p>
+              </div>
+              <div class="bl_serviceItem_recommended">
+                <span class="bl_serviceItem_recommended_title"
+                  >こんな方向け：</span
+                >
+                <p class="bl_serviceItem_recommended_text">
+                  小規模ブランド・自社商品販売
+                </p>
+              </div>
+              <hr />
+
+              <ul class="bl_serviceItem_details">
+                <li class="bl_serviceItem_details_item">
+                  <CheckIcon />
+                  WordPress + Welcart
+                </li>
+                <li class="bl_serviceItem_details_item">
+                  <CheckIcon />
+                  ランニングコスト削減
+                </li>
+                <li class="bl_serviceItem_details_item">
+                  <CheckIcon />
+                  カスタマイズ性
+                </li>
+              </ul>
+            </li>
+            <li class="bl_serviceItem bl_serviceList_item">
+              <div class="bl_serviceItem_header">
+                <span class="bl_serviceItem_num"></span>
+                <Icon class="bl_serviceItem_icon" icon="config" />
+              </div>
+              <div class="bl_serviceItem_contents">
+                <h3 class="bl_serviceItem_title font-24-32">
+                  運用・改善サポート
+                </h3>
+                <p class="bl_serviceItem_contents_description">
+                  公開後の更新方法レクチャーや改善提案までサポートします。<br />
+                  Webサイトを“作って終わり”にしません。
+                </p>
+              </div>
+              <div class="bl_serviceItem_recommended">
+                <span class="bl_serviceItem_recommended_title"
+                  >こんな方向け：</span
+                >
+                <p class="bl_serviceItem_recommended_text">全てのお客様</p>
+              </div>
+              <hr />
+
+              <ul class="bl_serviceItem_details">
+                <li class="bl_serviceItem_details_item">
+                  <CheckIcon />
+                  更新レクチャー
+                </li>
+                <li class="bl_serviceItem_details_item">
+                  <CheckIcon />
+                  アクセス解析
+                </li>
+                <li class="bl_serviceItem_details_item">
+                  <CheckIcon />
+                  改善提案
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <section class="bl_section flow">
+          <span
+            class="bl_section_decorativeText"
+            data-scroll-trigger="pin"
+            data-pin-trigger=".bl_section.flow"
+            data-pin-start="top 20%"
+            data-pin-end="bottom 20%"
+            aria-hidden="true"
+          >
+            flow
+          </span>
+          <SectionTitle title="制作の流れ" tag="h2" />
+          <ul class="bl_flowList">
+            <li class="bl_flowItem">
+              <div class="bl_floeItem_Icon"><Icon icon="web" /></div>
+              <div class="bl_flowItem_body"></div>
+            </li>
+          </ul>
+        </section>
       </main>
     </PageWrapper>
   </div>
@@ -62,15 +316,7 @@ import bgService from "../assets/img/service/service_bg.png";
 
   .ly_pageMain {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
     padding: to-rem(80px) 0;
-
-    @include mq("lg") {
-      flex-direction: column;
-      align-items: center;
-    }
   }
 
   .bl_section {
@@ -80,33 +326,149 @@ import bgService from "../assets/img/service/service_bg.png";
     gap: fluid-text(40px, 80px);
     position: relative;
     &_decorativeText {
-      display: block;
+      display: inline-block;
       text-transform: uppercase;
       font-size: fluid-text(56px, 200px);
       line-height: 1;
       color: var(--c-text);
-      position: absolute;
-      top: 0;
-      left: 0;
-      transform: translateY(-50%);
-      z-index: 0;
       pointer-events: none;
-      mix-blend-mode: overlay;
-      opacity: 0.16;
-      @include mq("md") {
-        position: relative;
-        transform: none;
+      // mix-blend-mode: overlay;
+      opacity: 0.08;
+    }
+    &.concept {
+      .bl_section_decorativeText {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: translateY(-50%);
+        z-index: 0;
+
+        @include mq("md") {
+          position: relative;
+          transform: none;
+        }
       }
     }
-
-    :global(.bl_section_title),
-    &_contents {
-      position: relative;
-      z-index: 1;
+    &.issue {
+      align-items: center;
+      margin-top: fluid-text(120px, 360px);
+      .bl_section_decorativeText {
+        text-align: center;
+      }
+    }
+    &.organize {
+      align-items: center;
+      margin-top: fluid-text(120px, 360px);
+      .bl_section_decorativeText {
+        text-align: center;
+      }
+    }
+    &.services {
+      align-items: center;
+      margin-top: fluid-text(120px, 360px);
+      .bl_section_decorativeText {
+        text-align: center;
+      }
+    }
+    &.flow {
+      align-items: center;
+      margin-top: fluid-text(120px, 360px);
+      .bl_section_decorativeText {
+        text-align: center;
+      }
     }
 
     &_contents {
       line-height: 2;
     }
+  }
+
+  .bl_cardList {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(to-rem(300px), 1fr));
+    gap: fluid-text(32px, 80px) fluid-text(32px, 40px);
+    @include mq("lg") {
+      grid-template-columns: repeat(auto-fit, minmax(to-rem(163px), 1fr));
+    }
+  }
+
+  .bl_serviceList {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(to-rem(500px), 1fr));
+    gap: to-rem(80px);
+    @include mq("md") {
+      grid-template-columns: 1fr;
+      gap: to-rem(120px);
+    }
+  }
+
+  .bl_serviceItem {
+    padding: to-rem(32px) to-rem(24px) to-rem(40px);
+    border-top: solid 2px var(--c-text);
+    display: flex;
+    flex-direction: column;
+    gap: to-rem(24px);
+
+    counter-increment: number;
+    &_header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    &_num {
+      &:before {
+        content: "0" counter(number) " ";
+        font-size: to-rem(56px);
+        color: var(--c-text);
+        line-height: 1;
+      }
+    }
+    &_contents {
+      font-family: "Noto sans JP", sans-serif;
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(24px);
+    }
+    &_title {
+      font-weight: 500;
+    }
+    &_description {
+      font-size: 1rem;
+    }
+    &_recommended {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: to-rem(12px);
+      &_title {
+        display: inline-block;
+        font-weight: 500;
+        font-size: 1rem;
+        color: var(--c-text);
+        padding: to-rem(4px) to-rem(8px);
+        background: var(--c-orange);
+        border-radius: to-rem(4px);
+      }
+      &_text {
+        font-size: 1rem;
+      }
+    }
+    &_details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: to-rem(10px);
+      &_item {
+        font-size: to-rem(12px);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+    }
+  }
+
+  .bl_flowItem {
   }
 </style>
