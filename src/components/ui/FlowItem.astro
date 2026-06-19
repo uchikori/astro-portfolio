@@ -1,0 +1,75 @@
+---
+import Icon from "./Icon.astro";
+
+const { title, description, notes, icon } = Astro.props;
+---
+
+<li class="bl_flowItem">
+  <div class="bl_flowItem_Icon"><Icon icon={icon} /></div>
+  <div class="bl_flowItem_body">
+    <div class="bl_flowItem_header">
+      <span class="bl_flowItem_num"></span>
+      <h3 class="bl_flowItem_title font-24-32">{title}</h3>
+    </div>
+    <p class="bl_flowItem_description" set:html={description} />
+    {notes && <p class="bl_flowItem_notes" set:html={notes} />}
+  </div>
+</li>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_flowItem {
+    width: 100%;
+    display: flex;
+    gap: fluid-text(24px, 80px);
+    counter-increment: number;
+    &_Icon {
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      &:after {
+        content: "";
+        display: block;
+        width: 1px;
+        height: 100%;
+        background: var(--c-text);
+      }
+    }
+    &_body {
+      padding-bottom: fluid-text(80px, 120px);
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(24px);
+    }
+    &_num {
+      &:before {
+        content: "STEP0" counter(number) " ";
+        font-size: to-rem(12px);
+        color: var(--c-orange);
+      }
+    }
+    &_title {
+      font-weight: 500;
+    }
+    &_notes {
+      font-size: to-rem(12px);
+      padding: 1rem;
+      background: var(--c-text);
+      color: #525252;
+      border-radius: to-rem(8px);
+    }
+    &:last-child {
+      .bl_flowItem_body {
+        padding-bottom: 0;
+      }
+      .bl_flowItem_Icon {
+        &:after {
+          display: none;
+        }
+      }
+    }
+  }
+</style>

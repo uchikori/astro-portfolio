@@ -1,19 +1,18 @@
 ---
 const { icon } = Astro.props;
 
-import web from "../../assets/img/icon/web.svg";
-import lightning from "../../assets/img/icon/lightning-bolt.svg";
-import cart from "../../assets/img/icon/cart.svg";
-import config from "../../assets/img/icon/config.svg";
-import chat from "../../assets/img/icon/chat.svg";
-import compass from "../../assets/img/icon/compass.svg";
-import document from "../../assets/img/icon/document.svg";
-import design from "../../assets/img/icon/design.svg";
-import code from "../../assets/img/icon/code.svg";
-import rocket from "../../assets/img/icon/rocket.svg";
-import handshake from "../../assets/img/icon/handshake.svg";
-import filter from "../../assets/img/icon/filter.svg";
-import Image from "astro/components/Image.astro";
+import web from "../../assets/img/icon/web.svg?raw";
+import lightning from "../../assets/img/icon/lightning-bolt.svg?raw";
+import cart from "../../assets/img/icon/cart.svg?raw";
+import config from "../../assets/img/icon/config.svg?raw";
+import chat from "../../assets/img/icon/chat.svg?raw";
+import compass from "../../assets/img/icon/compass.svg?raw";
+import document from "../../assets/img/icon/document.svg?raw";
+import design from "../../assets/img/icon/design.svg?raw";
+import code from "../../assets/img/icon/code.svg?raw";
+import rocket from "../../assets/img/icon/rocket.svg?raw";
+import handshake from "../../assets/img/icon/handshake.svg?raw";
+import filter from "../../assets/img/icon/filter.svg?raw";
 
 // 各アイコンをマッピング
 const icons = {
@@ -31,11 +30,11 @@ const icons = {
   filter,
 };
 
-const currentIcon = icons[icon];
+const currentIconHtml = icons[icon];
 ---
 
 <figure class="el_icon">
-  {currentIcon && <Image src={currentIcon} alt={icon} width={32} height={32} />}
+  {currentIconHtml && <Fragment set:html={currentIconHtml} />}
 </figure>
 
 <style lang="scss">
@@ -51,10 +50,43 @@ const currentIcon = icons[icon];
       background: #d9d9d9;
       border-radius: to-rem(12px);
     }
-
-    img {
-      width: 2rem;
-      height: auto;
+    :global(.bl_flowItem) & {
+      width: 6.25rem;
+      background: #ab5cff;
+      border-radius: 100vh;
+      border: solid 1px var(--c-text);
+      @include mq("md") {
+        width: 3rem;
+      }
     }
+  }
+
+  /* SVG styles using top-level :global to avoid scoping and compilation issues */
+
+  :global(.bl_serviceItem) .el_icon :global(svg) {
+    width: 2rem;
+    height: auto;
+  }
+
+  :global(.bl_flowItem) .el_icon :global(svg) {
+    width: 4rem;
+    height: auto;
+    @include mq("md") {
+      width: 2rem;
+    }
+  }
+
+  .el_icon :global(svg *) {
+    transition:
+      stroke 0.3s,
+      fill 0.3s;
+  }
+
+  .el_icon :global(svg *[stroke]) {
+    stroke: currentColor;
+  }
+
+  .el_icon :global(svg *[fill]) {
+    fill: currentColor;
   }
 </style>

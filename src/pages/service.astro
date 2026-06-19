@@ -7,9 +7,15 @@ import PageWrapper from "../layout/PageWrapper.astro";
 import SectionTitle from "../components/ui/SectionTitle.astro";
 import bgService from "../assets/img/service/service_bg.png";
 import CardWithNumber from "../components/ui/CardWithNumber.astro";
-import Icon from "../components/ui/Icon.astro";
+
 import CheckIcon from "../assets/img/icon/check.svg";
+import FlowItem from "../components/ui/FlowItem.astro";
+import FaqItem from "../components/ui/FaqItem.astro";
+import Icon from "../components/ui/Icon.astro";
+import Banner from "../components/ui/Banner.astro";
 const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
+import MailIcon from "../assets/img/icon/mail.svg";
+import CalculateIcon from "../assets/img/icon/calculator.svg";
 ---
 
 <Base title="事業内容" pageType="service" bodyClass="service">
@@ -24,8 +30,8 @@ const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
             class="bl_section_decorativeText"
             data-scroll-trigger="pin"
             data-pin-trigger=".bl_section.concept"
-            data-pin-start="top center"
-            data-pin-end="bottom center"
+            data-pin-start="top 20%"
+            data-pin-end="bottom 20%"
             aria-hidden="true"
           >
             concept
@@ -118,10 +124,8 @@ const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
             data-pin-trigger=".bl_section.services"
             data-pin-start="top 20%"
             data-pin-end="bottom 20%"
-            aria-hidden="true"
+            aria-hidden="true">services</span
           >
-            services
-          </span>
           <SectionTitle title="提供サービス" tag="h2" />
           <ul class="bl_serviceList">
             <li class="bl_serviceItem bl_serviceList_item">
@@ -294,11 +298,127 @@ const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
           </span>
           <SectionTitle title="制作の流れ" tag="h2" />
           <ul class="bl_flowList">
-            <li class="bl_flowItem">
-              <div class="bl_floeItem_Icon"><Icon icon="web" /></div>
-              <div class="bl_flowItem_body"></div>
-            </li>
+            <FlowItem
+              icon="web"
+              title="お問い合わせ・初回ヒアリング"
+              description={`まずは現在の状況やお困りごとをお聞きします。<br />
+              まだ内容が固まっていなくても問題ありません。<br />
+              「何を作ればよいか分からない」という段階からでもご相談いただけます。`}
+              notes={`※オンライン（Google Meet等）またはテキストでのやり取りに対応しています。`}
+            />
+            <FlowItem
+              icon="compass"
+              title="方向性の整理・コンセプト設計"
+              description={`ヒアリング内容をもとに、誰に向けたサイトなのか／何を伝えるべきか／どのような構成が適切かを整理します。<br />
+              この段階で、WordPress・Jamstack・ECサイトなどどの構築方法が適しているかも含めてご提案します。`}
+            />
+            <FlowItem
+              icon="document"
+              title="構成提案・お見積もり"
+              description={`サイトマップ（ページ構成）と制作方針をご提示します。<br />
+              制作内容が明確になった段階で、正式なお見積もりをご案内いたします。`}
+              notes={`※ご不明点があれば、この時点で遠慮なくご相談ください。ご納得いただいた場合のみ、制作へ進みます。`}
+            />
+            <FlowItem
+              icon="design"
+              title="デザイン制作"
+              description={`構成をもとに、実際のデザインを制作します。<br />
+              全体のトーンや情報の見せ方を確認しながら進めていきます。<br />
+              確認・修正のやり取りを重ね、完成形に近づけていきます。`}
+            />
+            <FlowItem
+              icon="code"
+              title="開発・実装"
+              description={`デザインをもとにコーディング・システム構築を行います。<br />
+              WordPressやCMSの組み込み、EC機能の設定などもこの工程で行います。`}
+              notes={`テスト環境をご用意し、公開前に実際の動作をご確認いただけます。`}
+            />
+            <FlowItem
+              icon="rocket"
+              title="公開・操作レクチャー"
+              description={`本番環境へ公開を行います。<br />
+              あわせて、更新方法や記事投稿の手順を分かりやすくご説明します。<br />
+              「触るのが不安」という方でも安心して運用できるようサポートします。`}
+            />
+            <FlowItem
+              icon="handshake"
+              title="公開後のサポート"
+              description={`公開して終わりではなく、必要に応じて改善のご相談や軽微な修正にも対応いたします。<br />
+              運用の中で出てくる疑問点についてもお気軽にご連絡ください。`}
+            />
           </ul>
+        </section>
+        <section class="bl_section faq">
+          <span
+            class="bl_section_decorativeText"
+            data-scroll-trigger="pin"
+            data-pin-trigger=".bl_section.faq"
+            data-pin-start="top 20%"
+            data-pin-end="bottom 20%"
+            aria-hidden="true"
+          >
+            faq
+          </span>
+          <SectionTitle title="よくあるご質問" tag="h2" />
+          <ul class="bl_faqList">
+            <FaqItem
+              question="相談だけでも大丈夫ですか?"
+              answer="はい、ご相談だけでも問題ありません。お聞きしたいお悩みや状況、まだ内容が固まっていなくても丁寧にお伺いいたしますので、まずはお気軽にお問い合わせください。"
+            />
+            <FaqItem
+              question="費用はどのタイミングで発生しますか？"
+              answer="サイトの方向性を整理し、大まかな構成（仕様）が固まって「正式にご契約」となった段階で発生します。初回のご相談や、お見積もり・構成のご提案までは無料で対応しております。費用が発生する前に必ず確認を挟みますので、ご安心ください。"
+            />
+            <FaqItem
+              question="どの構築方法を選べばいいか分かりません"
+              answer="お客さまの目的や予算、今後の運用体制に合わせて最適な方法をご提案します。「Webの知識がないから選べない」という状態でも全く問題ありません。ヒアリングを通じて、メリット・デメリットを分かりやすく丁寧にご説明いたします。"
+            />
+            <FaqItem
+              question="更新は自分たちでできますか？"
+              answer="はい、お知らせやブログなど、ご自身で簡単に更新できるシステム（CMS）を導入可能です。ただし、サイト全体を自由に変更できるようにすると、デザインが崩れる原因や構築コストが高くなるリスクがあります。「どこを自分たちで更新したいか」を事前にすり合わせ、最適な範囲をご提案します。"
+            />
+            <FaqItem
+              question="原稿や写真がなくても依頼できますか？"
+              answer="はい、素材が揃っていない状態でもご依頼いただけます。その場合、フリーの高品質な素材写真を使用するか、プロのカメラマンによる撮影（別途費用）をご提案させていただきます。テキストについてもヒアリングを元にこちらで作成をサポートいたしますので、まずは手ぶらでご相談ください。"
+            />
+            <FaqItem
+              question="制作期間はどれくらいですか？"
+              answer="制作するサイトの規模や機能によって異なります。一般的なコーポレートサイトであれば、およそ1ヶ月〜3ヶ月が目安です。お急ぎの場合や、具体的な公開希望日がある場合は、スケジュールを調整できる場合もございますので事前にご相談ください。"
+            />
+            <FaqItem
+              question="公開後のサポートはありますか？"
+              answer="はい、ご希望に合わせて「月額保守プラン」をご用意しております。定期的なメンテナンスやトラブル対応、軽微な修正などをサポートいたします。なお、保守契約を結ばれていない場合でも対応は可能ですが、その都度スポット（有償）でのご対応となります。"
+            />
+            <FaqItem
+              question="集客やSEO対策もお願いできますか？"
+              answer="基本的なSEO対策（検索エンジンに認識されやすい正しいサイト構造の設計など）は標準で対応しております。ただし、特定のキーワードで上位表示を確約するような「高度なSEOコンサルティング」や「継続的な集客マーケティング」につきましては専門外となるため、専門のパートナー企業様をご紹介するか、要件定義の範囲内でのアドバイスに留めさせていただいております。"
+            />
+          </ul>
+        </section>
+        <section class="bl_section banner">
+          <p class="bl_section_contents">
+            相談・ヒアリングの段階では費用は発生しません。 <br
+            />内容をご確認いただき、ご納得いただいた場合のみ制作へ進みます。
+          </p>
+          <div class="bl_section_banner hl_contentWidthMiddle">
+            <Banner
+              link="/price"
+              ja="料金表"
+              en="price"
+              text="作りたいWebサイトの大枠が既に決まっている方は、こちらで概算金額を算出できます。"
+              annotaion="あくまでも目安としての金額となりますのでご了承ください。"
+            >
+              <CalculateIcon slot="icon" />
+            </Banner>
+            <Banner
+              link="/contact"
+              ja="お問い合わせ"
+              en="contact"
+              text="Webサイト立ち上げのご相談、お見積りのご依頼（無料）などお気軽にお問い合わせください。"
+            >
+              <MailIcon slot="icon" />
+            </Banner>
+          </div>
         </section>
       </main>
     </PageWrapper>
@@ -377,9 +497,32 @@ const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
         text-align: center;
       }
     }
+    &.faq {
+      align-items: center;
+      margin-top: fluid-text(120px, 360px);
+      .bl_section_decorativeText {
+        text-align: center;
+      }
+    }
+    &.banner {
+      align-items: center;
+      margin-top: fluid-text(120px, 360px);
+      .bl_section_contents {
+        text-align: center;
+        @include mq("md") {
+          text-align: left;
+        }
+      }
+    }
 
     &_contents {
       line-height: 2;
+    }
+
+    &_banner {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(to-rem(300px), 1fr));
+      gap: to-rem(40px);
     }
   }
 
@@ -417,6 +560,7 @@ const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      color: var(--c-bg);
     }
     &_num {
       &:before {
@@ -469,6 +613,19 @@ const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
     }
   }
 
-  .bl_flowItem {
+  .bl_flowList {
+    width: calc(358 / 390) * 100%;
+    margin-inline: auto;
+    max-width: to-rem(940px);
+  }
+
+  .bl_faqList {
+    width: calc(358 / 390) * 100%;
+    margin-inline: auto;
+    max-width: to-rem(940px);
+    counter-reset: faq-counter;
+    display: flex;
+    flex-direction: column;
+    gap: to-rem(24px);
   }
 </style>

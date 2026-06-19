@@ -1,0 +1,244 @@
+---
+interface Props {
+  question: string;
+  answer: string;
+}
+
+const { question, answer } = Astro.props;
+---
+
+<li class="bl_faqList_item">
+  <details class="bl_faqList_details">
+    <summary class="bl_faqList_summary">
+      <span class="bl_faqList_summary_num font-24-32"></span>
+      <h3 class="bl_faqList_summary_title font-16-20">{question}</h3>
+      <span class="bl_faqList_summary_arrow">
+        <svg
+          width="13"
+          height="8"
+          viewBox="0 0 13 8"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M11.91 -0.000161171L12.97 1.06084L7.193 6.83984C7.10043 6.93299 6.99036 7.00692 6.86911 7.05737C6.74786 7.10782 6.61783 7.13379 6.4865 7.13379C6.35517 7.13379 6.22514 7.10782 6.10389 7.05737C5.98264 7.00692 5.87257 6.93299 5.78 6.83984L0 1.06084L1.06 0.000838757L6.485 5.42484L11.91 -0.000161171Z"
+            fill="currentColor"></path>
+        </svg>
+      </span>
+    </summary>
+    <hr />
+    <div class="bl_faqList_content">
+      <p class="bl_faqList_content_text" set:html={answer} />
+    </div>
+  </details>
+</li>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_faqList_item {
+    counter-increment: faq-counter;
+    width: 100%;
+    border-radius: 1rem;
+    background:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"),
+      rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--c-text);
+    backdrop-filter: blur(10px);
+    padding: to-rem(16px) to-rem(24px);
+  }
+
+  .bl_faqList_details {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .bl_faqList_summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    gap: to-rem(16px);
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &_num {
+      font-weight: 500;
+      color: var(--c-orange);
+      line-height: 1;
+      flex-shrink: 0;
+      &::before {
+        content: counter(faq-counter, decimal-leading-zero);
+      }
+    }
+
+    &_title {
+      font-family: "Noto sans JP", sans-serif;
+      font-weight: 500;
+      line-height: 2;
+      flex-grow: 1;
+      color: var(--c-text);
+      text-align: left;
+    }
+
+    &_arrow {
+      width: fluid-text(24px, 40px);
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+      color: var(--c-bg);
+      background: var(--c-text);
+      border-radius: 100vh;
+      svg {
+        width: to-rem(13px);
+        height: auto;
+      }
+    }
+  }
+
+  hr {
+    margin-top: 1rem;
+  }
+
+  .bl_faqList_content {
+    font-family: "Noto sans JP", sans-serif;
+    margin-top: 1rem;
+    display: block;
+    height: 0; /* Default closed height for transition */
+
+    &_text {
+      line-height: 2;
+      color: var(--c-text);
+      font-size: 1rem;
+      flex-grow: 1;
+    }
+  }
+
+  /* When details is open, rotate the arrow */
+  .bl_faqList_details[open] {
+    .bl_faqList_summary_arrow {
+      transform: rotate(180deg);
+    }
+  }
+</style>
+
+<script>
+  class FAQAccordion {
+    constructor(el) {
+      this.el = el;
+      this.summary = el.querySelector(".bl_faqList_summary");
+      this.content = el.querySelector(".bl_faqList_content");
+      this.animation = null;
+      this.isClosing = false;
+      this.isExpanding = false;
+
+      // Start with height 0 if closed, or auto if open initially
+      if (!this.el.open) {
+        this.content.style.height = "0px";
+      } else {
+        this.content.style.height = "auto";
+      }
+
+      this.summary.addEventListener("click", (e) => this.onClick(e));
+    }
+
+    onClick(e) {
+      // Prevent default browser toggle behavior immediately
+      e.preventDefault();
+
+      if (this.isClosing || !this.el.open) {
+        this.open();
+      } else if (this.isExpanding || this.el.open) {
+        this.shrink();
+      }
+    }
+
+    shrink() {
+      this.isClosing = true;
+
+      // Get current content height
+      const startHeight = `${this.content.offsetHeight}px`;
+      const endHeight = "0px";
+
+      if (this.animation) {
+        this.animation.cancel();
+      }
+
+      // Animate the height of the content block
+      this.animation = this.content.animate(
+        {
+          height: [startHeight, endHeight],
+        },
+        {
+          duration: 300,
+          easing: "ease-out",
+        },
+      );
+
+      this.animation.onfinish = () => this.onAnimationFinish(false);
+      this.animation.oncancel = () => (this.isClosing = false);
+    }
+
+    open() {
+      // Set details to open before animation starts
+      this.el.open = true;
+      window.requestAnimationFrame(() => this.expand());
+    }
+
+    expand() {
+      this.isExpanding = true;
+
+      // Set start height to 0 (or current offset) and target to scrollHeight
+      const startHeight = `${this.content.offsetHeight}px`;
+      const endHeight = `${this.content.scrollHeight}px`;
+
+      if (this.animation) {
+        this.animation.cancel();
+      }
+
+      this.animation = this.content.animate(
+        {
+          height: [startHeight, endHeight],
+        },
+        {
+          duration: 300,
+          easing: "ease-out",
+        },
+      );
+
+      this.animation.onfinish = () => this.onAnimationFinish(true);
+      this.animation.oncancel = () => (this.isExpanding = false);
+    }
+
+    onAnimationFinish(isOpen) {
+      this.el.open = isOpen;
+      this.animation = null;
+      this.isClosing = false;
+      this.isExpanding = false;
+      this.content.style.height = isOpen ? "auto" : "0px";
+    }
+  }
+
+  function initFAQ() {
+    document.querySelectorAll(".bl_faqList_details").forEach((el) => {
+      if (!el.dataset.faqInitialized) {
+        new FAQAccordion(el);
+        el.dataset.faqInitialized = "true";
+      }
+    });
+  }
+
+  // Initialize on DOM ready
+  initFAQ();
+
+  // Listen to View Transitions page swaps (Astro SPA navigation)
+  document.addEventListener("astro:after-swap", initFAQ);
+</script>
