@@ -1,0 +1,89 @@
+---
+import Icon from "../../components/ui/Icon.astro";
+
+const { items = [], title, icon = "code" } = Astro.props;
+---
+
+<section class="bl_priceTable">
+  <header class="bl_priceTable_header">
+    <Icon icon={icon} />
+    <h3 class="bl_priceTable_title">{title}</h3>
+  </header>
+
+  <div class="bl_priceTable_body">
+    <ul class="bl_priceTable_list">
+      {
+        items.map((item) => (
+          <li class="bl_priceTable_listItem">
+            <div class="bl_priceTable_listItem_content">
+              <h4 class="bl_priceTable_listItem_title">{item.title}</h4>
+              {item.text && (
+                <p class="bl_priceTable_listItem_text">{item.text}</p>
+              )}
+            </div>
+            <div class="bl_priceTable_listItem_price">{item.price}</div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_priceTable {
+    width: 100%;
+    &_header {
+      display: flex;
+      align-items: center;
+      gap: to-rem(16px);
+      background: $c-white;
+      padding: fluid-text(16px, 24px) fluid-text(24px, 40px);
+      border-radius: 1rem 1rem 0 0;
+      color: $c-white;
+    }
+    &_title {
+      font-family: "Noto sans JP", sans-serif;
+      font-size: to-rem(24px);
+      font-weight: 500;
+      color: var(--c-bg);
+    }
+    &_listItem {
+      background:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"),
+        rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      padding: fluid-text(16px, 24px) fluid-text(24px, 40px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: $c-white;
+      @include mq("lg") {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: to-rem(24px);
+      }
+      &:last-child {
+        border-radius: 0 0 1rem 1rem;
+      }
+      &_title {
+        font-family: "Noto sans JP", sans-serif;
+        font-size: to-rem(20px);
+        font-weight: 500;
+      }
+      &_text {
+        font-family: "Noto sans JP", sans-serif;
+        font-size: to-rem(12px);
+        margin-top: to-rem(12px);
+      }
+
+      &_price {
+        font-size: fluid-text(24px, 32px);
+        color: #ab5cff;
+      }
+    }
+  }
+</style>

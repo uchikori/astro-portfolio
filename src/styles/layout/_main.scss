@@ -1,2 +1,7 @@
-.ly_main {
+@use "../utility" as *;
+@use "../global" as *;
+
+.ly_pageMain {
+  width: 100%;
+  padding: to-rem(80px) 0;
 }

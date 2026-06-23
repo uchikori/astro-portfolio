@@ -62,9 +62,5 @@
   // 切片を計算
   $intercept-px: $min-px - $slope * $min-bp;
 
-  @return clamp(
-    #{$min-px},
-    #{$slope-vw}vw + #{$intercept-px},
-    #{$max-px}
-  );
+  @return clamp(#{$min-px}, #{$slope-vw}vw + #{$intercept-px}, #{$max-px});
 }

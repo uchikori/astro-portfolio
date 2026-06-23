@@ -1,0 +1,21 @@
+---
+const { label = "template", fontSize = "1rem" } = Astro.props;
+---
+
+<span class="el_label" style={`font-size: ${fontSize}`}>
+  <slot>{label}</slot>
+</span>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+  .el_label {
+    display: inline-block;
+    font-weight: 500;
+    font-size: 1rem;
+    color: $c-white;
+    padding: to-rem(4px) to-rem(8px);
+    background: var(--c-orange);
+    border-radius: to-rem(4px);
+  }
+</style>

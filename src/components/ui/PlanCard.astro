@@ -1,0 +1,128 @@
+---
+import Label from "./Label.astro";
+
+const { items = [], title, icon = "code" } = Astro.props;
+---
+
+{
+  items.map((item) => (
+    <li class="un_plansPrice_item bl_planCard">
+      <div class="bl_planCard_info">
+        <header class="bl_planCard_header">
+          <span class="bl_planCard_num" />
+          <h3 class="bl_planCard_title font-20-24">{item.title}</h3>
+        </header>
+        <p class="bl_planCard_description">{item.description}</p>
+        <div class="bl_planCard_recommended">
+          <Label label="こんな方向け：" fontSize="1rem;" />
+
+          <p>{item.recommend}</p>
+        </div>
+      </div>
+      <div class="bl_planCard_details">
+        <div class="bl_planCard_price_wrap">
+          <p class="bl_planCard_price_label hl_accentColor">目安金額</p>
+          <p class="bl_planCard_price font-20-24" set:html={item.price} />
+        </div>
+
+        <div class="bl_planCard_metrics_item">
+          <p class="bl_planCard_metrics_item_label hl_accentColor">目安工数</p>
+          <p class="bl_planCard_metrics_item_value font-20-24">{item.time}</p>
+        </div>
+        <div class="bl_planCard_metrics_item">
+          <p class="bl_planCard_metrics_item_label hl_accentColor">
+            目安ページ数
+          </p>
+          <p class="bl_planCard_metrics_item_value font-20-24">{item.pages}</p>
+        </div>
+      </div>
+    </li>
+  ))
+}
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_planCard {
+    width: 100%;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: to-rem(24px) fluid-text(16px, 40px);
+    counter-increment: number;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: to-rem(40px);
+
+    @include mq("lg") {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
+    &_info {
+      align-self: center;
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(12px);
+    }
+    &_header {
+      display: flex;
+      align-items: center;
+      gap: to-rem(12px);
+      color: $c-white;
+    }
+    &_num {
+      &::before {
+        content: "0" counter(number) " ";
+        font-size: fluid-text(24px, 32px);
+      }
+    }
+    &_title {
+      font-weight: 500;
+    }
+    &_description {
+      font-size: 1rem;
+      color: var(--c-text);
+    }
+    &_recommended {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: to-rem(12px);
+    }
+
+    &_details {
+      background: var(--c-bg);
+      border-radius: to-rem(12px);
+      align-self: center;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, auto);
+      gap: to-rem(24px);
+      padding: to-rem(16px) fluid-text(16px, 24px);
+    }
+
+    &_price {
+      :global(span) {
+        font-size: to-rem(48px);
+      }
+      &_wrap {
+        grid-column: span 2;
+      }
+
+      &_label {
+        font-size: to-rem(12px);
+      }
+    }
+
+    &_metrics_item {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(12px);
+      &_label {
+        font-size: to-rem(12px);
+      }
+    }
+  }
+</style>

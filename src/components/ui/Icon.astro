@@ -59,6 +59,11 @@ const currentIconHtml = icons[icon];
         width: 3rem;
       }
     }
+    :global(.bl_priceTable) & {
+      width: 3.5rem;
+      background: #ab5cff;
+      border-radius: to-rem(12px);
+    }
   }
 
   /* SVG styles using top-level :global to avoid scoping and compilation issues */
@@ -74,6 +79,10 @@ const currentIconHtml = icons[icon];
     @include mq("md") {
       width: 2rem;
     }
+  }
+  :global(.bl_priceTable) .el_icon :global(svg) {
+    width: 2rem;
+    height: auto;
   }
 
   .el_icon :global(svg *) {

@@ -162,27 +162,114 @@ class RenderTargetManager {
    */
   _setupLights(targetInfo) {
     const scene = targetInfo.scene;
-    // メインの平行光源（斜め上から）
-    const dirLight = new DirectionalLight(0xffffff, 3.0);
-    dirLight.position.set(5, 10, 7.5);
-    scene.add(dirLight);
+    const el = targetInfo.element;
 
-    // 補助の平行光源（反対側から影を和らげる）
-    const fillLight = new DirectionalLight(0xffffff, 3);
-    fillLight.position.set(-5, 2, -5);
-    scene.add(fillLight);
+    let lightsData = null;
+    if (el.dataset.lights) {
+      try {
+        lightsData = JSON.parse(el.dataset.lights);
+      } catch (e) {
+        console.error("Failed to parse data-lights attribute:", e);
+      }
+    }
 
-    // 環境光（全体の明るさの底上げ）
-    const ambientLight = new AmbientLight(0xffffff, 3);
-    scene.add(ambientLight);
+    // 指定がない、またはパースエラーの場合はデフォルト値（現在の設定）を使用
+    if (!lightsData || !Array.isArray(lightsData)) {
+      lightsData = [
+        {
+          type: "directional",
+          color: 0xffffff,
+          intensity: 3.0,
+          position: [5, 10, 7.5],
+        },
+        {
+          type: "directional",
+          color: 0xffffff,
+          intensity: 3.0,
+          position: [-5, 2, -5],
+        },
+        {
+          type: "ambient",
+          color: 0xffffff,
+          intensity: 3.0,
+        },
+        {
+          type: "point",
+          color: 0xffffff,
+          intensity: 1.5,
+          position: [0.4, 0.6, 0.9],
+        },
+      ];
+    }
 
-    // アクセント用のポイントライト
-    targetInfo.pointLight = new PointLight(0xffffff, 1.5);
-    targetInfo.pointLight.position.set(0.4, 0.6, 0.9);
-    scene.add(targetInfo.pointLight);
+    lightsData.forEach((lightConfig) => {
+      const type = (lightConfig.type || "directional").toLowerCase();
+      const color = new Color(
+        lightConfig.color !== undefined ? lightConfig.color : 0xffffff,
+      );
+      const intensity =
+        lightConfig.intensity !== undefined
+          ? parseFloat(lightConfig.intensity)
+          : 1.0;
 
-    // targetInfo.pointLightHelper = new PointLightHelper(targetInfo.pointLight, 1);
-    // scene.add(targetInfo.pointLightHelper);
+      let light;
+      if (type === "directional") {
+        light = new DirectionalLight(color, intensity);
+      } else if (type === "ambient") {
+        light = new AmbientLight(color, intensity);
+      } else if (type === "point") {
+        const distance =
+          lightConfig.distance !== undefined
+            ? parseFloat(lightConfig.distance)
+            : 0;
+        const decay =
+          lightConfig.decay !== undefined ? parseFloat(lightConfig.decay) : 2;
+        light = new PointLight(color, intensity, distance, decay);
+        // デフォルトのポイントライトとの互換性のために、最初のpointLightをtargetInfoに保存しておく
+        if (!targetInfo.pointLight) {
+          targetInfo.pointLight = light;
+        }
+      } else if (type === "spot") {
+        const distance =
+          lightConfig.distance !== undefined
+            ? parseFloat(lightConfig.distance)
+            : 0;
+        const angle =
+          lightConfig.angle !== undefined
+            ? parseFloat(lightConfig.angle)
+            : Math.PI / 3;
+        const penumbra =
+          lightConfig.penumbra !== undefined
+            ? parseFloat(lightConfig.penumbra)
+            : 0;
+        const decay =
+          lightConfig.decay !== undefined ? parseFloat(lightConfig.decay) : 2;
+        light = new SpotLight(
+          color,
+          intensity,
+          distance,
+          angle,
+          penumbra,
+          decay,
+        );
+      }
+
+      if (light) {
+        if (
+          lightConfig.position &&
+          Array.isArray(lightConfig.position) &&
+          light.position
+        ) {
+          const [x, y, z] = lightConfig.position;
+          light.position.set(
+            x !== undefined ? parseFloat(x) : 0,
+            y !== undefined ? parseFloat(y) : 0,
+            z !== undefined ? parseFloat(z) : 0,
+          );
+        }
+        scene.add(light);
+      }
+    });
   }
 
   /**
@@ -273,18 +360,20 @@ class RenderTargetManager {
         .add(targetInfo.camera.position, "z", -10, 10)
         .step(0.01)
         .name("cameraZ");
-      folder
-        .add(targetInfo.pointLight.position, "x", -10, 10)
-        .step(0.01)
-        .name("lightX");
-      folder
-        .add(targetInfo.pointLight.position, "y", -10, 10)
-        .step(0.01)
-        .name("lightY");
-      folder
-        .add(targetInfo.pointLight.position, "z", -10, 10)
-        .step(0.01)
-        .name("lightZ");
+      if (targetInfo.pointLight) {
+        folder
+          .add(targetInfo.pointLight.position, "x", -10, 10)
+          .step(0.1)
+          .name("lightX");
+        folder
+          .add(targetInfo.pointLight.position, "y", -10, 10)
+          .step(0.1)
+          .name("lightY");
+        folder
+          .add(targetInfo.pointLight.position, "z", -10, 10)
+          .step(0.1)
+          .name("lightZ");
+      }
 
       // folder.add(this.light1, "intensity", 0, 10).step(0.01).name("light1");
       // folder.add(this.light2, "intensity", 0, 10).step(0.01).name("light2");

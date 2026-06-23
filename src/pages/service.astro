@@ -16,6 +16,7 @@ import Banner from "../components/ui/Banner.astro";
 const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
 import MailIcon from "../assets/img/icon/mail.svg";
 import CalculateIcon from "../assets/img/icon/calculator.svg";
+import Label from "../components/ui/Label.astro";
 ---
 
 <Base title="事業内容" pageType="service" bodyClass="service">
@@ -143,9 +144,7 @@ import CalculateIcon from "../assets/img/icon/calculator.svg";
                 </p>
               </div>
               <div class="bl_serviceItem_recommended">
-                <span class="bl_serviceItem_recommended_title"
-                  >こんな方向け：</span
-                >
+                <Label label="こんな方向け：" fontSize="1rem;" />
                 <p class="bl_serviceItem_recommended_text">
                   中小企業・店舗・個人事業
                 </p>
@@ -183,9 +182,7 @@ import CalculateIcon from "../assets/img/icon/calculator.svg";
                 </p>
               </div>
               <div class="bl_serviceItem_recommended">
-                <span class="bl_serviceItem_recommended_title"
-                  >こんな方向け：</span
-                >
+                <Label label="こんな方向け：" fontSize="1rem;" />
                 <p class="bl_serviceItem_recommended_text">
                   IT企業・採用サイト・ブランディングサイト
                 </p>
@@ -222,9 +219,7 @@ import CalculateIcon from "../assets/img/icon/calculator.svg";
                 </p>
               </div>
               <div class="bl_serviceItem_recommended">
-                <span class="bl_serviceItem_recommended_title"
-                  >こんな方向け：</span
-                >
+                <Label label="こんな方向け：" fontSize="1rem;" />
                 <p class="bl_serviceItem_recommended_text">
                   小規模ブランド・自社商品販売
                 </p>
@@ -261,9 +256,7 @@ import CalculateIcon from "../assets/img/icon/calculator.svg";
                 </p>
               </div>
               <div class="bl_serviceItem_recommended">
-                <span class="bl_serviceItem_recommended_title"
-                  >こんな方向け：</span
-                >
+                <Label label="こんな方向け：" fontSize="1rem;" />
                 <p class="bl_serviceItem_recommended_text">全てのお客様</p>
               </div>
               <hr />
@@ -432,11 +425,6 @@ import CalculateIcon from "../assets/img/icon/calculator.svg";
   .hl_contentWidthMiddle {
     position: relative;
     isolation: isolate;
-  }
-
-  .ly_pageMain {
-    width: 100%;
-    padding: to-rem(80px) 0;
   }
 
   .bl_section {

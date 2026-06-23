@@ -1,0 +1,506 @@
+---
+import SectionTitle from "../components/ui/SectionTitle.astro";
+import CircleImage from "../components/webgl/CircleImage.astro";
+import Base from "../layout/Base.astro";
+import PageHeader from "../layout/PageHeader.astro";
+import PageWrapper from "../layout/PageWrapper.astro";
+import PriceTable from "../components/ui/PriceTable.astro";
+import PlanCard from "../components/ui/PlanCard.astro";
+import Banner from "../components/ui/Banner.astro";
+import MailIcon from "../assets/img/icon/mail.svg";
+import CalculateIcon from "../assets/img/icon/calculator.svg";
+---
+
+<Base title="料金表" pageType="price" bodyClass="price">
+  <div class="hl_contentWidthMiddle">
+    <CircleImage image="/img/price/price_bg.webp" />
+    <PageWrapper>
+      <PageHeader ja="料金表" en="price" tag="h1" />
+
+      <main class="ly_pageMain">
+        <section class="bl_section basic">
+          <span class="bl_section_decorativeText" aria-hidden="true">
+            basic
+          </span>
+          <SectionTitle title="基本制作費の目安" tag="h2" />
+          <div class="un_basicPrice">
+            <h3 class="un_basicPrice_title">最小構成パッケージ想定</h3>
+            <p class="un_basicPrice_text">
+              TOPページ + 下層2ページ + お問い合わせフォーム +
+              スマホ対応（レスポンシブ）+チェック・公開作業
+            </p>
+            <div class="un_basicPrice_wrap">
+              <span class="un_basicPrice_price hl_accentColor">25〜35</span>
+              <span class="un_basicPrice_price_unit">万円</span>
+            </div>
+            <ul class="un_basicPrice_notes">
+              <li>上記金額にはディレクション費は含まれておりません。</li>
+              <li>
+                最小限の構成でWebサイトとして公開可能な内容を想定しています。
+              </li>
+              <li>保守費用は含みません。</li>
+            </ul>
+          </div>
+        </section>
+        <section class="bl_section price">
+          <span class="bl_section_decorativeText" aria-hidden="true">
+            price
+          </span>
+          <SectionTitle title="制作費詳細" tag="h2" />
+
+          <div class="bl_priceTable_wrapper">
+            <PriceTable
+              title="デザイン費"
+              icon="design"
+              items={[
+                {
+                  title: "TOPページ",
+                  text: "サイト全体の印象を決めるメインページ設計",
+                  price: "￥80,000~",
+                },
+                {
+                  title: "大規模ページデザイン",
+                  text: "情報量の多いページ（採用ページ・キャンペーンLPなど）の構成設計",
+                  price: "￥60,000~",
+                },
+                {
+                  title: "中規模ページデザイン",
+                  text: "標準的なコンテンツページ（標準的なサービス紹介ページや会社概要ページなど）の構成設計",
+                  price: "￥40,000~",
+                },
+                {
+                  title: "小規模ページデザイン",
+                  text: "シンプルなテキスト中心（簡易的なお問い合わせページやテキスト中心の情報ページ）ページの構成設計",
+                  price: "￥30,000~",
+                },
+                {
+                  title: "広告用ランディングページデザイン",
+                  text: "写真・イラスト・装飾・キャッチコピーなど、広告効果を意識したランディングページの構成設計",
+                  price: "￥150,000~",
+                },
+              ]}
+            />
+            <PriceTable
+              title="コーディング費"
+              icon="code"
+              items={[
+                {
+                  title: "TOPページ構築",
+                  price: "￥80,000~",
+                },
+                {
+                  title: "大規模ページデザイン構築",
+                  price: "￥60,000~",
+                },
+                {
+                  title: "中規模ページデザイン構築",
+                  price: "￥40,000~",
+                },
+                {
+                  title: "小規模ページデザイン",
+                  price: "￥20,000~",
+                },
+                {
+                  title: "コンポーネント対応ページ構築",
+                  text: "既存のパーツやブロックを組み合わせて作るページの構築。",
+                  price: "￥4,000~",
+                },
+                {
+                  title: "テキスト流し込みページ構築",
+                  text: "既存のデザインやテンプレートにテキストを入れるだけの簡単なページの構築。",
+                  price: "￥1,000~",
+                },
+              ]}
+            />
+            <PriceTable
+              title="CMS構築費"
+              icon="code"
+              items={[
+                {
+                  title: "WordPress導入・初期設定",
+                  text: "一般的なレンタルサーバーにWordPressをインストールし、プラグインやセキュリティ設定を行う費用",
+                  price: "￥20,000~",
+                },
+                {
+                  title: "テーマ制作費",
+                  text: "オリジナルテーマ設計、共通構造設計（header/footer/functions.php等）、パーツ分割設計",
+                  price: "￥40,000~",
+                },
+                {
+                  title: "テンプレート制作",
+                  text: "ページのテンプレート作成。1ページあたりの費用",
+                  price: "￥20,000~",
+                },
+                {
+                  title: "カスタム投稿タイプ設定",
+                  text: "独立更新機能追加",
+                  price: "￥20,000~",
+                },
+                {
+                  title: "カスタムフィールド設定",
+                  text: "専用情報項目追加",
+                  price: "￥4,000~",
+                },
+                {
+                  title: "お問い合わせ機能",
+                  text: "プラグインの使用を想定",
+                  price: "￥20,000~",
+                },
+              ]}
+            />
+            <PriceTable
+              title="ブロックテーマ構築費"
+              icon="code"
+              items={[
+                {
+                  title: "theme.json 設計・設定",
+                  text: "カラーパレット、フォント、余白等の全体のデザインルールを定義",
+                  price: "￥80,000~",
+                },
+                {
+                  title: "テンプレート制作",
+                  text: "ページのテンプレート作成。1ページあたりの費用",
+                  price: "￥20,000~",
+                },
+                {
+                  title: "ブロックパターン制作",
+                  text: "ヘッダー、フッターなどの再利用可能なパーツを作成。1個あたりの費用",
+                  price: "￥10,000~",
+                },
+                {
+                  title: "ページ組み立て",
+                  text: "作成したパターンを組み合わせて各ページを構築する作業。1ページあたりの費用",
+                  price: "￥20,000~",
+                },
+                {
+                  title: "カスタムCSS",
+                  text: "標準機能で再現できない細かなデザインの微調整。",
+                  price: "￥20,000~",
+                },
+                {
+                  title: "カスタムブロック制作",
+                  text: "標準機能では実現できない複雑な機能や表示を伴うブロックの開発。1個あたりの費用",
+                  price: "￥40,000~",
+                },
+              ]}
+            />
+            <PriceTable
+              title="その他"
+              icon="config"
+              items={[
+                {
+                  title: "EC機能実装",
+                  text: "Welcartを使用したカート・決済機能を追加",
+                  price: "￥200,000~",
+                },
+                {
+                  title: "スクロール連動アニメーション",
+                  text: "ページ滞在時間や没入感を高める動的演出の実装。",
+                  price: "￥80,000~",
+                },
+                {
+                  title: "高度なグラフィック演出や3DCGを用いた演出",
+                  text: "WenGLを利用したアニメーションやグラフィックの実装",
+                  price: "￥300,000~",
+                },
+                {
+                  title: "3Dモデル制作",
+                  text: "簡素なオブジェクト1個あたりの費用。",
+                  price: "￥50,000~",
+                },
+                {
+                  title: "3Dモデル制作",
+                  text: "キャラクターモデリング1体あたりの費用",
+                  price: "￥300,000~",
+                },
+                {
+                  title: "動画素材の編集",
+                  text: "30秒以内のプロモーション動画編集",
+                  price: "￥40,000~",
+                },
+                {
+                  title: "解析ツールの設定",
+                  text: "Google Analytics等の設定",
+                  price: "￥20,000~",
+                },
+                {
+                  title: "サーバー・ドメインの設定代行",
+                  text: "あくまで管理者はお客様とし契約手続きのサポートをさせて頂きます。",
+                  price: "￥40,000~",
+                },
+                {
+                  title: "サイト原稿の考案代行",
+                  text: "Webサイトの原稿を代行して作成します。",
+                  price: "￥80,000~",
+                },
+              ]}
+            />
+          </div>
+
+          <div class="un_directionPrice">
+            <header class="un_directionPrice_header">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 32 32"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g clip-path="url(#clip0_585_2286)">
+                  <path
+                    d="M4.68832 27.3118C3.16016 25.8359 1.94124 24.0704 1.1027 22.1183C0.264156 20.1662 -0.177224 18.0667 -0.195685 15.9423C-0.214146 13.8178 0.190681 11.7109 0.995175 9.74457C1.79967 7.77823 2.98772 5.9918 4.49 4.48951C5.99229 2.98723 7.77872 1.79918 9.74506 0.994687C11.7114 0.190193 13.8183 -0.214634 15.9427 -0.196173C18.0672 -0.177712 20.1667 0.263667 22.1188 1.10221C24.0709 1.94076 25.8364 3.15967 27.3123 4.68783C30.2269 7.70547 31.8396 11.7471 31.8031 15.9423C31.7667 20.1374 30.084 24.1504 27.1174 27.1169C24.1509 30.0835 20.1379 31.7662 15.9427 31.8026C11.7476 31.8391 7.70596 30.2264 4.68832 27.3118ZM25.0563 25.0558C27.4581 22.654 28.8074 19.3965 28.8074 15.9998C28.8074 12.6032 27.4581 9.34563 25.0563 6.94383C22.6545 4.54203 19.397 3.19272 16.0003 3.19272C12.6037 3.19272 9.34612 4.54203 6.94432 6.94383C4.54252 9.34563 3.1932 12.6032 3.1932 15.9998C3.1932 19.3965 4.54252 22.654 6.94432 25.0558C9.34612 27.4576 12.6037 28.807 16.0003 28.807C19.397 28.807 22.6545 27.4576 25.0563 25.0558ZM14.4003 7.99983H17.6003V17.5998H14.4003V7.99983ZM14.4003 20.7998H17.6003V23.9998H14.4003V20.7998Z"
+                    fill="#403056"></path>
+                </g>
+                <defs>
+                  <clipPath id="clip0_585_2286">
+                    <rect width="32" height="32" fill="white"></rect>
+                  </clipPath>
+                </defs>
+              </svg>
+
+              <h3 class="un_directionPrice_title">ディレクション費について</h3>
+            </header>
+            <p class="un_directionPrice_text">
+              制作費の小計に対して、<span class="hl_accentColor">20</span
+              >%を進行管理・設計費（ディレクション費）として頂戴しております。<br
+              />
+              要件定義、進行管理、品質管理などのプロジェクト全体を円滑に進めるための費用です。
+            </p>
+
+            <div class="un_directionPrice_calculate">
+              <div class="un_directionPrice_calculate_column">
+                <span class="un_directionPrice_calculate_label">制作費小計</span
+                >
+                <span class="un_directionPrice_calculate_value">200,000円</span>
+              </div>
+
+              <span class="un_directionPrice_calculate_operator">×</span>
+
+              <div class="un_directionPrice_calculate_column">
+                <span class="un_directionPrice_calculate_label">料率</span>
+                <span class="un_directionPrice_calculate_value">20%</span>
+              </div>
+
+              <span class="un_directionPrice_calculate_operator">=</span>
+
+              <div class="un_directionPrice_calculate_column">
+                <span class="un_directionPrice_calculate_label"
+                  >ディレクション費</span
+                >
+                <span class="un_directionPrice_calculate_value">40,000円</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="bl_section plans">
+          <span class="bl_section_decorativeText" aria-hidden="true">
+            plans
+          </span>
+          <SectionTitle title="プロジェクト規模の目安" tag="h2" />
+          <ul class="un_plansPrice">
+            <PlanCard
+              items={[
+                {
+                  title: "エントリー・小規模サイト",
+                  description:
+                    "必要な機能を厳選し、コストを抑えつつ品質を確保したい場合に最適。",
+                  recommend: "スタートアップ、名刺代わりの簡易サイト、広告LP",
+                  price: "<span>40〜60</span>万円",
+                  time: "1ヶ月程度",
+                  pages: "5〜8P程度",
+                },
+                {
+                  title: "標準コーポレートサイト",
+                  description:
+                    "戦略的な設計と運用のしやすさを両立した、一般的なコーポレートサイト仕様。",
+                  recommend: "企業サイトリニューアル、採用サイト、サービス紹介",
+                  price: "<span>60～100</span>万円",
+                  time: "1.5~2.5ヶ月",
+                  pages: "8~15P程度",
+                },
+                {
+                  title: "大規模・高機能サイト",
+                  description:
+                    "ブランディング重視、複雑なCMS要件、独自機能開発を含むプロジェクト。",
+                  recommend: "リブランディング、ECサイト、ポータルサイト",
+                  price: "<span>150</span>万円〜",
+                  time: "3ヶ月~",
+                  pages: "20ページ以上",
+                },
+              ]}
+            />
+          </ul>
+        </section>
+
+        <section class="bl_section banner">
+          <p class="bl_section_contents">
+            相談・ヒアリングの段階では費用は発生しません。 <br
+            />内容をご確認いただき、ご納得いただいた場合のみ制作へ進みます。
+          </p>
+          <div class="bl_section_banner hl_contentWidthMiddle">
+            <Banner
+              link="/contact"
+              ja="お問い合わせ"
+              en="contact"
+              text="Webサイト立ち上げのご相談、お見積りのご依頼（無料）などお気軽にお問い合わせください。"
+            >
+              <MailIcon slot="icon" />
+            </Banner>
+          </div>
+        </section>
+      </main>
+    </PageWrapper>
+  </div>
+
+  <style lang="scss">
+    @use "../styles/utility" as *;
+    @use "../styles/global" as *;
+
+    .ly_pageMain {
+      width: calc(358 / 390) * 100%;
+      margin-inline: auto;
+      max-width: to-rem(940px);
+    }
+
+    .bl_section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: fluid-text(40px, 80px);
+      position: relative;
+      margin-top: fluid-text(120px, 200px);
+
+      &_decorativeText {
+        display: inline-block;
+        text-transform: uppercase;
+        font-size: fluid-text(56px, 120px);
+        line-height: 1;
+        color: var(--c-text);
+        pointer-events: none;
+        // mix-blend-mode: overlay;
+        opacity: 0.08;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translateY(-60%);
+      }
+
+      &.banner {
+        align-items: center;
+        .bl_section_contents {
+          text-align: center;
+          @include mq("md") {
+            text-align: left;
+          }
+        }
+      }
+    }
+
+    .un_basicPrice {
+      color: var(--c-text);
+      border-radius: 1rem;
+      padding: to-rem(24px) fluid-text(24px, 40px);
+      background:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"),
+        rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      &_title {
+        font-size: to-rem(24px);
+        font-weight: 500;
+      }
+      &_text {
+        margin-top: to-rem(24px);
+      }
+      &_wrap {
+        margin-top: to-rem(24px);
+      }
+      &_price {
+        font-family: "Noto sans JP", sans-serif;
+        font-size: fluid-text(48px, 64px);
+      }
+      &_notes {
+        margin-top: to-rem(10px);
+        font-size: to-rem(12px);
+        li {
+          position: relative;
+          &::before {
+            content: "※";
+            position: absolute;
+            left: to-rem(-14px);
+            top: 0;
+            //   transform: translateY(-50%);
+          }
+        }
+      }
+    }
+
+    .bl_priceTable_wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: fluid-text(40px, 80px);
+    }
+
+    .un_directionPrice {
+      border-radius: 1rem;
+      padding: to-rem(24px) fluid-text(16px, 40px);
+      background: #eef3fe;
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(12px);
+      &_header {
+        display: flex;
+        align-items: center;
+        gap: to-rem(12px);
+      }
+      &_title {
+        font-family: "Noto sans JP", sans-serif;
+        font-size: fluid-text(20px, 24px);
+        font-weight: 500;
+        color: var(--c-bg);
+      }
+      &_text {
+        font-family: "Noto sans JP", sans-serif;
+        font-size: fluid-text(14px, 16px);
+        color: var(--c-black);
+        span {
+          font-size: 150%;
+        }
+      }
+
+      &_calculate {
+        width: 100%;
+        background: $c-white;
+        border-radius: to-rem(16px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: fluid-text(4px, 24px);
+        padding: 1rem;
+        &_column {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: fluid-text(4px, 8px);
+        }
+        &_label,
+        &_operator {
+          font-size: to-rem(12px);
+          color: #525252;
+        }
+        &_value {
+          font-family: "Noto sans JP", sans-serif;
+          font-size: fluid-text(14px, 16px);
+          font-weight: 700;
+          color: #000000;
+        }
+      }
+    }
+
+    .un_plansPrice {
+      display: flex;
+      flex-direction: column;
+      gap: fluid-text(40px, 80px);
+    }
+  </style>
+</Base>

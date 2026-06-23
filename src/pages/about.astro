@@ -45,6 +45,13 @@ import Gallery from "../components/ui/Gallery.astro";
           data-rotation-y="-45"
           data-scroll-trigger="pin"
           data-pin-trigger=".ly_pageMain"
+          data-lights='[
+            {"type": "directional", "color": "#ffffff", "intensity": 1.5, "position": [2, 2, 10]},
+            {"type": "directional", "color": "#ffffff", "intensity": 1, "position": [-8, 6, -8]},
+            {"type": "directional", "color": "#ffffff", "intensity": 0.8, "position": [-2, 2, 5]},
+            {"type": "ambient", "color": "#ffffff", "intensity": 0.6},
+            {"type": "point", "color": "#ffffff", "intensity": 0.4, "position": [0.5, 0.8, 1.2]}
+          ]'
         >
         </div>
         <div class="bl_page_contents">
@@ -443,11 +450,9 @@ import Gallery from "../components/ui/Gallery.astro";
   @use "../styles/global" as *;
 
   .ly_pageMain {
-    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: to-rem(80px) 0;
 
     @include mq("lg") {
       flex-direction: column;
