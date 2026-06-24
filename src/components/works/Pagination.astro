@@ -1,0 +1,118 @@
+---
+import { getWorksListUrl } from "../../lib/wordpress";
+
+const { currentPage, totalPages, categorySlug } = Astro.props;
+
+if (totalPages <= 1) {
+  return null;
+}
+
+const prevUrl =
+  currentPage > 1 ? getWorksListUrl(currentPage - 1, categorySlug) : null;
+const nextUrl =
+  currentPage < totalPages
+    ? getWorksListUrl(currentPage + 1, categorySlug)
+    : null;
+
+const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+---
+
+<nav class="bl_pagination" aria-label="ページネーション">
+  {
+    prevUrl ? (
+      <a href={prevUrl} class="bl_pagination_btn font-12-16">
+        前へ
+      </a>
+    ) : (
+      <span class="bl_pagination_btn bl_pagination_btn--disabled font-12-16">
+        前へ
+      </span>
+    )
+  }
+
+  <ol class="bl_pagination_list">
+    {
+      pageNumbers.map((page) => {
+        const href = getWorksListUrl(page, categorySlug);
+        const isCurrent = page === currentPage;
+
+        return (
+          <li class="bl_pagination_item">
+            {isCurrent ? (
+              <span
+                class="bl_pagination_page bl_pagination_page--current font-12-16"
+                aria-current="page"
+              >
+                {page}
+              </span>
+            ) : (
+              <a href={href} class="bl_pagination_page font-12-16">
+                {page}
+              </a>
+            )}
+          </li>
+        );
+      })
+    }
+  </ol>
+
+  {
+    nextUrl ? (
+      <a href={nextUrl} class="bl_pagination_btn font-12-16">
+        次へ
+      </a>
+    ) : (
+      <span class="bl_pagination_btn bl_pagination_btn--disabled font-12-16">
+        次へ
+      </span>
+    )
+  }
+</nav>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: to-rem(16px);
+    margin-top: to-rem(80px);
+
+    &_list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: to-rem(8px);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    &_btn,
+    &_page {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: to-rem(40px);
+      min-height: to-rem(40px);
+      padding: to-rem(8px) to-rem(12px);
+      border: solid 1px var(--c-text);
+      border-radius: 4px;
+      color: var(--c-text);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+
+      &:hover {
+        opacity: 0.7;
+      }
+
+      &--disabled,
+      &--current {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    }
+  }
+</style>

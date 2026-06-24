@@ -1,0 +1,72 @@
+---
+import Base from "../../../../../layout/Base.astro";
+import PageWrapper from "../../../../../layout/PageWrapper.astro";
+import PageHeader from "../../../../../layout/PageHeader.astro";
+import WorksList from "../../../../../components/works/WorksList.astro";
+import CategoryNav from "../../../../../components/works/CategoryNav.astro";
+import {
+  fetchWorkCategories,
+  fetchWorks,
+  getPaginationPaths,
+} from "../../../../../lib/wordpress";
+
+export async function getStaticPaths() {
+  const categories = await fetchWorkCategories();
+  const allPaths = await Promise.all(
+    categories.map(async (category) => {
+      const { totalPages } = await fetchWorks({
+        page: 1,
+        categorySlug: category.slug,
+      });
+      const pages = getPaginationPaths(totalPages);
+
+      return pages.map((page) => ({
+        params: { slug: category.slug, page: String(page) },
+        props: { category, page },
+      }));
+    }),
+  );
+
+  return allPaths.flat();
+}
+
+const { category, page } = Astro.props;
+const pageNumber = Number(page);
+const { works, total, totalPages, currentPage } = await fetchWorks({
+  page: pageNumber,
+  categorySlug: category.slug,
+});
+const categories = await fetchWorkCategories();
+---
+
+<Base
+  title={`${category.name}（${currentPage}ページ目） | 制作物`}
+  pageType="works"
+  bodyClass="works works-category"
+>
+  <div class="hl_contentWidthMiddle">
+    <PageWrapper>
+      <PageHeader ja="制作物" en={category.name} tag="h1" />
+
+      <main class="ly_pageMain">
+        <CategoryNav categories={categories} currentSlug={category.slug} />
+        <WorksList
+          works={works}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          total={total}
+          category={category}
+        />
+      </main>
+    </PageWrapper>
+  </div>
+</Base>
+
+<style lang="scss">
+  @use "../../../../../styles/utility" as *;
+  @use "../../../../../styles/global" as *;
+
+  .ly_pageMain {
+    margin-top: to-rem(80px);
+  }
+</style>

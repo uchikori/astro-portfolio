@@ -1,0 +1,38 @@
+---
+import Base from "../../layout/Base.astro";
+import PageWrapper from "../../layout/PageWrapper.astro";
+import PageHeader from "../../layout/PageHeader.astro";
+import WorksList from "../../components/works/WorksList.astro";
+import CategoryNav from "../../components/works/CategoryNav.astro";
+import { fetchWorkCategories, fetchWorks } from "../../lib/wordpress";
+import CircleImage from "../../components/webgl/CircleImage.astro";
+
+const { works, total, totalPages, currentPage } = await fetchWorks({ page: 1 });
+
+console.log(currentPage);
+const categories = await fetchWorkCategories();
+---
+
+<Base title="制作物一覧" pageType="works" bodyClass="works">
+  <div class="hl_contentWidthMiddle">
+    <CircleImage image="/img/works/works_bg.webp" />
+    <PageWrapper>
+      <PageHeader ja="制作物" en="WORKS" tag="h1" />
+
+      <main class="ly_pageMain">
+        <CategoryNav categories={categories} currentSlug={undefined} />
+        <WorksList
+          works={works}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          total={total}
+        />
+      </main>
+    </PageWrapper>
+  </div>
+</Base>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+</style>

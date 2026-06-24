@@ -1,0 +1,93 @@
+---
+import WorkCard from "./WorkCard.astro";
+import Pagination from "./Pagination.astro";
+import { getWorkCategoryUrl } from "../../lib/wordpress";
+
+const { works, currentPage, totalPages, total, category } = Astro.props;
+---
+
+<section class="bl_worksList">
+  {
+    category && (
+      <div class="bl_worksList_categories">
+        <p class="bl_worksList_count font-16-24">
+          「{category.name}」の制作物 {total} 件
+        </p>
+      </div>
+    )
+  }
+
+  {
+    works.length > 0 ? (
+      <ul class="bl_worksList_grid">
+        {works.map((work) => (
+          <li class="bl_worksList_item">
+            <WorkCard work={work} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="bl_worksList_empty font-16-20">
+        制作物が見つかりませんでした。
+      </p>
+    )
+  }
+
+  <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    categorySlug={category?.slug}
+  />
+
+  {
+    category && (
+      <p class="bl_worksList_back">
+        <a href="/works" class="font-12-16">
+          制作物一覧へ戻る
+        </a>
+      </p>
+    )
+  }
+</section>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_worksList {
+    &_categories {
+      margin-bottom: to-rem(40px);
+    }
+
+    &_count {
+      text-transform: uppercase;
+      color: $c-white;
+    }
+
+    &_grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(to-rem(300px), 1fr));
+      gap: fluid-text(40px, 64px);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      @include mq(md) {
+        grid-template-columns: 1fr;
+        gap: to-rem(40px);
+      }
+    }
+
+    &_empty {
+      line-height: 2;
+    }
+
+    &_back {
+      margin-top: to-rem(40px);
+
+      a {
+        color: var(--c-text);
+      }
+    }
+  }
+</style>

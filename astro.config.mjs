@@ -11,6 +11,14 @@ export default defineConfig({
   // Astroの標準設定（出力先など）
   outDir: "./dist",
   publicDir: "./public",
+  image: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "shin-pf.uchiwa-design.net",
+      },
+    ],
+  },
 
   // Vite固有の設定はこちらに記述します
   vite: {

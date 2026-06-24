@@ -1,0 +1,61 @@
+---
+import Base from "../../../layout/Base.astro";
+import PageWrapper from "../../../layout/PageWrapper.astro";
+import PageHeader from "../../../layout/PageHeader.astro";
+import WorksList from "../../../components/works/WorksList.astro";
+import CategoryNav from "../../../components/works/CategoryNav.astro";
+import {
+  fetchWorkCategories,
+  fetchWorks,
+  getPaginationPaths,
+} from "../../../lib/wordpress";
+
+export async function getStaticPaths() {
+  // 総ページ数を取得する
+  const { totalPages } = await fetchWorks({ page: 1 });
+
+  // 2ページ目以降のパス用の配列を取得する [2,3,4,5,...]
+  const pages = getPaginationPaths(totalPages);
+
+  console.log(pages);
+
+  return pages.map((page) => ({
+    // `page` をパラメータとして渡す
+    params: { page: String(page) },
+  }));
+}
+
+// パラメータを取得する(現在のページ番号)
+const page = Number(Astro.params.page);
+// Works を取得する
+const { works, total, totalPages, currentPage } = await fetchWorks({ page });
+// Works カデゴリーを取得する
+const categories = await fetchWorkCategories();
+---
+
+<Base
+  title={`制作物一覧（${currentPage}ページ目）`}
+  pageType="works"
+  bodyClass="works"
+>
+  <div class="hl_contentWidthMiddle">
+    <PageWrapper>
+      <PageHeader ja="制作物" en="WORKS" tag="h1" />
+
+      <main class="ly_pageMain">
+        <CategoryNav categories={categories} currentSlug={undefined} />
+        <WorksList
+          works={works}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          total={total}
+        />
+      </main>
+    </PageWrapper>
+  </div>
+</Base>
+
+<style lang="scss">
+  @use "../../../styles/utility" as *;
+  @use "../../../styles/global" as *;
+</style>
