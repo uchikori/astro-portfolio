@@ -23,14 +23,15 @@ const { works, total, totalPages, currentPage } = await fetchWorks({
 const categories = await fetchWorkCategories();
 ---
 
-<Base
-  title={`${category.name} | 制作物`}
-  pageType="works"
-  bodyClass="works works-category"
->
+<Base title={`${category.name} | 制作物`} pageType="works" bodyClass="works works-category">
   <div class="hl_contentWidthMiddle">
     <PageWrapper>
-      <PageHeader ja="制作物" en={category.name} tag="h1" />
+      <PageHeader
+        ja="制作物"
+        en={category.name}
+        tag="h1"
+        breadcrumbLabel={category.name}
+      />
 
       <main class="ly_pageMain">
         <CategoryNav categories={categories} currentSlug={category.slug} />

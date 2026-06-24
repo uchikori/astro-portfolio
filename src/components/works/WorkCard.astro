@@ -1,53 +1,32 @@
 ---
-import { Picture } from "astro:assets";
-import Tag from "../ui/Tag.astro";
-import { getWorkCategoryTagUrl, getWorkDetailUrl } from "../../lib/wordpress";
+import ContentPanel from "../ui/ContentPanel.astro";
+import { getWorkDetailUrl } from "../../lib/wordpress";
 
 const { work } = Astro.props;
 const detailUrl = getWorkDetailUrl(work.id);
+const tags = [...(work.tags?.map((tag) => tag.name) ?? [])];
 ---
 
 <article class="bl_workCard">
   <a href={detailUrl} class="bl_workCard_link">
     {
       work.thumbnailUrl ? (
-        <figure class="bl_workCard_thumbnail">
-          <Picture
-            src={work.thumbnailUrl}
-            alt={work.thumbnailAlt || work.title}
-            widths={[375, 710, 980]}
-            width={710}
-            height={335}
-            formats={["avif", "webp"]}
-            sizes="(max-width: 768px) 100vw, 710px"
-            loading="lazy"
-          />
-        </figure>
+        <ContentPanel
+          title={work.title}
+          tags={tags}
+          thumbnail={work.thumbnailUrl}
+        />
       ) : (
-        <figure class="bl_workCard_thumbnail bl_workCard_thumbnail--empty">
-          <span>No Image</span>
-        </figure>
-      )
-    }
-
-    {
-      work.categories.length > 0 && (
-        <ul class="bl_workCard_tags">
-          {work.categories.map((category) => (
-            <Tag
-              category={category.name}
-              href={getWorkCategoryTagUrl(category.slug)}
-            />
-          ))}
-        </ul>
-      )
-    }
-
-    <h2 class="bl_workCard_title font-16-24">{work.title}</h2>
-
-    {
-      work.excerpt && (
-        <p class="bl_workCard_excerpt font-12-16" set:html={work.excerpt} />
+        <div class="bl_workCard_empty">
+          <h3 class="bl_workCard_emptyTitle font-16-24">{work.title}</h3>
+          {tags.length > 0 && (
+            <ul class="bl_workCard_emptyTags">
+              {tags.map((tag) => (
+                <li>{tag}</li>
+              ))}
+            </ul>
+          )}
+        </div>
       )
     }
   </a>
@@ -58,67 +37,39 @@ const detailUrl = getWorkDetailUrl(work.id);
   @use "../../styles/global" as *;
 
   .bl_workCard {
-    // height: 100%;
+    height: 100%;
 
     &_link {
-      display: flex;
-      flex-direction: column;
-      gap: to-rem(24px);
-      height: 100%;
-      padding-bottom: to-rem(16px);
-      border-bottom: solid 1px var(--c-text);
+      display: block;
       color: inherit;
       text-decoration: none;
       transition: opacity 0.2s ease;
-
+      height: 100%;
       &:hover {
         opacity: 0.75;
       }
     }
 
-    &_thumbnail {
-      width: 100%;
-      aspect-ratio: 2 / 1;
-      overflow: hidden;
-      margin: 0;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      &--empty {
-        display: grid;
-        place-items: center;
-        background: rgba(255, 255, 255, 0.08);
-        color: #8b8b8b;
-      }
+    &_empty {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(16px);
+      min-height: to-rem(200px);
+      justify-content: center;
     }
 
-    &_tags {
+    &_emptyTitle {
+      margin: 0;
+    }
+
+    &_emptyTags {
       display: flex;
       flex-wrap: wrap;
-      gap: to-rem(16px);
+      gap: to-rem(12px);
       list-style: none;
       padding: 0;
       margin: 0;
-    }
-
-    &_title {
-      color: var(--c-text);
-      font-weight: 500;
-      margin: 0;
-    }
-
-    &_excerpt {
-      margin: 0;
-      line-height: 1.8;
       color: #8b8b8b;
-
-      :global(p) {
-        margin: 0;
-      }
     }
   }
 </style>

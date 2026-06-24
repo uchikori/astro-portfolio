@@ -33,7 +33,12 @@ const { work } = Astro.props;
 <Base title={work.title} pageType="works-detail" bodyClass="works-detail">
   <div class="hl_contentWidthMiddle">
     <PageWrapper>
-      <PageHeader ja={work.title} en="WORK DETAIL" tag="h1" />
+      <PageHeader
+        ja={work.title}
+        en="WORK DETAIL"
+        tag="h1"
+        breadcrumbLabel={work.title}
+      />
 
       <main class="ly_pageMain">
         <article class="bl_workDetail">
@@ -69,7 +74,10 @@ const { work } = Astro.props;
             公開日: {new Date(work.date).toLocaleDateString("ja-JP")}
           </time>
 
-          <div class="bl_workDetail_content font-16-20" set:html={work.content} />
+          <div
+            class="bl_workDetail_content font-16-20"
+            set:html={work.content}
+          />
 
           <footer class="bl_workDetail_footer">
             <a href="/works" class="bl_workDetail_back font-12-16">

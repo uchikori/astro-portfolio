@@ -86,6 +86,17 @@ function mapWork(node) {
       slug: term.slug,
       count: term.count ?? 0,
     }));
+  // タグを取得する
+  const tags = (node.tags?.nodes ?? [])
+    // tag taxonomy だけに絞る
+    .filter((term) => term.taxonomyName === "post_tag")
+    // フロント側で使う tag 形式に変換する
+    .map((term) => ({
+      id: term.databaseId,
+      name: decodeHtmlEntities(term.name),
+      slug: term.slug,
+      count: term.count ?? 0,
+    }));
 
   return {
     id: node.databaseId,
@@ -98,6 +109,7 @@ function mapWork(node) {
     thumbnailUrl: featured?.sourceUrl ?? null,
     thumbnailAlt: featured?.altText ?? "",
     categories,
+    tags,
   };
 }
 
@@ -194,6 +206,15 @@ async function fetchAllGraphQLWorks() {
               count
             }
           }
+          tags {
+            nodes {
+              databaseId
+              name
+              slug
+              taxonomyName
+              count
+            }
+          }
         }
       }
     }
@@ -221,6 +242,13 @@ async function fetchGraphQLWorkById(id) {
           }
         }
         terms {
+          nodes {
+            link
+            name
+            slug
+          }
+        }
+        tags {
           nodes {
             link
             name

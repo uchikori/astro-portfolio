@@ -8,8 +8,6 @@ import { fetchWorkCategories, fetchWorks } from "../../lib/wordpress";
 import CircleImage from "../../components/webgl/CircleImage.astro";
 
 const { works, total, totalPages, currentPage } = await fetchWorks({ page: 1 });
-
-console.log(currentPage);
 const categories = await fetchWorkCategories();
 ---
 

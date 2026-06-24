@@ -40,13 +40,18 @@ const categories = await fetchWorkCategories();
 ---
 
 <Base
-  title={`${category.name}（${currentPage}ページ目） | 制作物`}
+  title={`${category.name} | 制作物`}
   pageType="works"
   bodyClass="works works-category"
 >
   <div class="hl_contentWidthMiddle">
     <PageWrapper>
-      <PageHeader ja="制作物" en={category.name} tag="h1" />
+      <PageHeader
+        ja="制作物"
+        en={category.name}
+        tag="h1"
+        breadcrumbLabel={category.name}
+      />
 
       <main class="ly_pageMain">
         <CategoryNav categories={categories} currentSlug={category.slug} />

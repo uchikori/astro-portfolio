@@ -1,20 +1,4 @@
 ---
-/**
- * Breadcrumb コンポーネント
- *
- * URL パスを元にパンくずリストを自動生成します。
- *
- * Props:
- *   currentLabel?: string
- *     現在ページのラベルを上書きしたい場合に指定。
- *     省略すると routeMap から自動取得します。
- *
- *   items?: { label: string; href?: string }[]
- *     パンくずアイテムを完全に手動で指定したい場合に使用。
- *     指定した場合、自動生成をスキップします。
- *     最後のアイテムが自動的に「現在ページ」として扱われます。
- */
-
 interface BreadcrumbItem {
   label: string;
   href?: string;
@@ -28,44 +12,68 @@ interface Props {
 
 const { currentLabel, items: manualItems } = Astro.props;
 
-// ルートとラベルのマッピング（ページを追加したらここに追記）
 const routeMap: Record<string, string> = {
   about: "UCHIWAについて",
   service: "事業内容",
   diverse: "DIVERSE",
   price: "料金表",
   works: "制作物",
-  category: "カテゴリー",
-  page: "ページ",
 };
 
 let breadcrumbItems: BreadcrumbItem[] = [];
 
+//呼び出し元で配列で手動指定された場合
 if (manualItems && manualItems.length > 0) {
-  // 手動指定モード
   breadcrumbItems = manualItems.map((item, index) => ({
-    ...item,
-    isCurrent: index === manualItems.length - 1,
+    ...item, // itemのすべてのプロパティをコピー
+    isCurrent: index === manualItems.length - 1, // 配列の最後の要素をisCurrentにする
   }));
 } else {
-  // URL パスから自動生成
-  const pathname = Astro.url.pathname;
-  const segments = pathname.split("/").filter(Boolean);
+  //呼び出し元で配列で手動指定されなかった場合
 
-  // ホームは常に先頭
+  // urlからパスを抽出
+  const pathname = Astro.url.pathname;
+  //splitを使ってパスを配列に変換
+  const segments = pathname.split("/").filter(Boolean);
+  // 調整用配列を定義(categoryを除く & pageを除く)
+  const normalizedSegments: string[] = [];
+
+  // パスの長さだけループ処理を行う
+  for (let index = 0; index < segments.length; index += 1) {
+    // 配列のindex番目のパスを取得
+    const segment = segments[index];
+    // "category"の場合はスキップ
+    if (segment === "category") continue;
+    // "page"の場合は次のindexをスキップ
+    if (segment === "page" && /^\d+$/.test(segments[index + 1] ?? "")) {
+      index += 1;
+      continue;
+    }
+
+    // 調整用配列に追加
+    normalizedSegments.push(segment);
+  }
+
   breadcrumbItems = [
     {
       label: "ホーム",
       href: "/",
-      isCurrent: segments.length === 0,
+      isCurrent: normalizedSegments.length === 0,
     },
   ];
 
   let cumulativePath = "";
-  segments.forEach((segment, index) => {
+
+  // 調整用配列をループ処理
+  normalizedSegments.forEach((segment, index) => {
+    // 累積パスに追加
     cumulativePath += `/${segment}`;
-    const isCurrent = index === segments.length - 1;
+    // 現在のパスかどうかのフラグ
+    const isCurrent = index === normalizedSegments.length - 1;
+
     const label =
+      // 現在のパスフラグがtrueの場合、currentLabelを参照し、currentLabelが設定されていればそれを表示、
+      // currentLabelが設定されていなければrouteMapからsegmentを参照し、存在しなければsegmentを表示
       isCurrent && currentLabel ? currentLabel : (routeMap[segment] ?? segment);
 
     breadcrumbItems.push({

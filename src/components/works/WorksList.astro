@@ -66,7 +66,7 @@ const { works, currentPage, totalPages, total, category } = Astro.props;
 
     &_grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(to-rem(300px), 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(to-rem(375px), 1fr));
       gap: fluid-text(40px, 64px);
       list-style: none;
       padding: 0;
@@ -76,6 +76,11 @@ const { works, currentPage, totalPages, total, category } = Astro.props;
         grid-template-columns: 1fr;
         gap: to-rem(40px);
       }
+    }
+
+    &_item {
+      width: 100%;
+      min-width: 0;
     }
 
     &_empty {
