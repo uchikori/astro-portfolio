@@ -1,0 +1,125 @@
+---
+import Picture from "astro/components/Picture.astro";
+import { getBlogDetailUrl } from "../../lib/wordpress";
+import Category from "../ui/Category.astro";
+import Time from "../ui/Time.astro";
+
+const { post } = Astro.props;
+const categories = post.classes ?? [];
+const primaryCategory = categories[0];
+---
+
+<article class="bl_blogCard" data-mouse="highlight" data-mouse-scale="3">
+  <a href={getBlogDetailUrl(post.id)} class="bl_blogCard_link">
+    {
+      post.thumbnailUrl ? (
+        <figure class="bl_blogCard_thumbnail">
+          <Picture
+            src={post.thumbnailUrl}
+            formats={["avif", "webp"]}
+            widths={[375, 710, 1420]}
+            sizes="(max-width: 768px) 100vw, 710px"
+            alt={post.thumbnailAlt || post.title}
+            width={710}
+            height={400}
+            loading="lazy"
+          />
+        </figure>
+      ) : (
+        <div class="bl_blogCard_thumbnail bl_blogCard_thumbnail--empty" />
+      )
+    }
+
+    <div class="bl_blogCard_meta">
+      {
+        primaryCategory && (
+          <Category
+            className="bl_blogCard_category"
+            categoryName={primaryCategory.name}
+          />
+        )
+      }
+      <Time className="bl_blogCard_date" date={post.date} />
+    </div>
+
+    <h3 class="bl_blogCard_title font-16-24">{post.title}</h3>
+  </a>
+</article>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_blogCard {
+    height: 100%;
+
+    &_link {
+      padding: to-rem(24px) to-rem(24px) to-rem(40px) to-rem(24px);
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(16px);
+      color: inherit;
+      text-decoration: none;
+      height: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border-radius: 8px;
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.12);
+      }
+    }
+
+    &_thumbnail {
+      aspect-ratio: 312 / 175;
+      overflow: hidden;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+
+      :global(picture),
+      :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      &--empty {
+        background:
+          linear-gradient(
+            135deg,
+            rgba(238, 151, 35, 0.28),
+            rgba(123, 92, 255, 0.22)
+          ),
+          rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    &_meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: to-rem(12px);
+      flex-wrap: wrap;
+    }
+
+    &_title {
+      font-size: to-rem(18px);
+      font-weight: 500;
+      margin: 0;
+      color: $c-white;
+    }
+
+    &_excerpt {
+      color: rgba(255, 255, 255, 0.72);
+      line-height: 1.8;
+      :global(p) {
+        margin: 0;
+      }
+    }
+  }
+</style>

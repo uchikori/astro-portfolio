@@ -2,6 +2,7 @@
 import WorkCard from "./WorkCard.astro";
 import Pagination from "./Pagination.astro";
 import { getWorkCategoryUrl } from "../../lib/wordpress";
+import ArrowLink from "../ui/ArrowLink.astro";
 
 const { works, currentPage, totalPages, total, category } = Astro.props;
 ---
@@ -38,16 +39,6 @@ const { works, currentPage, totalPages, total, category } = Astro.props;
     totalPages={totalPages}
     categorySlug={category?.slug}
   />
-
-  {
-    category && (
-      <p class="bl_worksList_back">
-        <a href="/works" class="font-12-16">
-          制作物一覧へ戻る
-        </a>
-      </p>
-    )
-  }
 </section>
 
 <style lang="scss">

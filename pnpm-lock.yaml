@@ -32,6 +32,9 @@ importers:
       lil-gui:
         specifier: ^0.21.0
         version: 0.21.0
+      prismjs:
+        specifier: ^1.30.0
+        version: 1.30.0
       sharp:
         specifier: ^0.34.5
         version: 0.34.5

@@ -1,5 +1,3 @@
-import { MOCK_CATEGORIES, MOCK_WORKS } from "./wordpress-mock";
-
 /**
  * WordPress GraphQL API helpers.
  * API 未設定時は空結果を返し、設定済みなら WordPress から取得します。
@@ -243,16 +241,20 @@ async function fetchGraphQLWorkById(id) {
         }
         terms {
           nodes {
-            link
+            databaseId
             name
             slug
+            taxonomyName
+            count
           }
         }
         tags {
           nodes {
-            link
+            databaseId
             name
             slug
+            taxonomyName
+            count
           }
         }
         galleryNumber {
@@ -379,12 +381,8 @@ export async function fetchWorks(options = {}) {
     // ページングした結果を返す
     return paginateWorks(works, page, perPage);
   } catch (error) {
-    // 取得失敗時は既存モックへ退避する
-    console.error(
-      "[wordpress] GraphQL fetchWorks error, fallback to mock:",
-      error,
-    );
-    return paginateWorks(MOCK_WORKS, page, perPage);
+    console.error("[wordpress] GraphQL fetchWorks error:", error);
+    return paginateWorks([], page, perPage);
   }
 }
 
@@ -402,12 +400,8 @@ export async function fetchAllWorkIds() {
     const works = await fetchAllGraphQLWorks();
     return works.map((work) => work.id);
   } catch (error) {
-    // 取得失敗時はモック ID へ退避する
-    console.error(
-      "[wordpress] GraphQL fetchAllWorkIds error, fallback to mock:",
-      error,
-    );
-    return MOCK_WORKS.map((work) => work.id);
+    console.error("[wordpress] GraphQL fetchAllWorkIds error:", error);
+    return [];
   }
 }
 
@@ -424,12 +418,8 @@ export async function fetchWorkById(id) {
     // WordPress から詳細を取得する
     return await fetchGraphQLWorkById(id);
   } catch (error) {
-    // 取得失敗時はモックから探す
-    console.error(
-      "[wordpress] GraphQL fetchWorkById error, fallback to mock:",
-      error,
-    );
-    return MOCK_WORKS.find((work) => work.id === id) ?? null;
+    console.error("[wordpress] GraphQL fetchWorkById error:", error);
+    return null;
   }
 }
 
@@ -446,12 +436,8 @@ export async function fetchWorkCategories() {
     // WordPress からカテゴリーを取得する
     return await fetchGraphQLCategories();
   } catch (error) {
-    // 取得失敗時はモックへ退避する
-    console.error(
-      "[wordpress] GraphQL fetchWorkCategories error, fallback to mock:",
-      error,
-    );
-    return MOCK_CATEGORIES;
+    console.error("[wordpress] GraphQL fetchWorkCategories error:", error);
+    return [];
   }
 }
 
@@ -510,4 +496,406 @@ export function getWorkCategoryUrl(slug, page = 1) {
  */
 export function getWorkCategoryTagUrl(slug) {
   return `/works/category/${slug}`;
+}
+
+/**
+ * 同一タグの関連作品をランダムで取得する
+ * @param {number} workId 対象の作品 ID
+ * @param {number} limit 取得件数
+ * @returns {Promise<Array>}
+ */
+export async function fetchRelatedWorksByTags(workId, limit = 3) {
+  if (!isWordPressConfigured()) {
+    return [];
+  }
+
+  try {
+    const work = await fetchWorkById(workId);
+    if (!work || work.tags.length === 0) {
+      return [];
+    }
+
+    const allWorks = await fetchAllGraphQLWorks();
+
+    const relatedWorks = allWorks.filter((w) => {
+      if (w.id === workId) {
+        return false;
+      }
+      return work.tags.some((tag) => w.tags.some((wTag) => wTag.id === tag.id));
+    });
+
+    const shuffled = relatedWorks.sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, limit);
+  } catch (error) {
+    console.error("[wordpress] fetchRelatedWorksByTags error:", error);
+    return [];
+  }
+}
+
+// ============================================================
+// web-tips (allWebTips カスタム投稿) 関連
+// ============================================================
+
+/**
+ * GraphQL のノードデータをフロント用 web-tips オブジェクトに変換
+ */
+function mapWebTips(node) {
+  // アイキャッチ画像を取得する
+  const featured = node.featuredImage?.node;
+  // タクソノミー=classのクラスを取得する
+  const classes = (node.terms?.nodes ?? [])
+    // classタクソノミーだけを抽出
+    .filter((term) => term.taxonomyName === "class")
+    // classタクソノミーをフロント用の形式に変換
+    .map((term) => ({
+      id: term.databaseId,
+      name: decodeHtmlEntities(term.name),
+      slug: term.slug,
+      count: term.count ?? 0,
+    }));
+
+  return {
+    id: node.databaseId,
+    slug: node.slug,
+    title: stripHtml(node.title),
+    content: node.content ?? "",
+    excerpt: node.excerpt ?? "",
+    date: node.date,
+    modified: node.modified,
+    thumbnailUrl: featured?.mediaItemUrl ?? null,
+    thumbnailAlt: featured?.altText ?? "",
+    classes,
+  };
+}
+
+/**
+ * ページネーション
+ * @param {*} posts
+ * @param {*} page
+ * @param {*} perPage
+ * @returns
+ */
+function paginateBlogPosts(posts, page, perPage) {
+  // 全体数を計算する
+  const total = posts.length;
+  // 最大ページ数を計算する
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
+  // 現在のページ数を計算する
+  const currentPage = Math.min(Math.max(page, 1), totalPages);
+  // 開始位置を計算する
+  const start = (currentPage - 1) * perPage;
+
+  return {
+    posts: posts.slice(start, start + perPage),
+    total,
+    totalPages,
+    currentPage,
+    perPage,
+  };
+}
+
+/**
+ * 作成日降順で並び替え
+ * @param {*} posts
+ * @returns
+ */
+function sortPostsByDateDesc(posts) {
+  return [...posts].sort(
+    (left, right) =>
+      new Date(right.date).getTime() - new Date(left.date).getTime(),
+  );
+}
+
+/**
+ * クラスをビルドする
+ * @param {*} posts
+ * @returns
+ */
+export function buildWebTipsClasses(posts) {
+  // 空のマップを作成する
+  const classMap = new Map();
+
+  // postsをループする
+  for (const post of posts) {
+    // classesをループする
+    for (const cls of post.classes ?? []) {
+      // classをクラスマップから取得する
+      const current = classMap.get(cls.slug);
+      // classMapにクラスを更新する
+      classMap.set(cls.slug, {
+        id: cls.id,
+        name: cls.name,
+        slug: cls.slug,
+        count: (current?.count ?? 0) + 1,
+      });
+    }
+  }
+
+  return [...classMap.values()].sort((left, right) => right.count - left.count);
+}
+
+/**
+ * 全ての web-tips を取得する
+ * @returns {Promise<Array>}
+ */
+async function fetchAllGraphQLBlogPosts() {
+  const query = `
+    query GetWebTips {
+      allWebTips(first: 100) {
+        nodes {
+          databaseId
+          slug
+          title
+          excerpt
+          date
+          modified
+          featuredImage {
+            node {
+              mediaItemUrl
+              altText
+            }
+          }
+          terms {
+            nodes {
+              databaseId
+              name
+              slug
+              taxonomyName
+              count
+            }
+          }
+        }
+      }
+    }
+  `;
+  const data = await wpGraphQLFetch(query);
+  return (data.allWebTips?.nodes ?? []).map(mapWebTips);
+}
+
+/**
+ * 指定された ID を持つ web-tips を取得する
+ * @param {number} id
+ * @returns {Promise<Object|null>}
+ */
+async function fetchGraphQLWebTipById(id) {
+  const query = `
+    query GetWebTip($id: ID!) {
+      webTips(id: $id, idType: DATABASE_ID) {
+        databaseId
+        slug
+        title
+        content
+        excerpt
+        date
+        modified
+        featuredImage {
+          node {
+            mediaItemUrl
+            altText
+          }
+        }
+        terms {
+          nodes {
+            databaseId
+            name
+            slug
+            taxonomyName
+            count
+          }
+        }
+      }
+    }
+  `;
+  const data = await wpGraphQLFetch(query, { id: String(id) });
+  return data.webTips ? mapWebTips(data.webTips) : null;
+}
+
+/**
+ * web-tips を取得する
+ * @param {*} options
+ * @returns
+ */
+export async function fetchBlogPosts(options = {}) {
+  // 現在のページを取得
+  const page = options.page ?? 1;
+  // 1ページあたりの表示件数を取得
+  const perPage = options.perPage ?? 12;
+
+  // WordPressが設定されていない場合は、空の配列を返す
+  if (!isWordPressConfigured()) {
+    return paginateBlogPosts([], page, perPage);
+  }
+
+  try {
+    // 全ての web-tips を取得して、作成日降順で並び替える
+    let posts = sortPostsByDateDesc(await fetchAllGraphQLBlogPosts());
+    // optionsにカテゴリが指定されている場合は、カテゴリで絞り込む
+    if (options.categorySlug) {
+      // 指定されたカテゴリと投稿の持つslugが一致するものをフィルタリング
+      posts = posts.filter((post) =>
+        post.classes.some((cls) => cls.slug === options.categorySlug),
+      );
+    }
+    // ページネーションを適用する
+    return paginateBlogPosts(posts, page, perPage);
+    // エラーハンドリング
+  } catch (error) {
+    console.error("[wordpress] GraphQL fetchBlogPosts error:", error);
+    return paginateBlogPosts([], page, perPage);
+  }
+}
+
+/**
+ * 全ての web-tips の ID を取得する
+ * @returns {Promise<Array>}
+ */
+export async function fetchAllBlogIds() {
+  // WordPressが設定されていない場合は、空の配列を返す
+  if (!isWordPressConfigured()) {
+    return [];
+  }
+
+  try {
+    // 全ての web-tips を取得する
+    const posts = await fetchAllGraphQLBlogPosts();
+    // IDだけを取り出して返す
+    return posts.map((post) => post.id);
+    // エラーハンドリング
+  } catch (error) {
+    console.error("[wordpress] GraphQL fetchAllBlogIds error:", error);
+    return [];
+  }
+}
+
+/**
+ * 指定された ID を持つ web-tips を取得する
+ * @param {number} id
+ * @returns {Promise<Object|null>}
+ */
+export async function fetchBlogPostById(id) {
+  if (!isWordPressConfigured()) {
+    return null;
+  }
+
+  try {
+    return await fetchGraphQLWebTipById(id);
+  } catch (error) {
+    console.error("[wordpress] GraphQL fetchBlogPostById error:", error);
+    return null;
+  }
+}
+
+/**
+ * web-tips のカテゴリを取得する
+ * @returns {Promise<Array>}
+ */
+export async function fetchBlogCategories() {
+  // WordPressが設定されていない場合は、空の配列を返す
+  if (!isWordPressConfigured()) {
+    return [];
+  }
+
+  try {
+    const posts = await fetchAllGraphQLBlogPosts();
+    return buildWebTipsClasses(posts);
+  } catch (error) {
+    console.error("[wordpress] GraphQL fetchBlogCategories error:", error);
+    return [];
+  }
+}
+
+/**
+ * 指定された ID を持つ web-tips に関連する web-tips を取得する
+ * @param {number} postId
+ * @param {number} limit
+ * @returns {Promise<Array>}
+ */
+export async function fetchRelatedBlogPostsByTags(postId, limit = 3) {
+  // WordPressが設定されていない場合は、空の配列を返す
+  if (!isWordPressConfigured()) {
+    return [];
+  }
+
+  try {
+    // 指定された ID を持つ web-tips を取得する
+    const post = await fetchBlogPostById(postId);
+
+    // 指定された ID を持つ web-tips のクラス（ターム）を取得する
+    const referenceClasses = post?.classes ?? [];
+    // 指定された ID を持つ web-tips が存在しない場合は、空の配列を返す
+    if (!post || referenceClasses.length === 0) {
+      return [];
+    }
+
+    // 全ての web-tips を取得する
+    const allPosts = await fetchAllGraphQLBlogPosts();
+    // 指定された ID を持つ web-tips 以外の、指定された ID を持つ web-tips とクラス（ターム）が一致するものをフィルタリングする
+    const relatedPosts = allPosts.filter((entry) => {
+      if (entry.id === postId) return false; // 指定された ID を持つ web-tips 自身は除外する
+
+      // 指定された web-tips のクラス（ターム）と、エントリのクラス（ターム）のいずれかが一致する場合は true を返す
+      return referenceClasses.some((cls) =>
+        (entry.classes ?? []).some((entryCls) => entryCls.slug === cls.slug),
+      );
+    });
+
+    // 結果を日付降順で並び替え、limitで指定された数だけ返す
+    return sortPostsByDateDesc(relatedPosts).slice(0, limit);
+    // エラーハンドリング
+  } catch (error) {
+    console.error("[wordpress] fetchRelatedBlogPostsByTags error:", error);
+    return [];
+  }
+}
+
+/**
+ * web-tips のベースパスを取得する
+ * @returns {string}
+ */
+export function getBlogBasePath() {
+  return "/web-tips";
+}
+
+/**
+ * web-tips のリストページの URL を取得する
+ * @param {number} page
+ * @returns {string}
+ */
+export function getBlogListUrl(page = 1) {
+  if (page <= 1) return getBlogBasePath();
+  return `${getBlogBasePath()}/page/${page}`;
+}
+
+/**
+ * web-tips の詳細ページの URL を取得する
+ * @param {number} id
+ * @returns {string}
+ */
+export function getBlogDetailUrl(id) {
+  return `/web-tips/${id}`;
+}
+
+/**
+ * 全ての web-tips をソート済み（日付降順）で取得する
+ * @returns {Promise<Array>}
+ */
+export async function fetchAllBlogPosts() {
+  if (!isWordPressConfigured()) {
+    return [];
+  }
+  try {
+    return sortPostsByDateDesc(await fetchAllGraphQLBlogPosts());
+  } catch (error) {
+    console.error("[wordpress] GraphQL fetchAllBlogPosts error:", error);
+    return [];
+  }
+}
+
+/**
+ * web-tips のカテゴリのURIを返す
+ * @param {*} slug
+ * @returns
+ */
+export function getBlogCategoryUri(slug) {
+  return `/web-tips/class/${slug}`;
 }

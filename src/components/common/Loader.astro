@@ -15,7 +15,8 @@
     <!-- Module: ローダー構造 -->
     <div id="js_loaderWrapper" class="bl_loaderBar js_loaderBar">
       <div class="bl_loaderBar_track">
-        <div id="js_progressBar" class="bl_loaderBar_progress js_progressBar"></div>
+        <div id="js_progressBar" class="bl_loaderBar_progress js_progressBar">
+        </div>
       </div>
       <!-- /.bl_loaderBar_track -->
       <div id="js_statusLabel" class="bl_loaderBar_status js_statusLabel">
@@ -29,7 +30,10 @@
 <!-- /.bl_loader -->
 
 <style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
   .bl_loader {
+    font-family: $accent-font !important;
     position: fixed;
     top: 0;
     left: 0;

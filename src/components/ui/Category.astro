@@ -1,0 +1,38 @@
+---
+import FolderIcon from "../../assets/img/icon/material-symbols_folder.svg";
+const { className, categoryName, categoryPath, hasLink = false } = Astro.props;
+---
+
+{
+  hasLink ? (
+    <a href={categoryPath} class:list={[className, "el_category"]}>
+      <FolderIcon />
+      {categoryName}
+    </a>
+  ) : (
+    <span class:list={[className, "el_category"]}>
+      <FolderIcon />
+      {categoryName}
+    </span>
+  )
+}
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+  .el_category {
+    display: inline-flex;
+    align-items: center;
+    gap: to-rem(4px);
+    padding: to-rem(4px) to-rem(10px);
+    border-radius: 4px;
+    background: var(--c-orange);
+    color: $c-white;
+    font-size: to-rem(14px);
+    line-height: 1;
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+  }
+</style>

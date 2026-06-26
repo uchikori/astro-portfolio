@@ -17,6 +17,7 @@ const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
 import MailIcon from "../assets/img/icon/mail.svg";
 import CalculateIcon from "../assets/img/icon/calculator.svg";
 import Label from "../components/ui/Label.astro";
+import CTA from "../components/sections/CTA.astro";
 ---
 
 <Base title="事業内容" pageType="service" bodyClass="service">
@@ -28,7 +29,7 @@ import Label from "../components/ui/Label.astro";
       <main class="ly_pageMain">
         <section class="bl_section concept">
           <span
-            class="bl_section_decorativeText"
+            class="bl_section_decorativeText hl_accentFont"
             data-scroll-trigger="pin"
             data-pin-trigger=".bl_section.concept"
             data-pin-start="top 20%"
@@ -60,7 +61,7 @@ import Label from "../components/ui/Label.astro";
         </section>
         <section class="bl_section issue">
           <span
-            class="bl_section_decorativeText"
+            class="bl_section_decorativeText hl_accentFont"
             data-scroll-trigger="pin"
             data-pin-trigger=".bl_section.issue"
             data-pin-start="top 20%"
@@ -100,7 +101,7 @@ import Label from "../components/ui/Label.astro";
         </section>
         <section class="bl_section organize">
           <span
-            class="bl_section_decorativeText"
+            class="bl_section_decorativeText hl_accentFont"
             data-scroll-trigger="pin"
             data-pin-trigger=".bl_section.organize"
             data-pin-start="top 20%"
@@ -120,7 +121,7 @@ import Label from "../components/ui/Label.astro";
         </section>
         <section class="bl_section services">
           <span
-            class="bl_section_decorativeText"
+            class="bl_section_decorativeText hl_accentFont"
             data-scroll-trigger="pin"
             data-pin-trigger=".bl_section.services"
             data-pin-start="top 20%"
@@ -131,7 +132,7 @@ import Label from "../components/ui/Label.astro";
           <ul class="bl_serviceList">
             <li class="bl_serviceItem bl_serviceList_item">
               <div class="bl_serviceItem_header">
-                <span class="bl_serviceItem_num"></span>
+                <span class="bl_serviceItem_num hl_accentFont"></span>
                 <Icon class="bl_serviceItem_icon" icon="web" />
               </div>
               <div class="bl_serviceItem_contents">
@@ -168,7 +169,7 @@ import Label from "../components/ui/Label.astro";
             </li>
             <li class="bl_serviceItem bl_serviceList_item">
               <div class="bl_serviceItem_header">
-                <span class="bl_serviceItem_num"></span>
+                <span class="bl_serviceItem_num hl_accentFont"></span>
                 <Icon class="bl_serviceItem_icon" icon="lightning" />
               </div>
               <div class="bl_serviceItem_contents">
@@ -206,7 +207,7 @@ import Label from "../components/ui/Label.astro";
             </li>
             <li class="bl_serviceItem bl_serviceList_item">
               <div class="bl_serviceItem_header">
-                <span class="bl_serviceItem_num"></span>
+                <span class="bl_serviceItem_num hl_accentFont"></span>
                 <Icon class="bl_serviceItem_icon" icon="cart" />
               </div>
               <div class="bl_serviceItem_contents">
@@ -243,7 +244,7 @@ import Label from "../components/ui/Label.astro";
             </li>
             <li class="bl_serviceItem bl_serviceList_item">
               <div class="bl_serviceItem_header">
-                <span class="bl_serviceItem_num"></span>
+                <span class="bl_serviceItem_num hl_accentFont"></span>
                 <Icon class="bl_serviceItem_icon" icon="config" />
               </div>
               <div class="bl_serviceItem_contents">
@@ -280,7 +281,7 @@ import Label from "../components/ui/Label.astro";
         </section>
         <section class="bl_section flow">
           <span
-            class="bl_section_decorativeText"
+            class="bl_section_decorativeText hl_accentFont"
             data-scroll-trigger="pin"
             data-pin-trigger=".bl_section.flow"
             data-pin-start="top 20%"
@@ -343,7 +344,7 @@ import Label from "../components/ui/Label.astro";
         </section>
         <section class="bl_section faq">
           <span
-            class="bl_section_decorativeText"
+            class="bl_section_decorativeText hl_accentFont"
             data-scroll-trigger="pin"
             data-pin-trigger=".bl_section.faq"
             data-pin-start="top 20%"
@@ -388,31 +389,7 @@ import Label from "../components/ui/Label.astro";
             />
           </ul>
         </section>
-        <section class="bl_section banner">
-          <p class="bl_section_contents">
-            相談・ヒアリングの段階では費用は発生しません。 <br
-            />内容をご確認いただき、ご納得いただいた場合のみ制作へ進みます。
-          </p>
-          <div class="bl_section_banner hl_contentWidthMiddle">
-            <Banner
-              link="/price"
-              ja="料金表"
-              en="price"
-              text="作りたいWebサイトの大枠が既に決まっている方は、こちらで概算金額を算出できます。"
-              annotaion="あくまでも目安としての金額となりますのでご了承ください。"
-            >
-              <CalculateIcon slot="icon" />
-            </Banner>
-            <Banner
-              link="/contact"
-              ja="お問い合わせ"
-              en="contact"
-              text="Webサイト立ち上げのご相談、お見積りのご依頼（無料）などお気軽にお問い合わせください。"
-            >
-              <MailIcon slot="icon" />
-            </Banner>
-          </div>
-        </section>
+        <CTA />
       </main>
     </PageWrapper>
   </div>

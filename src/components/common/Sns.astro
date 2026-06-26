@@ -4,7 +4,10 @@ import { Image } from "astro:assets";
 const { alignItems, className, loading = "lazy" } = Astro.props;
 ---
 
-<div class:list={["bl_sns", className]} style={`align-items: ${alignItems};`}>
+<div
+  class:list={["bl_sns hl_accentFont", className]}
+  style={`align-items: ${alignItems};`}
+>
   <p class="bl_sns_title">FOLLOW ME</p>
   <ul class="bl_sns_list">
     <li class="bl_sns_item" data-mouse="stuck">

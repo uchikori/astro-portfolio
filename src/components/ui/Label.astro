@@ -2,7 +2,7 @@
 const { label = "template", fontSize = "1rem" } = Astro.props;
 ---
 
-<span class="el_label" style={`font-size: ${fontSize}`}>
+<span class="el_label hl_accentFont" style={`font-size: ${fontSize}`}>
   <slot>{label}</slot>
 </span>
 
@@ -17,5 +17,6 @@ const { label = "template", fontSize = "1rem" } = Astro.props;
     padding: to-rem(4px) to-rem(8px);
     background: var(--c-orange);
     border-radius: to-rem(4px);
+    text-transform: uppercase;
   }
 </style>

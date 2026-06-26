@@ -10,7 +10,7 @@ const { categories, currentSlug } = Astro.props;
       <a
         href="/works"
         class:list={[
-          "bl_categoryNav_link font-12-16",
+          "bl_categoryNav_link font-12-16 ",
           !currentSlug && "bl_categoryNav_link--active",
         ]}
         aria-current={!currentSlug ? "page" : undefined}
@@ -26,7 +26,7 @@ const { categories, currentSlug } = Astro.props;
             <a
               href={getWorkCategoryUrl(category.slug)}
               class:list={[
-                "bl_categoryNav_link font-12-16",
+                "bl_categoryNav_link font-12-16 hl_accentFont",
                 isActive && "bl_categoryNav_link--active",
               ]}
               aria-current={isActive ? "page" : undefined}

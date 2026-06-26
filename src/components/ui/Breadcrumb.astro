@@ -18,39 +18,29 @@ const routeMap: Record<string, string> = {
   diverse: "DIVERSE",
   price: "料金表",
   works: "制作物",
+  "web-tips": "ブログ",
 };
 
 let breadcrumbItems: BreadcrumbItem[] = [];
 
-//呼び出し元で配列で手動指定された場合
 if (manualItems && manualItems.length > 0) {
   breadcrumbItems = manualItems.map((item, index) => ({
-    ...item, // itemのすべてのプロパティをコピー
-    isCurrent: index === manualItems.length - 1, // 配列の最後の要素をisCurrentにする
+    ...item,
+    isCurrent: index === manualItems.length - 1,
   }));
 } else {
-  //呼び出し元で配列で手動指定されなかった場合
-
-  // urlからパスを抽出
   const pathname = Astro.url.pathname;
-  //splitを使ってパスを配列に変換
   const segments = pathname.split("/").filter(Boolean);
-  // 調整用配列を定義(categoryを除く & pageを除く)
   const normalizedSegments: string[] = [];
 
-  // パスの長さだけループ処理を行う
   for (let index = 0; index < segments.length; index += 1) {
-    // 配列のindex番目のパスを取得
     const segment = segments[index];
-    // "category"の場合はスキップ
     if (segment === "category") continue;
-    // "page"の場合は次のindexをスキップ
     if (segment === "page" && /^\d+$/.test(segments[index + 1] ?? "")) {
       index += 1;
       continue;
     }
 
-    // 調整用配列に追加
     normalizedSegments.push(segment);
   }
 
@@ -64,16 +54,10 @@ if (manualItems && manualItems.length > 0) {
 
   let cumulativePath = "";
 
-  // 調整用配列をループ処理
   normalizedSegments.forEach((segment, index) => {
-    // 累積パスに追加
     cumulativePath += `/${segment}`;
-    // 現在のパスかどうかのフラグ
     const isCurrent = index === normalizedSegments.length - 1;
-
     const label =
-      // 現在のパスフラグがtrueの場合、currentLabelを参照し、currentLabelが設定されていればそれを表示、
-      // currentLabelが設定されていなければrouteMapからsegmentを参照し、存在しなければsegmentを表示
       isCurrent && currentLabel ? currentLabel : (routeMap[segment] ?? segment);
 
     breadcrumbItems.push({
@@ -136,12 +120,17 @@ if (manualItems && manualItems.length > 0) {
       padding: to-rem(3px) to-rem(18px);
       border-radius: 4px;
       border: solid 1px $c-white;
+      max-width: 15em;
 
       & > * {
         display: block;
         width: 100%;
         height: 100%;
         text-align: center;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       & > a {

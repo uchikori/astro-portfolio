@@ -1,0 +1,193 @@
+---
+import Base from "../../../layout/Base.astro";
+import PageWrapper from "../../../layout/PageWrapper.astro";
+import PageHeader from "../../../layout/PageHeader.astro";
+import BlogCard from "../../../components/blog/BlogCard.astro";
+import BlogSidebar from "../../../components/blog/BlogSidebar.astro";
+import {
+  fetchBlogCategories,
+  fetchBlogPosts,
+  getBlogListUrl,
+} from "../../../lib/wordpress";
+
+export async function getStaticPaths() {
+  const { totalPages } = await fetchBlogPosts({ page: 1, perPage: 8 });
+
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => ({
+    params: { page: String(index + 2) },
+  }));
+}
+
+const page = Number(Astro.params.page ?? 1);
+const perPage = 8;
+const { posts, total, totalPages, currentPage } = await fetchBlogPosts({
+  page,
+  perPage,
+});
+const allPosts = (await fetchBlogPosts({ page: 1, perPage: 1000 })).posts;
+const categories = await fetchBlogCategories();
+const rankingPosts = allPosts.slice(0, 5);
+---
+
+<Base title="ブログ荳隕ｧ" pageType="web-tips" bodyClass="web-tips">
+  <div class="hl_contentWidthMiddle">
+    <PageWrapper>
+      <PageHeader ja="繝悶Ο繧ｰ" en="BLOG" tag="h1" />
+
+      <main class="ly_pageMain">
+        <div class="bl_blogLayout">
+          <section class="bl_blogGrid">
+            <div class="bl_blogGrid_head">
+              <p class="font-12-16">
+                {total}件の記事のうち {currentPage}/{totalPages} ページを表示しています
+              </p>
+            </div>
+
+            <ul class="bl_blogGrid_list">
+              {posts.map((post) => (
+                <li class="bl_blogGrid_item">
+                  <BlogCard post={post} />
+                </li>
+              ))}
+            </ul>
+
+            {
+              totalPages > 1 && (
+                <nav class="bl_blogPagination" aria-label="ブログのページ送り">
+                  <a
+                    class:list={["bl_blogPagination_prev", currentPage <= 1 && "is-disabled"]}
+                    href={currentPage > 1 ? getBlogListUrl(currentPage - 1) : undefined}
+                    aria-disabled={currentPage <= 1}
+                  >
+                    前へ
+                  </a>
+
+                  <ol class="bl_blogPagination_list">
+                    {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+                      <li>
+                        <a
+                          class:list={[
+                            "bl_blogPagination_page",
+                            pageNumber === currentPage && "is-current",
+                          ]}
+                          href={getBlogListUrl(pageNumber)}
+                        >
+                          {pageNumber}
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+
+                  <a
+                    class:list={["bl_blogPagination_next", currentPage >= totalPages && "is-disabled"]}
+                    href={currentPage < totalPages ? getBlogListUrl(currentPage + 1) : undefined}
+                    aria-disabled={currentPage >= totalPages}
+                  >
+                    次へ
+                  </a>
+                </nav>
+              )
+            }
+          </section>
+
+          <div class="bl_blogLayout_sidebar">
+            <BlogSidebar categories={categories} rankingPosts={rankingPosts} />
+          </div>
+        </div>
+      </main>
+    </PageWrapper>
+  </div>
+</Base>
+
+<style lang="scss">
+  @use "../../../styles/utility" as *;
+  @use "../../../styles/global" as *;
+
+  .ly_pageMain {
+    margin-top: to-rem(80px);
+  }
+
+  .bl_blogLayout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) to-rem(320px);
+    gap: to-rem(32px);
+    align-items: start;
+
+    @include mq("lg") {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .bl_blogGrid {
+    min-width: 0;
+
+    &_head {
+      margin-bottom: to-rem(20px);
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    &_list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: to-rem(24px);
+
+      @include mq("md") {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    &_item {
+      min-width: 0;
+    }
+  }
+
+  .bl_blogPagination {
+    margin-top: to-rem(32px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: to-rem(12px);
+    flex-wrap: wrap;
+
+    &_list {
+      display: flex;
+      gap: to-rem(8px);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    &_prev,
+    &_next,
+    &_page {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.5rem;
+      min-height: 2.5rem;
+      padding: 0 to-rem(12px);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: $c-white;
+      text-decoration: none;
+      transition: background 0.2s ease, opacity 0.2s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      &.is-current {
+        background: var(--c-orange);
+        border-color: var(--c-orange);
+      }
+
+      &.is-disabled {
+        opacity: 0.35;
+        pointer-events: none;
+      }
+    }
+  }
+</style>

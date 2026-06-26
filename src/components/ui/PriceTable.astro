@@ -21,7 +21,9 @@ const { items = [], title, icon = "code" } = Astro.props;
                 <p class="bl_priceTable_listItem_text">{item.text}</p>
               )}
             </div>
-            <div class="bl_priceTable_listItem_price">{item.price}</div>
+            <div class="bl_priceTable_listItem_price hl_accentFont">
+              {item.price}
+            </div>
           </li>
         ))
       }

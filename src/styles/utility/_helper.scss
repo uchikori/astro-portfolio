@@ -4,6 +4,10 @@
   display: none;
 }
 
+.hl_accentFont {
+  font-family: $accent-font !important;
+}
+
 //PC画面で非表示
 .hl_smVisible {
   @include mq-up("lg") {

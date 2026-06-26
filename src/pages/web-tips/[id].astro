@@ -1,0 +1,468 @@
+---
+import Base from "../../layout/Base.astro";
+import PageWrapper from "../../layout/PageWrapper.astro";
+import PageHeader from "../../layout/PageHeader.astro";
+import BlogSidebar from "../../components/blog/BlogSidebar.astro";
+import {
+  fetchAllBlogIds,
+  fetchBlogCategories,
+  fetchBlogPostById,
+  fetchBlogPosts,
+  fetchRelatedBlogPostsByTags,
+  getBlogDetailUrl,
+  getBlogCategoryUri,
+} from "../../lib/wordpress";
+import Picture from "astro/components/Picture.astro";
+import CircleImage from "../../components/webgl/CircleImage.astro";
+
+// Prism.js for server-side code highlighting
+import Prism from "prismjs";
+import "prismjs/themes/prism-tomorrow.css";
+import "prismjs/components/prism-javascript.js";
+import "prismjs/components/prism-typescript.js";
+import "prismjs/components/prism-css.js";
+import "prismjs/components/prism-markup.js"; // HTML/XML
+import "prismjs/components/prism-json.js";
+import "prismjs/components/prism-bash.js";
+import Category from "../../components/ui/Category.astro";
+import Time from "../../components/ui/Time.astro";
+
+export async function getStaticPaths() {
+  // 全記事IDを取得
+  const ids = await fetchAllBlogIds();
+
+  const paths = await Promise.all(
+    ids.map(async (id) => {
+      const post = await fetchBlogPostById(id);
+      if (!post) return null;
+
+      return {
+        params: { id: String(id) },
+        props: { post },
+      };
+    }),
+  );
+
+  return paths.filter(Boolean);
+}
+
+const { post } = Astro.props;
+const relatedPosts = await fetchRelatedBlogPostsByTags(post.id, 3);
+const categories = await fetchBlogCategories();
+const rankingPosts = (
+  await fetchBlogPosts({ page: 1, perPage: 10 })
+).posts.slice(0, 5);
+
+// サーバーサイドでコードブロックをハイライトする関数
+function highlightCodeBlocks(html) {
+  if (!html) return "";
+
+  return html.replace(
+    /<pre[^>]*><code\s*(?:class="(?:language-)?([^"]+)")?>([\s\S]*?)<\/code><\/pre>/gi,
+    (match, lang, code) => {
+      // エスケープされた文字をデコード
+      const decodedCode = code
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'");
+
+      const language = lang ? lang.toLowerCase() : "clike";
+      let highlighted = decodedCode;
+
+      try {
+        if (Prism.languages[language]) {
+          highlighted = Prism.highlight(
+            decodedCode,
+            Prism.languages[language],
+            language,
+          );
+        } else {
+          highlighted = Prism.highlight(
+            decodedCode,
+            Prism.languages.clike,
+            "clike",
+          );
+        }
+      } catch (e) {
+        console.error(`[Prism Highlight Error] language: ${language}`, e);
+      }
+
+      return `<pre class="language-${language}"><code class="language-${language}">${highlighted}</code></pre>`;
+    },
+  );
+}
+
+const highlightedContent = highlightCodeBlocks(post.content);
+---
+
+<Base title={post.title} pageType="web-tips-detail" bodyClass="web-tips-detail">
+  <div class="hl_contentWidthMiddle">
+    <CircleImage image="/img/works/works_bg.webp" />
+    <PageWrapper>
+      <PageHeader breadcrumbLabel={post.title} bilingualTitle={false} />
+
+      <main class="ly_pageMain">
+        <div class="bl_blogDetailLayout">
+          <article class="bl_blogDetail">
+            {
+              post.thumbnailUrl && (
+                <figure class="bl_blogDetail_hero">
+                  <Picture
+                    src={post.thumbnailUrl}
+                    formats={["avif", "webp"]}
+                    widths={[375, 710, 1420, 1920]}
+                    sizes="(max-width: 768px) 100vw, 1920px"
+                    alt={post.thumbnailAlt || post.title}
+                    width={1280}
+                    height={720}
+                    loading="eager"
+                  />
+                </figure>
+              )
+            }
+
+            <div class="bl_blogDetail_box">
+              <header class="bl_blogDetail_header">
+                <div class="bl_blogDetail_meta">
+                  {
+                    post.classes?.[0] && (
+                      <Category
+                        categoryName={post.classes[0].name}
+                        hasLink={true}
+                        categoryPath={getBlogCategoryUri(post.classes[0].slug)}
+                      />
+                    )
+                  }
+
+                  <div class="bl_blogDetail_times">
+                    <span class="bl_blogDetail_time" aria-label="公開日">
+                      公開日：
+                      <Time date={post.date} hasIcon={false} />
+                    </span>
+
+                    {
+                      post.modified !== post.date && (
+                        <span class="bl_blogDetail_time" aria-label="更新日">
+                          更新日：
+                          <Time date={post.modified} hasIcon={false} />
+                        </span>
+                      )
+                    }
+                  </div>
+                  <h1 class="bl_blogDetail_title font-32-48">{post.title}</h1>
+                </div>
+              </header>
+              <div
+                class="bl_blogDetail_content"
+                set:html={highlightedContent}
+              />
+              {
+                relatedPosts.length > 0 && (
+                  <section class="bl_blogDetail_related">
+                    <h2 class="bl_blogDetail_relatedTitle font-16-24">
+                      関連記事
+                    </h2>
+                    <ul class="bl_blogDetail_relatedList">
+                      {relatedPosts.map((relatedPost) => (
+                        <li class="bl_blogDetail_relatedItem">
+                          <a
+                            href={getBlogDetailUrl(relatedPost.id)}
+                            class="bl_blogDetail_relatedLink"
+                          >
+                            <div class="bl_blogDetail_relatedThumb">
+                              {relatedPost.thumbnailUrl && (
+                                <Picture
+                                  src={relatedPost.thumbnailUrl}
+                                  formats={["avif", "webp"]}
+                                  widths={[375, 710]}
+                                  sizes="180px"
+                                  alt={
+                                    relatedPost.thumbnailAlt ||
+                                    relatedPost.title
+                                  }
+                                  width={375}
+                                  height={210}
+                                  loading="lazy"
+                                />
+                              )}
+                            </div>
+                            <div class="bl_blogDetail_relatedBody">
+                              {relatedPost.categories?.[0] && (
+                                <span class="bl_blogDetail_category">
+                                  {relatedPost.categories[0].name}
+                                </span>
+                              )}
+                              <h3 class="bl_blogDetail_relatedPostTitle font-16-24">
+                                {relatedPost.title}
+                              </h3>
+                              <p class="font-12-16">
+                                {relatedPost.excerpt?.replace(/<[^>]*>/g, "")}
+                              </p>
+                            </div>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )
+              }
+            </div>
+          </article>
+          <div class="bl_blogDetailSidebar">
+            <BlogSidebar categories={categories} rankingPosts={rankingPosts} />
+          </div>
+        </div>
+      </main>
+    </PageWrapper>
+  </div>
+</Base>
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .ly_pageMain {
+    margin-top: to-rem(40px);
+  }
+
+  .bl_blogDetailLayout {
+    margin-inline: auto;
+    max-width: to-rem(1200px);
+    display: flex;
+    gap: to-rem(32px);
+    align-items: start;
+    justify-content: space-between;
+
+    @include mq("lg") {
+      flex-direction: column;
+      gap: to-rem(64px);
+    }
+  }
+
+  .bl_blogDetail {
+    min-width: 0;
+    // padding: to-rem(24px);
+    border-radius: to-rem(16px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    width: calc(800 / 1280) * 100%;
+    flex-shrink: 0;
+    @include mq("lg") {
+      width: 100%;
+    }
+
+    &_box {
+      padding: fluid-text(16px, 40px);
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(40px);
+    }
+
+    &_header {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(16px);
+    }
+
+    &_meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: to-rem(16px);
+      flex-wrap: wrap;
+    }
+
+    &_category {
+      display: inline-flex;
+      align-items: center;
+      padding: to-rem(4px) to-rem(10px);
+      border-radius: 999px;
+      background: var(--c-orange);
+      color: $c-white;
+      font-size: 0.75rem;
+      line-height: 1;
+    }
+
+    &_times {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: to-rem(16px);
+    }
+
+    &_time {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    &_date {
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    &_title {
+      margin: 0;
+      line-height: 1.35;
+      color: $c-white;
+    }
+
+    &_hero {
+      margin: 0 0 to-rem(24px);
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: to-rem(16px) to-rem(16px) 0 0;
+
+      :global(picture),
+      :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &_content {
+      line-height: 2;
+      // color: $c-white;
+
+      // :global(h2) {
+      //   margin-top: 2em;
+      //   margin-bottom: 0.8em;
+      //   padding-left: to-rem(12px);
+      //   border-left: 4px solid var(--c-orange);
+      //   font-size: fluid-text(24px, 32px);
+      // }
+
+      // :global(h3) {
+      //   margin-top: 1.8em;
+      //   margin-bottom: 0.8em;
+      //   font-size: fluid-text(18px, 24px);
+      // }
+
+      // :global(p),
+      // :global(li) {
+      //   color: rgba(255, 255, 255, 0.88);
+      // }
+
+      // :global(ul) {
+      //   padding-left: 1.2em;
+      // }
+
+      // :global(img) {
+      //   max-width: 100%;
+      //   height: auto;
+      // }
+
+      // :global(a) {
+      //   color: var(--c-orange);
+      //   text-decoration: underline;
+      // }
+
+      :global(pre) {
+        background: rgba(20, 20, 20, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: to-rem(20px) !important;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-family: "Fira Code", "Courier New", Courier, monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-top: 1.8em;
+        margin-bottom: 1.8em;
+
+        :global(code) {
+          background: none;
+          padding: 0;
+          border-radius: 0;
+          border: none;
+          color: inherit;
+          font-size: inherit;
+        }
+      }
+
+      :global(code) {
+        font-family: "Fira Code", "Courier New", Courier, monospace;
+        font-size: 0.9em;
+      }
+
+      /* インラインコード用のスタイル */
+      :global(p code),
+      :global(li code) {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--c-orange);
+        padding: 0.25em 0.5em;
+        border-radius: 4px;
+        font-size: 0.85em;
+      }
+
+      :global(> *) {
+        margin-top: 1.8em;
+      }
+    }
+
+    &_related {
+      margin-top: to-rem(32px);
+      padding-top: to-rem(24px);
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    &_relatedTitle {
+      margin: 0 0 to-rem(16px);
+    }
+
+    &_relatedList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: to-rem(16px);
+    }
+
+    &_relatedLink {
+      display: grid;
+      grid-template-columns: to-rem(220px) minmax(0, 1fr);
+      gap: to-rem(16px);
+      color: inherit;
+      text-decoration: none;
+      padding: to-rem(12px);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      @include mq("md") {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    &_relatedThumb {
+      aspect-ratio: 312 / 175;
+      border-radius: 4px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+
+      :global(picture),
+      :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &_relatedBody {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(8px);
+      justify-content: center;
+    }
+
+    &_relatedPostTitle {
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
+</style>

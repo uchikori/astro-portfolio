@@ -8,7 +8,7 @@ import PriceTable from "../components/ui/PriceTable.astro";
 import PlanCard from "../components/ui/PlanCard.astro";
 import Banner from "../components/ui/Banner.astro";
 import MailIcon from "../assets/img/icon/mail.svg";
-import CalculateIcon from "../assets/img/icon/calculator.svg";
+import CTA from "../components/sections/CTA.astro";
 ---
 
 <Base title="料金表" pageType="price" bodyClass="price">
@@ -19,7 +19,10 @@ import CalculateIcon from "../assets/img/icon/calculator.svg";
 
       <main class="ly_pageMain">
         <section class="bl_section basic">
-          <span class="bl_section_decorativeText" aria-hidden="true">
+          <span
+            class="bl_section_decorativeText hl_accentFont"
+            aria-hidden="true"
+          >
             basic
           </span>
           <SectionTitle title="基本制作費の目安" tag="h2" />
@@ -30,7 +33,9 @@ import CalculateIcon from "../assets/img/icon/calculator.svg";
               スマホ対応（レスポンシブ）+チェック・公開作業
             </p>
             <div class="un_basicPrice_wrap">
-              <span class="un_basicPrice_price hl_accentColor">25〜35</span>
+              <span class="un_basicPrice_price hl_accentColor hl_accentFont"
+                >25〜35</span
+              >
               <span class="un_basicPrice_price_unit">万円</span>
             </div>
             <ul class="un_basicPrice_notes">
@@ -43,7 +48,10 @@ import CalculateIcon from "../assets/img/icon/calculator.svg";
           </div>
         </section>
         <section class="bl_section price">
-          <span class="bl_section_decorativeText" aria-hidden="true">
+          <span
+            class="bl_section_decorativeText hl_accentFont"
+            aria-hidden="true"
+          >
             price
           </span>
           <SectionTitle title="制作費詳細" tag="h2" />
@@ -293,7 +301,10 @@ import CalculateIcon from "../assets/img/icon/calculator.svg";
           </div>
         </section>
         <section class="bl_section plans">
-          <span class="bl_section_decorativeText" aria-hidden="true">
+          <span
+            class="bl_section_decorativeText hl_accentFont"
+            aria-hidden="true"
+          >
             plans
           </span>
           <SectionTitle title="プロジェクト規模の目安" tag="h2" />
@@ -332,22 +343,7 @@ import CalculateIcon from "../assets/img/icon/calculator.svg";
           </ul>
         </section>
 
-        <section class="bl_section banner">
-          <p class="bl_section_contents">
-            相談・ヒアリングの段階では費用は発生しません。 <br
-            />内容をご確認いただき、ご納得いただいた場合のみ制作へ進みます。
-          </p>
-          <div class="bl_section_banner hl_contentWidthMiddle">
-            <Banner
-              link="/contact"
-              ja="お問い合わせ"
-              en="contact"
-              text="Webサイト立ち上げのご相談、お見積りのご依頼（無料）などお気軽にお問い合わせください。"
-            >
-              <MailIcon slot="icon" />
-            </Banner>
-          </div>
-        </section>
+        <CTA hasPriceBanner={false} />
       </main>
     </PageWrapper>
   </div>

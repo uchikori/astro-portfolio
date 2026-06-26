@@ -1,0 +1,78 @@
+---
+import Banner from "../../components/ui/Banner.astro";
+import MailIcon from "../../assets/img/icon/mail.svg";
+import CalculateIcon from "../../assets/img/icon/calculator.svg";
+
+const {
+  hasContents = true,
+  hasPriceBanner = true,
+  hasContactBanner = true,
+} = Astro.props;
+---
+
+<section class="bl_bannerSec">
+  {
+    hasContents && (
+      <p class="bl_bannerSec_contents">
+        相談・ヒアリングの段階では費用は発生しません。 <br />
+        内容をご確認いただき、ご納得いただいた場合のみ制作へ進みます。
+      </p>
+    )
+  }
+  <div class="bl_bannerSec_inner">
+    {
+      hasPriceBanner && (
+        <Banner
+          link="/price"
+          ja="料金表"
+          en="price"
+          text="作りたいWebサイトの大枠が既に決まっている方は、こちらで概算金額を算出できます。"
+          annotaion="あくまでも目安としての金額となりますのでご了承ください。"
+        >
+          <CalculateIcon slot="icon" />
+        </Banner>
+      )
+    }
+    {
+      hasContactBanner && (
+        <Banner
+          link="/contact"
+          ja="お問い合わせ"
+          en="contact"
+          text="Webサイト立ち上げのご相談、お見積りのご依頼（無料）などお気軽にお問い合わせください。"
+        >
+          <MailIcon slot="icon" />
+        </Banner>
+      )
+    }
+  </div>
+</section>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_bannerSec {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: fluid-text(40px, 80px);
+    margin-top: fluid-text(40px, 80px);
+    &:before {
+      content: "";
+      display: block;
+      width: 1px;
+      height: 360px;
+      background-color: var(--c-text);
+    }
+    &_contents {
+      text-align: center;
+    }
+    &_inner {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(to-rem(300px), 1fr));
+      gap: to-rem(40px);
+    }
+  }
+</style>

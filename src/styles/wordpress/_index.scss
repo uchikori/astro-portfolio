@@ -1,0 +1,51 @@
+@use "../global/" as *;
+
+#ez-toc-container {
+  background: var(--c-text);
+  padding: to-rem(24px) fluid-text(12px, 24px);
+  border-radius: to-rem(8px);
+  .ez-toc-title-container {
+    margin: 0;
+  }
+
+  .ez-toc-title {
+    color: var(--c-orange);
+    font-size: fluid-text(24px, 28px);
+    font-family: $accent-font;
+    font-weight: 700;
+  }
+  .ez-toc-title-toggle {
+    display: none;
+    pointer-events: none;
+  }
+
+  ul {
+    font-size: to-rem(18px);
+    padding: 1%;
+    counter-reset: item;
+    ul {
+      font-size: 0.85em;
+    }
+    li {
+      padding: 0.7%;
+    }
+    a {
+      color: var(--c-bg);
+      line-height: 2;
+      display: inline-flex;
+      align-items: stretch;
+      &:hover {
+        color: #2a6496;
+        text-decoration: underline;
+      }
+      &:before {
+        content: counters(item, ".", decimal) ". ";
+        counter-increment: item;
+        display: inline-block;
+        flex-grow: 0;
+        flex-shrink: 0;
+        margin-right: 0.2em;
+      }
+    }
+  }
+}

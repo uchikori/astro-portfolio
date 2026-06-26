@@ -1,0 +1,27 @@
+---
+import TimeIcon from "../../assets/img/icon/mingcute_time-fill.svg";
+
+const { date, className, hasIcon = true } = Astro.props;
+---
+
+<time class:list={[" font-12-16 el_time", className]} datetime={date}
+  >{hasIcon && <TimeIcon />}
+  {new Date(date).toLocaleDateString("ja-JP")}
+</time>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .el_time {
+    display: flex;
+    align-items: center;
+    gap: to-rem(4px);
+    color: rgba(255, 255, 255, 0.72);
+    white-space: nowrap;
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+  }
+</style>

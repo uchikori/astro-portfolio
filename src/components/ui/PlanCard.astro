@@ -9,7 +9,7 @@ const { items = [], title, icon = "code" } = Astro.props;
     <li class="un_plansPrice_item bl_planCard">
       <div class="bl_planCard_info">
         <header class="bl_planCard_header">
-          <span class="bl_planCard_num" />
+          <span class="bl_planCard_num hl_accentFont" />
           <h3 class="bl_planCard_title font-20-24">{item.title}</h3>
         </header>
         <p class="bl_planCard_description">{item.description}</p>
@@ -22,7 +22,10 @@ const { items = [], title, icon = "code" } = Astro.props;
       <div class="bl_planCard_details">
         <div class="bl_planCard_price_wrap">
           <p class="bl_planCard_price_label hl_accentColor">目安金額</p>
-          <p class="bl_planCard_price font-20-24" set:html={item.price} />
+          <p
+            class="bl_planCard_price font-20-24 hl_accentFont"
+            set:html={item.price}
+          />
         </div>
 
         <div class="bl_planCard_metrics_item">

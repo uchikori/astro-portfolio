@@ -12,12 +12,13 @@ $default-max-bp: 1920px;
 $root-font-size: 16px;
 
 $base-font:
-  "Orbitron",
   "Noto Sans JP",
   system-ui,
   -apple-system,
   "Segoe UI",
   sans-serif;
+
+$accent-font: "Orbitron", sans-serif;
 
 $font-weights: (
   "thin": 100,

@@ -1,0 +1,292 @@
+---
+import Picture from "astro/components/Picture.astro";
+import { getBlogDetailUrl } from "../../lib/wordpress";
+
+const { categories = [], rankingPosts = [] } = Astro.props;
+---
+
+<aside class="bl_blogSidebar">
+  <section class="bl_blogSidebar_box">
+    <hgroup>
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M19.6 21L13.3 14.7C12.8 15.1 12.225 15.4167 11.575 15.65C10.925 15.8833 10.2333 16 9.5 16C7.68333 16 6.146 15.3707 4.888 14.112C3.63 12.8533 3.00067 11.316 3 9.5C2.99933 7.684 3.62867 6.14667 4.888 4.888C6.14733 3.62933 7.68467 3 9.5 3C11.3153 3 12.853 3.62933 14.113 4.888C15.373 6.14667 16.002 7.684 16 9.5C16 10.2333 15.8833 10.925 15.65 11.575C15.4167 12.225 15.1 12.8 14.7 13.3L21 19.6L19.6 21ZM9.5 14C10.75 14 11.8127 13.5627 12.688 12.688C13.5633 11.8133 14.0007 10.7507 14 9.5C13.9993 8.24933 13.562 7.187 12.688 6.313C11.814 5.439 10.7513 5.00133 9.5 5C8.24867 4.99867 7.18633 5.43633 6.313 6.313C5.43967 7.18967 5.002 8.252 5 9.5C4.998 10.748 5.43567 11.8107 6.313 12.688C7.19033 13.5653 8.25267 14.0027 9.5 14Z"
+          fill="var(--c-orange)"></path>
+      </svg>
+      <h2 class="bl_blogSidebar_title font-16-24 hl_accentFont">
+        <span class="hl_accentColor">S</span>EARCH
+      </h2>
+    </hgroup>
+    <form class="bl_blogSidebar_search" action="/web-tips" method="get">
+      <input
+        type="search"
+        name="q"
+        placeholder="記事を検索"
+        aria-label="記事を検索"
+      />
+      <button type="submit">検索</button>
+    </form>
+  </section>
+
+  <section class="bl_blogSidebar_box">
+    <hgroup>
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 12 12"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M2 10C1.725 10 1.48967 9.90217 1.294 9.7065C1.09833 9.51083 1.00033 9.27533 1 9V3C1 2.725 1.098 2.48967 1.294 2.294C1.49 2.09833 1.72533 2.00033 2 2H5L6 3H10C10.275 3 10.5105 3.098 10.7065 3.294C10.9025 3.49 11.0003 3.72533 11 4V9C11 9.275 10.9022 9.5105 10.7065 9.7065C10.5108 9.9025 10.2753 10.0003 10 10H2Z"
+          fill="var(--c-orange)"></path>
+      </svg>
+      <h2 class="bl_blogSidebar_title font-16-24 hl_accentFont">
+        <span class="hl_accentColor">C</span>ATEGORY
+      </h2>
+    </hgroup>
+    <ul class="bl_blogSidebar_categories">
+      {
+        categories.map((category) => (
+          <li>
+            <span class="bl_blogSidebar_categoryName">{category.name}</span>
+            <span class="bl_blogSidebar_categoryCount">{category.count}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="bl_blogSidebar_box">
+    <hgroup>
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clip-path="url(#clip0_660_5441)">
+          <path
+            d="M20.5 0C19.5717 0 18.6815 0.368749 18.0251 1.02513C17.3687 1.6815 17 2.57174 17 3.5V20.5C17 21.4283 17.3687 22.3185 18.0251 22.9749C18.6815 23.6313 19.5717 24 20.5 24C21.4283 24 22.3185 23.6313 22.9749 22.9749C23.6313 22.3185 24 21.4283 24 20.5V3.5C24 2.57174 23.6313 1.6815 22.9749 1.02513C22.3185 0.368749 21.4283 0 20.5 0ZM12 11C11.0717 11 10.1815 11.3687 9.52513 12.0251C8.86875 12.6815 8.5 13.5717 8.5 14.5V20.5C8.5 21.4283 8.86875 22.3185 9.52513 22.9749C10.1815 23.6313 11.0717 24 12 24C12.9283 24 13.8185 23.6313 14.4749 22.9749C15.1313 22.3185 15.5 21.4283 15.5 20.5V14.5C15.5 13.5717 15.1313 12.6815 14.4749 12.0251C13.8185 11.3687 12.9283 11 12 11ZM0 20.5C0 21.4283 0.368749 22.3185 1.02513 22.9749C1.6815 23.6313 2.57174 24 3.5 24C4.42826 24 5.3185 23.6313 5.97487 22.9749C6.63125 22.3185 7 21.4283 7 20.5C7 19.5717 6.63125 18.6815 5.97487 18.0251C5.3185 17.3687 4.42826 17 3.5 17C2.57174 17 1.6815 17.3687 1.02513 18.0251C0.368749 18.6815 0 19.5717 0 20.5Z"
+            fill="var(--c-orange)"></path>
+        </g>
+        <defs>
+          <clipPath id="clip0_660_5441">
+            <rect width="24" height="24" fill="white"></rect>
+          </clipPath>
+        </defs>
+      </svg>
+      <h2 class="bl_blogSidebar_title font-16-24 hl_accentFont">
+        <span class="hl_accentColor">R</span>ANKING
+      </h2>
+    </hgroup>
+    <ol class="bl_blogSidebar_ranking">
+      {
+        rankingPosts.map((post, index) => (
+          <li class="bl_blogSidebar_rankingItem">
+            <span class="bl_blogSidebar_rank">{index + 1}</span>
+            <a
+              href={getBlogDetailUrl(post.id)}
+              class="bl_blogSidebar_rankingLink"
+            >
+              {post.thumbnailUrl ? (
+                <figure class="bl_blogSidebar_rankingThumb">
+                  <Picture
+                    src={post.thumbnailUrl}
+                    formats={["avif", "webp"]}
+                    widths={[375, 710]}
+                    sizes="220px"
+                    alt={post.thumbnailAlt || post.title}
+                    width={375}
+                    height={210}
+                    loading="lazy"
+                  />
+                </figure>
+              ) : (
+                <div class="bl_blogSidebar_rankingThumb bl_blogSidebar_rankingThumb--empty" />
+              )}
+              <span class="bl_blogSidebar_rankingTitle font-12-16">
+                {post.title}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</aside>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_blogSidebar {
+    width: 300px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: to-rem(24px);
+
+    @include mq("lg") {
+      width: unset;
+    }
+
+    &_box {
+      padding: to-rem(20px);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    hgroup {
+      display: flex;
+      align-items: center;
+      gap: to-rem(8px);
+      margin: 0 0 to-rem(24px);
+      svg {
+        width: to-rem(24px);
+        height: to-rem(24px);
+      }
+    }
+
+    &_title {
+      color: $c-white;
+    }
+
+    &_search {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(12px);
+
+      input {
+        width: 100%;
+        padding: to-rem(12px) to-rem(14px);
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.32);
+        background: transparent;
+        color: $c-white;
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.68);
+        }
+      }
+
+      button {
+        width: 100%;
+        padding: to-rem(10px) to-rem(14px);
+        border: 0;
+        border-radius: 4px;
+        background: #4f8ff7;
+        color: $c-white;
+        cursor: pointer;
+      }
+    }
+
+    &_categories {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(14px);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: to-rem(16px);
+        color: $c-white;
+
+        .bl_blogSidebar_categoryCount {
+          min-width: 1.8rem;
+          height: 1.8rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.16);
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 0.75rem;
+        }
+      }
+    }
+
+    &_categoryName {
+      color: $c-white;
+    }
+
+    &_ranking {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: fluid-text(24px, 40px);
+    }
+
+    &_rankingItem {
+      position: relative;
+    }
+
+    &_rank {
+      position: absolute;
+      top: -0.2rem;
+      left: -0.2rem;
+      z-index: 1;
+      width: 1.6rem;
+      height: 1.6rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: var(--c-orange);
+      color: $c-white;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    &_rankingLink {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: to-rem(10px);
+      color: inherit;
+      text-decoration: none;
+    }
+
+    &_rankingThumb {
+      aspect-ratio: 312 / 175;
+      overflow: hidden;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+
+      :global(picture),
+      :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      &--empty {
+        background:
+          linear-gradient(
+            135deg,
+            rgba(238, 151, 35, 0.28),
+            rgba(123, 92, 255, 0.22)
+          ),
+          rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    &_rankingTitle {
+      color: rgba(255, 255, 255, 0.86);
+      line-height: 1.6;
+    }
+  }
+</style>

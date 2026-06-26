@@ -4,6 +4,15 @@ import ArrowLink from "../ui/ArrowLink.astro";
 import Card from "../ui/Card.astro";
 import thumbnail from "../../assets/img/blog/blog_1.png";
 import BilingualBtn from "../ui/BilingualBtn.astro";
+import { fetchBlogPosts } from "../../lib/wordpress";
+import BlogCard from "../blog/BlogCard.astro";
+
+const page = 1;
+const perPage = 8;
+const { posts, total, totalPages, currentPage } = await fetchBlogPosts({
+  page,
+  perPage,
+});
 ---
 
 <section class="bl_blog js_blog">
@@ -13,7 +22,14 @@ import BilingualBtn from "../ui/BilingualBtn.astro";
       <ArrowLink href="/web-tips" />
     </div>
     <ul class="bl_blog_list">
-      <li class="bl_blog_item">
+      {
+        posts.map((post) => (
+          <li class="bl_blog_item">
+            <BlogCard post={post} />
+          </li>
+        ))
+      }
+      <!-- <li class="bl_blog_item">
         <a href="/">
           <Card
             title="Three.jsのPointLightの明るさが変わって戸惑った話"
@@ -92,7 +108,7 @@ import BilingualBtn from "../ui/BilingualBtn.astro";
             date="2025-08-20"
           />
         </a>
-      </li>
+      </li> -->
     </ul>
     <BilingualBtn
       href="/web-tips"

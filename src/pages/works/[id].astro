@@ -1,13 +1,20 @@
 ---
+import ArrowLink from "../../components/ui/ArrowLink.astro";
 import Base from "../../layout/Base.astro";
+import CTA from "../../components/sections/CTA.astro";
 import PageWrapper from "../../layout/PageWrapper.astro";
 import PageHeader from "../../layout/PageHeader.astro";
 import Tag from "../../components/ui/Tag.astro";
+import Label from "../../components/ui/Label.astro";
+import SectionTitle from "../../components/ui/SectionTitle.astro";
+import WorkCard from "../../components/works/WorkCard.astro";
 import {
   fetchAllWorkIds,
   fetchWorkById,
+  fetchRelatedWorksByTags,
   getWorkCategoryTagUrl,
 } from "../../lib/wordpress";
+import Picture from "astro/components/Picture.astro";
 
 export async function getStaticPaths() {
   const ids = await fetchAllWorkIds();
@@ -28,6 +35,7 @@ export async function getStaticPaths() {
 }
 
 const { work } = Astro.props;
+const relatedWorks = await fetchRelatedWorksByTags(work.id, 3);
 ---
 
 <Base title={work.title} pageType="works-detail" bodyClass="works-detail">
@@ -38,67 +46,113 @@ const { work } = Astro.props;
         en="WORK DETAIL"
         tag="h1"
         breadcrumbLabel={work.title}
+        bilingualTitle={false}
       />
 
       <main class="ly_pageMain">
         <article class="bl_workDetail">
+          <header class="bl_workDetail_header">
+            {
+              work.categories.length > 0 && (
+                <ul class="bl_workDetail_categories">
+                  {work.categories.map((category) => (
+                    <li class="bl_workDetail_categories_item">
+                      <a href={getWorkCategoryTagUrl(category.slug)}>
+                        <Label label={category.name} fontSize="1.5rem" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )
+            }
+
+            <SectionTitle title={work.title} tag="h1" />
+            <hr />
+          </header>
           {
             work.thumbnailUrl && (
               <figure class="bl_workDetail_hero">
-                <img
+                <Picture
                   src={work.thumbnailUrl}
+                  formats={["avif", "webp"]}
+                  widths={[375, 710, 1420]}
+                  sizes="(max-width: 768px) 100vw, 1560px"
                   alt={work.thumbnailAlt || work.title}
-                  width={1200}
-                  height={600}
-                  loading="eager"
-                  decoding="async"
+                  width={710}
+                  height={335}
+                  loading="lazy"
                 />
               </figure>
             )
           }
 
-          {
-            work.categories.length > 0 && (
-              <ul class="bl_workDetail_tags">
-                {work.categories.map((category) => (
-                  <Tag
-                    category={category.name}
-                    href={getWorkCategoryTagUrl(category.slug)}
+          <div class="bl_workDetail_meta">
+            {
+              work.tags.length > 0 && (
+                <ul class="bl_workDetail_tags">
+                  {work.tags.map((tag) => (
+                    <Tag
+                      category={tag.name}
+                      href={getWorkCategoryTagUrl(tag.slug)}
+                    />
+                  ))}
+                </ul>
+              )
+            }
+
+            <time class="bl_workDetail_date font-12-16" datetime={work.date}>
+              公開日: {new Date(work.date).toLocaleDateString("ja-JP")}
+            </time>
+          </div>
+
+          <div class="bl_workDetail_content" set:html={work.content} />
+
+          <div class="bl_workDetail_mockup">
+            {
+              work.mockUpImageSp?.mediaItemUrl && (
+                <figure>
+                  <Picture
+                    src={work.mockUpImageSp.mediaItemUrl}
+                    formats={["avif", "webp"]}
+                    widths={[375, 710, 1420, 1920]}
+                    sizes="(max-width: 768px) 100vw, 1920px"
+                    alt={work.thumbnailAlt || work.title}
+                    width={710}
+                    height={335}
+                    loading="lazy"
                   />
-                ))}
-              </ul>
-            )
-          }
+                </figure>
+              )
+            }
+          </div>
 
-          <time class="bl_workDetail_date font-12-16" datetime={work.date}>
-            公開日: {new Date(work.date).toLocaleDateString("ja-JP")}
-          </time>
-
-          <div
-            class="bl_workDetail_content font-16-20"
-            set:html={work.content}
-          />
+          <CTA />
 
           <footer class="bl_workDetail_footer">
-            <a href="/works" class="bl_workDetail_back font-12-16">
-              制作物一覧へ戻る
-            </a>
+            <ArrowLink
+              href="/works"
+              text="制作物一覧へ戻る"
+              fontSize="1.5rem"
+              svgWidth="3rem"
+            />
           </footer>
         </article>
 
         <aside class="bl_workDetail_related">
           <h2 class="bl_workDetail_relatedTitle font-16-24">関連制作物</h2>
-          <p class="font-12-16">
-            同カテゴリーの制作物は
-            {
-              work.categories[0] && (
-                <a href={getWorkCategoryTagUrl(work.categories[0].slug)}>
-                  {work.categories[0].name}
-                </a>
-              )
-            }
-            一覧からご覧ください。
-          </p>
+          {
+            relatedWorks.length > 0 ? (
+              <ul class="bl_workDetail_relatedGrid">
+                {relatedWorks.map((relatedWork) => (
+                  <li class="bl_workDetail_relatedItem">
+                    <WorkCard work={relatedWork} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p class="font-12-16">同一タグに属する関連制作物がありません。</p>
+            )
+          }
         </aside>
       </main>
     </PageWrapper>
@@ -120,6 +174,12 @@ const { work } = Astro.props;
     display: flex;
     flex-direction: column;
     gap: to-rem(40px);
+
+    &_header {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(16px);
+    }
 
     &_hero {
       margin: 0;
@@ -147,25 +207,63 @@ const { work } = Astro.props;
       color: #8b8b8b;
     }
 
-    &_content {
-      line-height: 2;
+    &_meta {
+      display: flex;
+      align-items: center;
+      gap: fluid-text(24px, 40px);
+      flex-wrap: wrap;
+    }
 
-      :global(h2),
-      :global(h3) {
-        margin: to-rem(40px) 0 to-rem(20px);
+    &_content {
+      font-family: "Noto Sans JP", sans-serif;
+      line-height: 2;
+      width: calc(358 / 390) * 100%;
+      margin-inline: auto;
+      max-width: to-rem(760px);
+      :global(*) {
+        margin-top: 1.8em;
       }
 
-      :global(p) {
-        margin: 0 0 to-rem(24px);
+      :global(h2) {
+        font-size: fluid-text(24px, 32px);
+        font-weight: 500;
+      }
+
+      :global(h3) {
+        font-size: fluid-text(20px, 28px);
+        font-weight: 500;
+      }
+
+      :global(table) {
+        font-size: 1rem;
+        :global(td) {
+          vertical-align: top;
+          // font-family: "Noto Sans JP", sans-serif;
+          padding: to-rem(24px) to-rem(10px);
+          &:nth-child(1) {
+            width: 30%;
+          }
+        }
       }
 
       :global(img) {
         max-width: 100%;
         height: auto;
       }
+
+      :global(p) {
+        // font-family: "Noto Sans JP", sans-serif;
+        line-height: 2;
+      }
+
+      :global(a) {
+        text-decoration: underline;
+        color: $c-white;
+      }
     }
 
     &_footer {
+      display: flex;
       margin-top: to-rem(40px);
       padding-top: to-rem(40px);
       border-top: solid 1px var(--c-text);
@@ -175,8 +273,34 @@ const { work } = Astro.props;
       color: var(--c-text);
     }
 
+    &_related {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: fluid-text(16px, 32px);
+    }
+
     &_relatedTitle {
       margin: 0 0 to-rem(16px);
+    }
+
+    &_relatedGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(to-rem(300px), 1fr));
+      gap: to-rem(40px);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      @include mq(md) {
+        grid-template-columns: 1fr;
+        gap: to-rem(24px);
+      }
+    }
+
+    &_relatedItem {
+      width: 100%;
+      min-width: 0;
     }
   }
 </style>

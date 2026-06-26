@@ -1,13 +1,16 @@
 ---
-const { href = "/", text = "View More", class: className = "" } = Astro.props;
+const {
+  href = "/",
+  text = "View More",
+  class: className = "",
+  fontSize = "",
+  svgWidth = "",
+} = Astro.props;
 const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
 ---
 
-<a
-  href={href}
-  class:list={["el_link", className]}
->
-  <span class="el_link_text">{text}</span>
+<a href={href} class:list={["el_link hl_accentFont", className]}>
+  <span class="el_link_text" style={`font-size:${fontSize}`}>{text}</span>
   <svg
     width="72"
     height="72"
@@ -16,9 +19,15 @@ const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
     xmlns="http://www.w3.org/2000/svg"
     class="el_link_icon"
     data-mouse="stuck"
+    style={`width:${svgWidth}`}
   >
-    <rect x="0.5" y="0.5" width="71" height="71" rx="35.5" stroke="var(--c-text)"
-    ></rect>
+    <rect
+      x="0.5"
+      y="0.5"
+      width="71"
+      height="71"
+      rx="35.5"
+      stroke="var(--c-text)"></rect>
     <g clip-path={`url(#${uniqueId})`}>
       <path
         d="M39.0149 42L39 41.9809L43.641 36.0003L39 30.0191L39.0149 30H41.3419L46 35.9997L41.3419 41.9989L39.0149 42Z"
@@ -44,7 +53,8 @@ const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
   .el_link {
     display: flex;
     align-items: center;
-    gap: 40px;
+    justify-content: flex-start;
+    gap: to-em(40px);
     color: var(--c-text);
     transition: all 0.3s ease;
     position: relative;

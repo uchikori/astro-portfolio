@@ -1,12 +1,25 @@
 ---
-const { ja, en, tag, title, breadcrumbLabel } = Astro.props;
+const {
+  ja,
+  en,
+  tag,
+  title,
+  breadcrumbLabel,
+  bilingualTitle = true,
+} = Astro.props;
 import BilingualTitle from "../components/ui/BilingualTitle.astro";
 import Breadcrumb from "../components/ui/Breadcrumb.astro";
 ---
 
 <header class="ly_pageHeader">
-  <BilingualTitle ja={ja} en={en} tag={tag} />
-  <hr />
+  {
+    bilingualTitle && (
+      <>
+        <BilingualTitle ja={ja} en={en} tag={tag} />
+        <hr />
+      </>
+    )
+  }
   <Breadcrumb currentLabel={breadcrumbLabel} />
 </header>
 
