@@ -1,4 +1,97 @@
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
+import fs from "fs";
+import path from "path";
+import crypto from "crypto";
+
+const ASSETS_DIR = path.join(process.cwd(), "public", "wordpress-assets");
+
+/**
+ * Download external asset and return local path
+ */
+async function downloadExternalAsset(url) {
+  if (!url || typeof url !== "string") return url;
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    return url;
+  }
+
+  const wpUrl = import.meta.env.WORDPRESS_API_URL;
+  let wpHost = "";
+  if (wpUrl) {
+    try {
+      wpHost = new URL(wpUrl).host;
+    } catch (e) {}
+  }
+
+  try {
+    const assetUrl = new URL(url);
+    const isWpAsset = (wpHost && assetUrl.host === wpHost) || url.includes("/wp-content/");
+    if (!isWpAsset) {
+      return url;
+    }
+  } catch (e) {
+    return url;
+  }
+
+  try {
+    if (!fs.existsSync(ASSETS_DIR)) {
+      fs.mkdirSync(ASSETS_DIR, { recursive: true });
+    }
+
+    const urlPath = new URL(url).pathname;
+    const ext = path.extname(urlPath) || ".jpg";
+    const hash = crypto.createHash("md5").update(url).digest("hex");
+    const filename = `${hash}${ext}`;
+    const destPath = path.join(ASSETS_DIR, filename);
+    const localUrl = `/wordpress-assets/${filename}`;
+
+    if (fs.existsSync(destPath)) {
+      return localUrl;
+    }
+
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch ${url}: ${res.statusText}`);
+    }
+    const buffer = Buffer.from(await res.arrayBuffer());
+    fs.writeFileSync(destPath, buffer);
+    console.log(`[wordpress-assets] Downloaded: ${url} -> ${localUrl}`);
+    return localUrl;
+  } catch (err) {
+    console.error(`[wordpress-assets] Failed to download asset: ${url}`, err);
+    return url;
+  }
+}
+
+/**
+ * Download external assets within HTML and replace their URLs
+ */
+async function downloadAssetsInHtml(html) {
+  if (!html) return html;
+
+  const wpUrl = import.meta.env.WORDPRESS_API_URL;
+  let wpHost = "";
+  if (wpUrl) {
+    try {
+      wpHost = new URL(wpUrl).host;
+    } catch (e) {}
+  }
+
+  const urlRegex = /https?:\/\/[^\s"'>]+/g;
+  const matches = html.match(urlRegex) || [];
+  const uniqueUrls = [...new Set(matches)];
+
+  let resultHtml = html;
+  for (const url of uniqueUrls) {
+    const isWpAsset = (wpHost && url.includes(wpHost)) || url.includes("/wp-content/");
+    if (isWpAsset) {
+      const localUrl = await downloadExternalAsset(url);
+      if (localUrl !== url) {
+        resultHtml = resultHtml.split(url).join(localUrl);
+      }
+    }
+  }
+  return resultHtml;
+}
 
 /**
  * WordPress GraphQL API helpers.
@@ -110,6 +203,11 @@ function mapWork(node) {
     thumbnailAlt: featured?.altText ?? "",
     categories,
     tags,
+    mockUpMovie: node.mockUpMovie?.mockupMovie ?? null,
+    mockUpImageTab: node.mockUpImageTab?.mockupImageTab ?? null,
+    mockUpImageSp: node.mockUpImageSp?.mockupImageSp ?? null,
+    mockUpPc: node.mockUpPc?.mockupImagePc ?? null,
+    cssMockupImage: node.cssMockupImage?.cssMockupImage ?? null,
   };
 }
 
@@ -178,8 +276,12 @@ async function wpGraphQLFetch(query, variables = {}) {
   return result.data;
 }
 
+// ビルド時のモジュールレベルキャッシュ（同一プロセス内で1回だけ API を呼ぶ）
+let _worksListCache = null;
+
 // すべての Works を GraphQL で取得
-async function fetchAllGraphQLWorks() {
+function fetchAllGraphQLWorks() {
+  if (_worksListCache) return _worksListCache;
   const query = `
     query GetWorks {
       posts(first: 100) {
@@ -219,8 +321,16 @@ async function fetchAllGraphQLWorks() {
       }
     }
   `;
-  const data = await wpGraphQLFetch(query);
-  return (data.posts?.nodes ?? []).map(mapWork);
+  _worksListCache = wpGraphQLFetch(query).then(
+    async (data) => {
+      const works = (data.posts?.nodes ?? []).map(mapWork);
+      for (const work of works) {
+        work.thumbnailUrl = await downloadExternalAsset(work.thumbnailUrl);
+      }
+      return works;
+    },
+  );
+  return _worksListCache;
 }
 
 // 指定 ID の Work を GraphQL で取得
@@ -309,11 +419,37 @@ async function fetchGraphQLWorkById(id) {
     }
   `;
   const data = await wpGraphQLFetch(query, { id: String(id) });
-  return data.post ? mapWork(data.post) : null;
+  if (!data.post) return null;
+
+  const work = mapWork(data.post);
+  work.thumbnailUrl = await downloadExternalAsset(work.thumbnailUrl);
+  work.content = await downloadAssetsInHtml(work.content);
+
+  if (work.mockUpMovie?.mediaItemUrl) {
+    work.mockUpMovie.mediaItemUrl = await downloadExternalAsset(work.mockUpMovie.mediaItemUrl);
+  }
+  if (work.mockUpImageTab?.mediaItemUrl) {
+    work.mockUpImageTab.mediaItemUrl = await downloadExternalAsset(work.mockUpImageTab.mediaItemUrl);
+  }
+  if (work.mockUpImageSp?.mediaItemUrl) {
+    work.mockUpImageSp.mediaItemUrl = await downloadExternalAsset(work.mockUpImageSp.mediaItemUrl);
+  }
+  if (work.mockUpPc?.mediaItemUrl) {
+    work.mockUpPc.mediaItemUrl = await downloadExternalAsset(work.mockUpPc.mediaItemUrl);
+  }
+  if (work.cssMockupImage?.mediaItemUrl) {
+    work.cssMockupImage.mediaItemUrl = await downloadExternalAsset(work.cssMockupImage.mediaItemUrl);
+  }
+
+  return work;
 }
 
+// カテゴリーキャッシュ
+let _categoriesCache = null;
+
 // すべてのカテゴリーを GraphQL で取得
-async function fetchGraphQLCategories() {
+function fetchGraphQLCategories() {
+  if (_categoriesCache) return _categoriesCache;
   const query = `
     query GetCategories {
       categories {
@@ -326,8 +462,10 @@ async function fetchGraphQLCategories() {
       }
     }
   `;
-  const data = await wpGraphQLFetch(query);
-  return (data.categories?.nodes ?? []).map(mapCategory);
+  _categoriesCache = wpGraphQLFetch(query).then(
+    (data) => (data.categories?.nodes ?? []).map(mapCategory),
+  );
+  return _categoriesCache;
 }
 
 /**
@@ -626,7 +764,7 @@ function paginateBlogPosts(posts, page, perPage) {
  * @param {*} posts
  * @returns
  */
-function sortPostsByDateDesc(posts) {
+export function sortPostsByDateDesc(posts) {
   return [...posts].sort(
     (left, right) =>
       new Date(right.date).getTime() - new Date(left.date).getTime(),
@@ -661,14 +799,18 @@ export function buildWebTipsClasses(posts) {
   return [...classMap.values()].sort((left, right) => right.count - left.count);
 }
 
+// web-tips リストキャッシュ
+let _blogPostsListCache = null;
+
 /**
  * 全ての web-tips を取得する
  * @returns {Promise<Array>}
  */
-async function fetchAllGraphQLBlogPosts() {
+function fetchAllGraphQLBlogPosts() {
+  if (_blogPostsListCache) return _blogPostsListCache;
   const query = `
     query GetWebTips {
-      allWebTips(first: 100) {
+      allWebTips(first: 1000) {
         nodes {
           databaseId
           slug
@@ -695,8 +837,16 @@ async function fetchAllGraphQLBlogPosts() {
       }
     }
   `;
-  const data = await wpGraphQLFetch(query);
-  return (data.allWebTips?.nodes ?? []).map(mapWebTips);
+  _blogPostsListCache = wpGraphQLFetch(query).then(
+    async (data) => {
+      const posts = (data.allWebTips?.nodes ?? []).map(mapWebTips);
+      for (const post of posts) {
+        post.thumbnailUrl = await downloadExternalAsset(post.thumbnailUrl);
+      }
+      return posts;
+    },
+  );
+  return _blogPostsListCache;
 }
 
 /**
@@ -734,14 +884,24 @@ async function fetchGraphQLWebTipById(id) {
     }
   `;
   const data = await wpGraphQLFetch(query, { id: String(id) });
-  return data.webTips ? mapWebTips(data.webTips) : null;
+  if (!data.webTips) return null;
+
+  const post = mapWebTips(data.webTips);
+  post.thumbnailUrl = await downloadExternalAsset(post.thumbnailUrl);
+  post.content = await downloadAssetsInHtml(post.content);
+
+  return post;
 }
+
+// classキャッシュ
+let _classesCache = null;
 
 /**
  * すべてのclassを取得
  * @returns {Promise<Array>}
  */
-async function fetchAllGraphQLClasses() {
+function fetchAllGraphQLClasses() {
+  if (_classesCache) return _classesCache;
   const query = `
     query GetClasses {
       allType {
@@ -754,8 +914,10 @@ async function fetchAllGraphQLClasses() {
       }
     }
   `;
-  const data = await wpGraphQLFetch(query);
-  return (data.allType?.nodes ?? []).map(mapClass);
+  _classesCache = wpGraphQLFetch(query).then(
+    (data) => (data.allType?.nodes ?? []).map(mapClass),
+  );
+  return _classesCache;
 }
 
 /**
@@ -957,6 +1119,38 @@ export async function fetchAllBlogPosts() {
     return sortPostsByDateDesc(await fetchAllGraphQLBlogPosts());
   } catch (error) {
     console.error("[wordpress] GraphQL fetchAllBlogPosts error:", error);
+    return [];
+  }
+}
+
+/**
+ * Works のキャッシュ済みリストを返す（getStaticPaths 内での関連 works 計算用）
+ * @returns {Promise<Array>}
+ */
+export async function fetchAllWorksRaw() {
+  if (!isWordPressConfigured()) {
+    return [];
+  }
+  try {
+    return await fetchAllGraphQLWorks();
+  } catch (error) {
+    console.error("[wordpress] fetchAllWorksRaw error:", error);
+    return [];
+  }
+}
+
+/**
+ * web-tips のキャッシュ済みリストを返す（getStaticPaths 内での関連 posts 計算用）
+ * @returns {Promise<Array>}
+ */
+export async function fetchAllBlogPostsRaw() {
+  if (!isWordPressConfigured()) {
+    return [];
+  }
+  try {
+    return await fetchAllGraphQLBlogPosts();
+  } catch (error) {
+    console.error("[wordpress] fetchAllBlogPostsRaw error:", error);
     return [];
   }
 }

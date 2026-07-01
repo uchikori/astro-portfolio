@@ -39,22 +39,24 @@ const { posts, total, totalPages, currentPage } = await fetchBlogPosts({
 });
 
 // カテゴリーとランキングの集計
-const allPosts = await fetchAllBlogPosts();
 const categories = await fetchWebTipsClasses();
-const rankingPosts = allPosts.slice(0, 5);
 ---
 
 <Base title="ブログ記事一覧" pageType="web-tips" bodyClass="web-tips">
   <div class="hl_contentWidthMiddle">
     <CircleImage image="/img/works/works_bg.webp" />
     <PageWrapper>
-      <PageHeader ja="ブログ記事一覧" en="BLOG" tag="h1" breadcrumbLabel={cls.name} />
+      <PageHeader
+        ja="ブログ記事一覧"
+        en="BLOG"
+        tag="h1"
+        breadcrumbLabel={cls.name}
+      />
 
       <main class="ly_pageMain">
         <BlogLayout
           posts={posts}
           categories={categories}
-          rankingPosts={rankingPosts}
           currentPage={currentPage}
           totalPages={totalPages}
           category={cls}

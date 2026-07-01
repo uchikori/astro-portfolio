@@ -3,8 +3,7 @@ import BlogSidebar from "./BlogSidebar.astro";
 import Pagination from "../ui/Pagination.astro";
 import BlogCard from "./BlogCard.astro";
 import { getBlogListUrl } from "../../lib/wordpress";
-const { posts, categories, rankingPosts, currentPage, totalPages, category } =
-  Astro.props;
+const { posts, categories, currentPage, totalPages, category } = Astro.props;
 ---
 
 <div class="bl_blogLayout">
@@ -34,7 +33,7 @@ const { posts, categories, rankingPosts, currentPage, totalPages, category } =
   </section>
 
   <div class="bl_blogLayout_sidebar">
-    <BlogSidebar categories={categories} rankingPosts={rankingPosts} />
+    <BlogSidebar categories={categories} />
   </div>
 </div>
 

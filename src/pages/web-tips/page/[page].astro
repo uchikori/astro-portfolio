@@ -30,9 +30,7 @@ const { posts, total, totalPages, currentPage } = await fetchBlogPosts({
 });
 
 // カテゴリーとランキングの集計
-const allPosts = (await fetchBlogPosts({ page, perPage: 1000 })).posts;
 const categories = await fetchWebTipsClasses();
-const rankingPosts = allPosts.slice(0, 5);
 ---
 
 <Base title="ブログ記事一覧" pageType="web-tips" bodyClass="web-tips">
@@ -44,7 +42,6 @@ const rankingPosts = allPosts.slice(0, 5);
         <BlogLayout
           posts={posts}
           categories={categories}
-          rankingPosts={rankingPosts}
           currentPage={currentPage}
           totalPages={totalPages}
         />

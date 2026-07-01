@@ -11,22 +11,36 @@ import WorkCard from "../../components/works/WorkCard.astro";
 import {
   fetchAllWorkIds,
   fetchWorkById,
-  fetchRelatedWorksByTags,
+  fetchAllWorksRaw,
   getWorkCategoryTagUrl,
 } from "../../lib/wordpress";
 import Picture from "astro/components/Picture.astro";
 
 export async function getStaticPaths() {
-  const ids = await fetchAllWorkIds();
+  // キャッシュから全 works を取得（ビルド中1回のみ API コール）
+  const [ids, allWorks] = await Promise.all([
+    fetchAllWorkIds(),
+    fetchAllWorksRaw(),
+  ]);
 
   const paths = await Promise.all(
     ids.map(async (id) => {
       const work = await fetchWorkById(id);
       if (!work) return null;
 
+      // 関連 works をキャッシュ済みリストから計算（追加 API コールなし）
+      const relatedWorks = allWorks
+        .filter(
+          (w) =>
+            w.id !== id &&
+            work.tags.some((tag) => w.tags.some((wTag) => wTag.id === tag.id)),
+        )
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+
       return {
         params: { id: String(id) },
-        props: { work },
+        props: { work, relatedWorks },
       };
     }),
   );
@@ -34,8 +48,7 @@ export async function getStaticPaths() {
   return paths.filter(Boolean);
 }
 
-const { work } = Astro.props;
-const relatedWorks = await fetchRelatedWorksByTags(work.id, 3);
+const { work, relatedWorks } = Astro.props;
 ---
 
 <Base title={work.title} pageType="works-detail" bodyClass="works-detail">

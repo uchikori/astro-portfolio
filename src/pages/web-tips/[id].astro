@@ -5,14 +5,12 @@ import PageHeader from "../../layout/PageHeader.astro";
 import BlogSidebar from "../../components/blog/BlogSidebar.astro";
 import {
   fetchAllBlogIds,
-  fetchBlogCategories,
   fetchBlogPostById,
-  fetchBlogPosts,
-  fetchRelatedBlogPostsByTags,
+  fetchAllBlogPostsRaw,
+  fetchWebTipsClasses,
   getBlogDetailUrl,
   getBlogCategoryUri,
-  fetchWebTipsClasses,
-  fetchAllBlogPosts,
+  sortPostsByDateDesc,
 } from "../../lib/wordpress";
 import Picture from "astro/components/Picture.astro";
 import CircleImage from "../../components/webgl/CircleImage.astro";
@@ -30,17 +28,34 @@ import Category from "../../components/ui/Category.astro";
 import Time from "../../components/ui/Time.astro";
 
 export async function getStaticPaths() {
-  // 全記事IDを取得
-  const ids = await fetchAllBlogIds();
+  // キャッシュから全データを一括取得（ビルド中それぞれ1回のみ API コール）
+  const [ids, allPosts, categories] = await Promise.all([
+    fetchAllBlogIds(),
+    fetchAllBlogPostsRaw(),
+    fetchWebTipsClasses(),
+  ]);
 
   const paths = await Promise.all(
     ids.map(async (id) => {
       const post = await fetchBlogPostById(id);
       if (!post) return null;
 
+      // 関連 posts をキャッシュ済みリストから計算（追加 API コールなし）
+      const relatedPosts = sortPostsByDateDesc(
+        allPosts.filter(
+          (entry) =>
+            entry.id !== id &&
+            (post.classes ?? []).some((cls) =>
+              (entry.classes ?? []).some(
+                (entryCls) => entryCls.slug === cls.slug,
+              ),
+            ),
+        ),
+      ).slice(0, 3);
+
       return {
         params: { id: String(id) },
-        props: { post },
+        props: { post, relatedPosts, categories },
       };
     }),
   );
@@ -48,12 +63,7 @@ export async function getStaticPaths() {
   return paths.filter(Boolean);
 }
 
-const { post } = Astro.props;
-const relatedPosts = await fetchRelatedBlogPostsByTags(post.id, 3);
-// カテゴリーとランキングの集計
-const allPosts = await fetchAllBlogPosts();
-const categories = await fetchWebTipsClasses();
-const rankingPosts = allPosts.slice(0, 5);
+const { post, relatedPosts, categories } = Astro.props;
 
 // サーバーサイドでコードブロックをハイライトする関数
 function highlightCodeBlocks(html) {
@@ -215,7 +225,7 @@ const highlightedContent = highlightCodeBlocks(post.content);
             </div>
           </article>
           <div class="bl_blogDetailSidebar">
-            <BlogSidebar categories={categories} rankingPosts={rankingPosts} />
+            <BlogSidebar categories={categories} />
           </div>
         </div>
       </main>
@@ -565,6 +575,13 @@ const highlightedContent = highlightCodeBlocks(post.content);
       font-weight: 500;
       margin: 0;
       line-height: 1.4;
+    }
+
+    &Sidebar {
+      width: 300px;
+      @include mq("lg") {
+        width: 100%;
+      }
     }
   }
 </style>
