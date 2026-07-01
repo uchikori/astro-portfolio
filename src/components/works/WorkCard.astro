@@ -15,6 +15,7 @@ const tags = [...(work.tags?.map((tag) => tag.name) ?? [])];
           title={work.title}
           tags={tags}
           thumbnail={work.thumbnailUrl}
+          thumbnailAlt={work.thumbnailAlt}
         />
       ) : (
         <div class="bl_workCard_empty">
