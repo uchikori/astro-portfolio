@@ -23,19 +23,26 @@ const routeMap: Record<string, string> = {
 
 let breadcrumbItems: BreadcrumbItem[] = [];
 
+// 手動設定がある場合は手動設定を優先
 if (manualItems && manualItems.length > 0) {
+  // 手動設定されたパンくずリストを生成
   breadcrumbItems = manualItems.map((item, index) => ({
     ...item,
     isCurrent: index === manualItems.length - 1,
   }));
 } else {
+  // パスを取得
   const pathname = Astro.url.pathname;
+  // パスをスラッシュで分割し、空の要素を除外
   const segments = pathname.split("/").filter(Boolean);
+  // pageと数字の組み合わせを除外
   const normalizedSegments: string[] = [];
 
+  //パスの長さ分だけループ
   for (let index = 0; index < segments.length; index += 1) {
+    // パスのセグメントを取得
     const segment = segments[index];
-    if (segment === "category") continue;
+    if (segment === "category" || segment === "class") continue;
     if (segment === "page" && /^\d+$/.test(segments[index + 1] ?? "")) {
       index += 1;
       continue;

@@ -11,6 +11,8 @@ import {
   fetchRelatedBlogPostsByTags,
   getBlogDetailUrl,
   getBlogCategoryUri,
+  fetchWebTipsClasses,
+  fetchAllBlogPosts,
 } from "../../lib/wordpress";
 import Picture from "astro/components/Picture.astro";
 import CircleImage from "../../components/webgl/CircleImage.astro";
@@ -48,10 +50,10 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const relatedPosts = await fetchRelatedBlogPostsByTags(post.id, 3);
-const categories = await fetchBlogCategories();
-const rankingPosts = (
-  await fetchBlogPosts({ page: 1, perPage: 10 })
-).posts.slice(0, 5);
+// カテゴリーとランキングの集計
+const allPosts = await fetchAllBlogPosts();
+const categories = await fetchWebTipsClasses();
+const rankingPosts = allPosts.slice(0, 5);
 
 // サーバーサイドでコードブロックをハイライトする関数
 function highlightCodeBlocks(html) {
@@ -170,6 +172,8 @@ const highlightedContent = highlightCodeBlocks(post.content);
                           <a
                             href={getBlogDetailUrl(relatedPost.id)}
                             class="bl_blogDetail_relatedLink"
+                            data-mouse="highlight"
+                            data-mouse-scale="3"
                           >
                             <div class="bl_blogDetail_relatedThumb">
                               {relatedPost.thumbnailUrl && (
@@ -189,15 +193,15 @@ const highlightedContent = highlightCodeBlocks(post.content);
                               )}
                             </div>
                             <div class="bl_blogDetail_relatedBody">
-                              {relatedPost.categories?.[0] && (
-                                <span class="bl_blogDetail_category">
-                                  {relatedPost.categories[0].name}
-                                </span>
+                              {relatedPost.classes?.[0] && (
+                                <Category
+                                  categoryName={relatedPost.classes[0].name}
+                                />
                               )}
-                              <h3 class="bl_blogDetail_relatedPostTitle font-16-24">
+                              <h3 class="bl_blogDetail_relatedPostTitle font-16-20">
                                 {relatedPost.title}
                               </h3>
-                              <p class="font-12-16">
+                              <p class="font-12-14">
                                 {relatedPost.excerpt?.replace(/<[^>]*>/g, "")}
                               </p>
                             </div>
@@ -359,6 +363,78 @@ const highlightedContent = highlightCodeBlocks(post.content);
       //   text-decoration: underline;
       // }
 
+      :global(h2) {
+        font-size: fluid-text(24px, 32px);
+        background: linear-gradient(45deg, #ed9723 0%, #d75e5e 100%);
+        padding: to-rem(12px) fluid-text(12px, 24px);
+        line-height: 1.5;
+        font-weight: 500;
+        color: $c-white;
+        position: relative;
+        &:before {
+          content: "";
+          display: block;
+          width: 0;
+          height: 0;
+          border-right: fluid-text(16px, 24px) solid #744300;
+          border-bottom: fluid-text(16px, 24px) solid transparent;
+          position: absolute;
+          top: 100%;
+          left: 0;
+        }
+      }
+
+      :global(h3) {
+        font-size: fluid-text(18px, 24px);
+        color: $c-white;
+        position: relative;
+
+        padding: to-rem(6px) to-rem(14px);
+        &:before {
+          content: "";
+          display: block;
+          width: to-rem(4px);
+          height: 100%;
+          background: var(--c-orange);
+          border-radius: 999px;
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+      }
+
+      :global(h4) {
+        font-size: fluid-text(18px, 22px);
+        color: $c-white;
+        position: relative;
+        padding-bottom: to-rem(10px);
+        border-bottom: solid 1px var(--c-text);
+      }
+
+      :global(p) {
+        color: $c-white;
+        line-height: 1.8;
+      }
+
+      :global(a) {
+        color: inherit;
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      :global(ul) {
+        // color: $c-white;
+        // background: #e5e5e5;
+        padding: fluid-text(12px, 16px) 2em;
+      }
+      :global(li) {
+        list-style-type: auto;
+        list-style-position: outside;
+        padding: 0.5em 0;
+      }
+
       :global(pre) {
         background: rgba(20, 20, 20, 0.6) !important;
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -398,6 +474,30 @@ const highlightedContent = highlightCodeBlocks(post.content);
 
       :global(> *) {
         margin-top: 1.8em;
+      }
+
+      /**WordPressで設定した独自パターン用 */
+      :global(.box01) {
+        :global(.box-title) {
+          font-size: fluid-text(16px, 20px);
+          padding: to-rem(6px) fluid-text(12px, 24px);
+          color: $c-white;
+          background: var(--c-orange);
+          border-radius: to-rem(12px) to-rem(12px) 0 0;
+          display: inline-block;
+        }
+        :global(ul) {
+          margin-top: 0;
+          border: solid 2px var(--c-orange);
+          padding: fluid-text(12px, 16px);
+          padding-left: 2em;
+          background: $c-white;
+          color: var(--c-dark);
+        }
+        :global(li) {
+          list-style-type: auto;
+          list-style-position: outside;
+        }
       }
     }
 
@@ -458,9 +558,11 @@ const highlightedContent = highlightCodeBlocks(post.content);
       flex-direction: column;
       gap: to-rem(8px);
       justify-content: center;
+      align-items: flex-start;
     }
 
     &_relatedPostTitle {
+      font-weight: 500;
       margin: 0;
       line-height: 1.4;
     }

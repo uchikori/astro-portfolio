@@ -14,6 +14,7 @@ export async function getStaticPaths() {
   const categories = await fetchWorkCategories();
   const allPaths = await Promise.all(
     categories.map(async (category) => {
+      // カテゴリーごとの記事総数を取得
       const { totalPages } = await fetchWorks({
         page: 1,
         categorySlug: category.slug,

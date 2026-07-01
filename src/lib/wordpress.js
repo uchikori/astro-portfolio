@@ -1,3 +1,5 @@
+import { BetaAnalyticsDataClient } from "@google-analytics/data";
+
 /**
  * WordPress GraphQL API helpers.
  * API 未設定時は空結果を返し、設定済みなら WordPress から取得します。
@@ -569,6 +571,31 @@ function mapWebTips(node) {
 }
 
 /**
+ * GraphQL のノードデータを class オブジェクトに変換
+ * @param {*} node
+ * @returns
+ */
+function mapClass(node) {
+  return {
+    id: node.databaseId,
+    name: decodeHtmlEntities(node.name),
+    slug: node.slug,
+    count: node.count ?? 0,
+  };
+}
+
+/**
+ * 1ページあたりの表示件数を返します。
+ * @returns {number} 1ページあたりの表示件数
+ */
+export function getWebTipsPerPage() {
+  // 環境変数から 1ページあたりの件数を取得する
+  const value = Number(import.meta.env.WEB_TIPS_PER_PAGE);
+  // 正の数ならその値を使い、そうでなければ既定値を使う
+  return Number.isFinite(value) && value > 0 ? value : DEFAULT_PER_PAGE;
+}
+
+/**
  * ページネーション
  * @param {*} posts
  * @param {*} page
@@ -617,7 +644,7 @@ export function buildWebTipsClasses(posts) {
 
   // postsをループする
   for (const post of posts) {
-    // classesをループする
+    // postが持つclasses配列をループする
     for (const cls of post.classes ?? []) {
       // classをクラスマップから取得する
       const current = classMap.get(cls.slug);
@@ -711,6 +738,27 @@ async function fetchGraphQLWebTipById(id) {
 }
 
 /**
+ * すべてのclassを取得
+ * @returns {Promise<Array>}
+ */
+async function fetchAllGraphQLClasses() {
+  const query = `
+    query GetClasses {
+      allType {
+        nodes {
+          databaseId
+          name
+          slug
+          count
+        }
+      }
+    }
+  `;
+  const data = await wpGraphQLFetch(query);
+  return (data.allType?.nodes ?? []).map(mapClass);
+}
+
+/**
  * web-tips を取得する
  * @param {*} options
  * @returns
@@ -719,7 +767,7 @@ export async function fetchBlogPosts(options = {}) {
   // 現在のページを取得
   const page = options.page ?? 1;
   // 1ページあたりの表示件数を取得
-  const perPage = options.perPage ?? 12;
+  const perPage = options.perPage ?? getWebTipsPerPage();
 
   // WordPressが設定されていない場合は、空の配列を返す
   if (!isWordPressConfigured()) {
@@ -796,10 +844,28 @@ export async function fetchBlogCategories() {
   }
 
   try {
-    const posts = await fetchAllGraphQLBlogPosts();
+    const classes = await fetchGraphQLAllClasses();
     return buildWebTipsClasses(posts);
   } catch (error) {
     console.error("[wordpress] GraphQL fetchBlogCategories error:", error);
+    return [];
+  }
+}
+
+/**
+ * Works カテゴリー一覧を取得する
+ */
+export async function fetchWebTipsClasses() {
+  // API 未設定なら空配列を返す
+  if (!isWordPressConfigured()) {
+    return [];
+  }
+
+  try {
+    // WordPress からカテゴリーを取得する
+    return await fetchAllGraphQLClasses();
+  } catch (error) {
+    console.error("[wordpress] GraphQL fetchWebTipsClasses error:", error);
     return [];
   }
 }
@@ -852,7 +918,10 @@ export async function fetchRelatedBlogPostsByTags(postId, limit = 3) {
  * web-tips のベースパスを取得する
  * @returns {string}
  */
-export function getBlogBasePath() {
+export function getBlogBasePath(categorySlug) {
+  if (categorySlug) {
+    return `/web-tips/class/${categorySlug}`;
+  }
   return "/web-tips";
 }
 
@@ -861,9 +930,10 @@ export function getBlogBasePath() {
  * @param {number} page
  * @returns {string}
  */
-export function getBlogListUrl(page = 1) {
-  if (page <= 1) return getBlogBasePath();
-  return `${getBlogBasePath()}/page/${page}`;
+export function getBlogListUrl(page, categorySlug) {
+  const base = getBlogBasePath(categorySlug);
+  if (page <= 1) return base;
+  return `${base}/page/${page}`;
 }
 
 /**
@@ -896,6 +966,98 @@ export async function fetchAllBlogPosts() {
  * @param {*} slug
  * @returns
  */
-export function getBlogCategoryUri(slug) {
-  return `/web-tips/class/${slug}`;
+export function getBlogCategoryUri(slug, page = 1) {
+  return getBlogListUrl(page, slug);
+}
+
+// ============================================================
+// analytics
+// ============================================================
+/**
+ * Google Analytics 4 からページビュー数を取得する関数
+ */
+export async function fetchPageViews() {
+  const propertyId = import.meta.env.GOOGLE_ANALYTICS_PROPERTY_ID;
+  const startDate = "90daysAgo";
+  const endDate = "today";
+  const privateKey = import.meta.env.PRIVATE_KEY;
+
+  if (!propertyId) {
+    console.warn("[Analytics] GOOGLE_ANALYTICS_PROPERTY_ID is not set");
+    return [];
+  }
+
+  try {
+    const analyticsDataClient = new BetaAnalyticsDataClient({
+      credentials: {
+        client_email: import.meta.env.CLIENT_EMAIL,
+        private_key: privateKey.split(String.raw`\n`).join("\n"),
+      },
+    });
+
+    const [response] = await analyticsDataClient.runReport({
+      property: `properties/${propertyId}`,
+      dimensions: [{ name: "pagePath" }],
+      dateRanges: [{ startDate, endDate }],
+      dimensionFilter: {
+        filter: {
+          fieldName: "pagePath",
+          stringFilter: {
+            matchType: "BEGINS_WITH",
+            value: "/web-tips/" /* ブログページに共通するパス */,
+          },
+        },
+      },
+      metrics: [
+        {
+          name: "screenPageViews",
+        },
+      ],
+      orderBys: [
+        {
+          desc: true,
+          metric: {
+            metricName: "screenPageViews",
+          },
+        },
+      ],
+    });
+
+    // pagePath から記事IDを抽出する（例: /web-tips/123 → 123）
+    const rankingEntries = (response.rows ?? [])
+      .map((row) => {
+        const pagePath = row.dimensionValues[0].value;
+        const pageViews = parseInt(row.metricValues[0].value, 10);
+        // /web-tips/{id} の形式から数値IDを抽出する
+        const parts = pagePath.split("/").filter((s) => s !== "");
+        // parts = ["web-tips", "123"] のような配列になる
+        if (parts.length === 2 && parts[0] === "web-tips") {
+          const id = parseInt(parts[1], 10);
+          if (Number.isFinite(id)) {
+            return { id, pageViews };
+          }
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    // 上位5件のIDを取得する
+    const topEntries = rankingEntries.slice(0, 5);
+
+    // 各記事の詳細を取得する
+    const posts = await Promise.all(
+      topEntries.map(async (entry) => {
+        const post = await fetchGraphQLWebTipById(entry.id);
+        if (!post) return null;
+        // pageViews を付与して返す
+        return { ...post, pageViews: entry.pageViews };
+      }),
+    );
+
+    // null を除外して返す
+    return posts.filter(Boolean);
+  } catch (error) {
+    console.error("[Analytics] Failed to fetch page views:", error);
+    return [];
+  }
 }

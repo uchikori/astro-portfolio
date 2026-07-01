@@ -1,24 +1,41 @@
 ---
-import Base from "../../layout/Base.astro";
-import PageWrapper from "../../layout/PageWrapper.astro";
-import PageHeader from "../../layout/PageHeader.astro";
-import BlogCard from "../../components/blog/BlogCard.astro";
-import BlogSidebar from "../../components/blog/BlogSidebar.astro";
-import Pagination from "../../components/ui/Pagination.astro";
+import Base from "../../../../layout/Base.astro";
+import PageWrapper from "../../../../layout/PageWrapper.astro";
+import PageHeader from "../../../../layout/PageHeader.astro";
+import BlogCard from "../../../../components/blog/BlogCard.astro";
+import BlogSidebar from "../../../../components/blog/BlogSidebar.astro";
+import Pagination from "../../../../components/ui/Pagination.astro";
 import {
   fetchAllBlogPosts,
   buildWebTipsClasses,
   getBlogListUrl,
   fetchWebTipsClasses,
   fetchBlogPosts,
-} from "../../lib/wordpress";
-import CircleImage from "../../components/webgl/CircleImage.astro";
-import BlogLayout from "../../components/blog/BlogLayout.astro";
+} from "../../../../lib/wordpress";
+import CircleImage from "../../../../components/webgl/CircleImage.astro";
+import BlogLayout from "../../../../components/blog/BlogLayout.astro";
+
+export async function getStaticPaths() {
+  const classes = await fetchWebTipsClasses();
+
+  return classes.map((cls) => {
+    return {
+      params: {
+        slug: cls.slug,
+      },
+      props: {
+        cls,
+      },
+    };
+  });
+}
 
 const page = 1;
 
+const { cls } = Astro.props;
 const { posts, total, totalPages, currentPage } = await fetchBlogPosts({
   page,
+  categorySlug: cls.slug,
 });
 
 // カテゴリーとランキングの集計
@@ -31,7 +48,7 @@ const rankingPosts = allPosts.slice(0, 5);
   <div class="hl_contentWidthMiddle">
     <CircleImage image="/img/works/works_bg.webp" />
     <PageWrapper>
-      <PageHeader ja="ブログ記事一覧" en="BLOG" tag="h1" />
+      <PageHeader ja="ブログ記事一覧" en="BLOG" tag="h1" breadcrumbLabel={cls.name} />
 
       <main class="ly_pageMain">
         <BlogLayout
@@ -40,6 +57,7 @@ const rankingPosts = allPosts.slice(0, 5);
           rankingPosts={rankingPosts}
           currentPage={currentPage}
           totalPages={totalPages}
+          category={cls}
         />
       </main>
     </PageWrapper>
@@ -47,8 +65,8 @@ const rankingPosts = allPosts.slice(0, 5);
 </Base>
 
 <style lang="scss">
-  @use "../../styles/utility" as *;
-  @use "../../styles/global" as *;
+  @use "../../../../styles/utility" as *;
+  @use "../../../../styles/global" as *;
 
   .bl_blogLayout {
     margin-inline: auto;

@@ -1,0 +1,92 @@
+---
+import BlogSidebar from "./BlogSidebar.astro";
+import Pagination from "../ui/Pagination.astro";
+import BlogCard from "./BlogCard.astro";
+import { getBlogListUrl } from "../../lib/wordpress";
+const { posts, categories, rankingPosts, currentPage, totalPages, category } =
+  Astro.props;
+---
+
+<div class="bl_blogLayout">
+  <section class="bl_blogGrid">
+    <!-- <div class="bl_blogGrid_head">
+              <p class="font-12-16">
+                {total}件の記事のうち {currentPage}/{totalPages} ページを表示しています
+              </p>
+            </div> -->
+
+    <ul class="bl_blogGrid_list">
+      {
+        posts.map((post) => (
+          <li class="bl_blogGrid_item">
+            <BlogCard post={post} />
+          </li>
+        ))
+      }
+    </ul>
+
+    <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      getPageUrl={(page) => getBlogListUrl(page, category?.slug)}
+      ariaLabel="ブログのページ送り"
+    />
+  </section>
+
+  <div class="bl_blogLayout_sidebar">
+    <BlogSidebar categories={categories} rankingPosts={rankingPosts} />
+  </div>
+</div>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_blogLayout {
+    margin-inline: auto;
+    max-width: to-rem(1200px);
+    display: flex;
+    gap: to-rem(32px);
+    align-items: start;
+    justify-content: space-between;
+
+    @include mq("lg") {
+      flex-direction: column;
+      gap: to-rem(64px);
+    }
+
+    &_sidebar {
+      width: 300px;
+      @include mq("lg") {
+        width: 100%;
+      }
+    }
+  }
+
+  .bl_blogGrid {
+    width: calc(800 / 1280) * 100%;
+    flex-shrink: 0;
+    @include mq("lg") {
+      width: 100%;
+    }
+
+    &_head {
+      margin-bottom: to-rem(20px);
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    &_list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: to-rem(40px);
+
+      @include mq("md") {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    &_item {
+      min-width: 0;
+    }
+  }
+</style>

@@ -1,0 +1,129 @@
+---
+import Base from "../../../../../layout/Base.astro";
+import PageWrapper from "../../../../../layout/PageWrapper.astro";
+import PageHeader from "../../../../../layout/PageHeader.astro";
+import BlogCard from "../../../../../components/blog/BlogCard.astro";
+import BlogSidebar from "../../../../../components/blog/BlogSidebar.astro";
+import Pagination from "../../../../../components/ui/Pagination.astro";
+import {
+  fetchAllBlogPosts,
+  buildWebTipsClasses,
+  getBlogListUrl,
+  fetchWebTipsClasses,
+  fetchBlogPosts,
+} from "../../../../../lib/wordpress";
+import CircleImage from "../../../../../components/webgl/CircleImage.astro";
+import BlogLayout from "../../../../../components/blog/BlogLayout.astro";
+import { getPaginationPaths } from "../../../../../lib/wordpress";
+
+export async function getStaticPaths() {
+  const classes = await fetchWebTipsClasses();
+
+  const allPaths = await Promise.all(
+    classes.map(async (cls) => {
+      // カテゴリーごとの記事総数を取得
+      const { totalPages } = await fetchBlogPosts({
+        page: 1,
+        categorySlug: cls.slug,
+      });
+
+      // 合計ページ数を計算
+      const pages = getPaginationPaths(totalPages);
+
+      return pages.map((page) => ({
+        params: {
+          slug: cls.slug,
+          page: String(page),
+        },
+        props: {
+          cls,
+          page,
+        },
+      }));
+    }),
+  );
+
+  return allPaths.flat();
+}
+
+const { cls, page } = Astro.props;
+// ページ番号取得
+const pageNumber = Number(page);
+
+// ページ番号指定で記事取得
+const { posts, total, totalPages, currentPage } = await fetchBlogPosts({
+  page: pageNumber,
+  categorySlug: cls.slug,
+});
+
+// カテゴリーとランキングの集計
+const allPosts = await fetchAllBlogPosts();
+const categories = await fetchWebTipsClasses();
+const rankingPosts = allPosts.slice(0, 5);
+---
+
+<Base title="ブログ記事一覧" pageType="web-tips" bodyClass="web-tips">
+  <div class="hl_contentWidthMiddle">
+    <CircleImage image="/img/works/works_bg.webp" />
+    <PageWrapper>
+      <PageHeader ja="ブログ記事一覧" en="BLOG" tag="h1" breadcrumbLabel={cls.name} />
+
+      <main class="ly_pageMain">
+        <BlogLayout
+          posts={posts}
+          categories={categories}
+          rankingPosts={rankingPosts}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          category={cls}
+        />
+      </main>
+    </PageWrapper>
+  </div>
+</Base>
+
+<style lang="scss">
+  @use "../../../../../styles/utility" as *;
+  @use "../../../../../styles/global" as *;
+
+  .bl_blogLayout {
+    margin-inline: auto;
+    max-width: to-rem(1200px);
+    display: flex;
+    gap: to-rem(32px);
+    align-items: start;
+    justify-content: space-between;
+
+    @include mq("lg") {
+      flex-direction: column;
+      gap: to-rem(64px);
+    }
+  }
+
+  .bl_blogGrid {
+    width: calc(800 / 1280) * 100%;
+    flex-shrink: 0;
+    @include mq("lg") {
+      width: 100%;
+    }
+
+    &_head {
+      margin-bottom: to-rem(20px);
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    &_list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(to-rem(300px), 1fr));
+      gap: to-rem(40px);
+
+      @include mq("md") {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    &_item {
+      min-width: 0;
+    }
+  }
+</style>

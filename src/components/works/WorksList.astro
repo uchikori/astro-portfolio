@@ -1,7 +1,7 @@
 ---
 import WorkCard from "./WorkCard.astro";
-import Pagination from "./Pagination.astro";
-import { getWorkCategoryUrl } from "../../lib/wordpress";
+import Pagination from "../ui/Pagination.astro";
+import { getWorksListUrl } from "../../lib/wordpress";
 import ArrowLink from "../ui/ArrowLink.astro";
 
 const { works, currentPage, totalPages, total, category } = Astro.props;
@@ -37,7 +37,9 @@ const { works, currentPage, totalPages, total, category } = Astro.props;
   <Pagination
     currentPage={currentPage}
     totalPages={totalPages}
-    categorySlug={category?.slug}
+    getPageUrl={(page) => getWorksListUrl(page, category?.slug)}
+    ariaLabel="制作物のページ送り"
+    marginTop="lg"
   />
 </section>
 

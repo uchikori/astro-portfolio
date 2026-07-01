@@ -1,0 +1,134 @@
+---
+/**
+ * 汎用ページネーションコンポーネント
+ *
+ * @prop {number} currentPage   - 現在のページ番号
+ * @prop {number} totalPages    - 総ページ数
+ * @prop {Function} getPageUrl  - (page: number) => string  URL生成関数
+ * @prop {string} [ariaLabel]   - nav の aria-label（デフォルト: "ページネーション"）
+ * @prop {"sm" | "lg"} [marginTop] - 上余白サイズ sm=32px / lg=80px（デフォルト: "sm"）
+ */
+// interface Props {
+//   currentPage: number;
+//   totalPages: number;
+//   getPageUrl: (page: number) => string;
+//   ariaLabel?: string;
+//   marginTop?: "sm" | "lg";
+// }
+
+const {
+  currentPage,
+  totalPages,
+  getPageUrl,
+  ariaLabel = "ページネーション",
+  marginTop = "sm",
+} = Astro.props;
+
+console.log(currentPage, totalPages);
+
+if (totalPages <= 1) {
+  return null;
+}
+
+const prevUrl = currentPage > 1 ? getPageUrl(currentPage - 1) : null;
+const nextUrl = currentPage < totalPages ? getPageUrl(currentPage + 1) : null;
+const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+---
+
+<nav
+  class:list={["bl_pagination", marginTop === "lg" && "bl_pagination--lgTop"]}
+  aria-label={ariaLabel}
+>
+  <a
+    class:list={["bl_pagination_btn", !prevUrl && "is-disabled"]}
+    href={prevUrl ?? undefined}
+    aria-disabled={!prevUrl}
+  >
+    前へ
+  </a>
+
+  <ol class="bl_pagination_list">
+    {
+      pageNumbers.map((page) => (
+        <li>
+          <a
+            class:list={[
+              "bl_pagination_page",
+              page === currentPage && "is-current",
+            ]}
+            href={getPageUrl(page)}
+            aria-current={page === currentPage ? "page" : undefined}
+          >
+            {page}
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+
+  <a
+    class:list={["bl_pagination_btn", !nextUrl && "is-disabled"]}
+    href={nextUrl ?? undefined}
+    aria-disabled={!nextUrl}
+  >
+    次へ
+  </a>
+</nav>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_pagination {
+    margin-top: to-rem(32px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: to-rem(12px);
+    flex-wrap: wrap;
+
+    &--lgTop {
+      margin-top: to-rem(80px);
+    }
+
+    &_list {
+      display: flex;
+      gap: to-rem(8px);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    &_btn,
+    &_page {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.5rem;
+      min-height: 2.5rem;
+      padding: 0 to-rem(12px);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: $c-white;
+      text-decoration: none;
+      transition:
+        background 0.2s ease,
+        opacity 0.2s ease;
+
+      &:hover:not(.is-disabled):not(.is-current) {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      &.is-current {
+        background: var(--c-orange);
+        border-color: var(--c-orange);
+        pointer-events: none;
+      }
+
+      &.is-disabled {
+        opacity: 0.35;
+        pointer-events: none;
+      }
+    }
+  }
+</style>
