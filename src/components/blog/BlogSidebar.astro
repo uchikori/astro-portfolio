@@ -4,11 +4,13 @@ import { getBlogDetailUrl } from "../../lib/wordpress";
 import { getBlogCategoryUri } from "../../lib/wordpress";
 import { fetchPageViews } from "../../lib/wordpress";
 
-const { categories = [], rankingPosts: fallbackRankingPosts = [] } = Astro.props;
+const { categories = [], rankingPosts: fallbackRankingPosts = [] } =
+  Astro.props;
 
 // GA のランキングデータを取得し、データがなければ props のフォールバックを使う
 const gaRankingPosts = await fetchPageViews();
-const rankingPosts = gaRankingPosts.length > 0 ? gaRankingPosts : fallbackRankingPosts;
+const rankingPosts =
+  gaRankingPosts.length > 0 ? gaRankingPosts : fallbackRankingPosts;
 ---
 
 <aside class="bl_blogSidebar">
@@ -99,7 +101,7 @@ const rankingPosts = gaRankingPosts.length > 0 ? gaRankingPosts : fallbackRankin
       {
         rankingPosts.map((post, index) => (
           <li class="bl_blogSidebar_rankingItem">
-            <span class="bl_blogSidebar_rank">{index + 1}</span>
+            <span class="bl_blogSidebar_rank hl_accentFont">{index + 1}</span>
             <a
               href={getBlogDetailUrl(post.id)}
               class="bl_blogSidebar_rankingLink"
@@ -248,18 +250,20 @@ const rankingPosts = gaRankingPosts.length > 0 ? gaRankingPosts : fallbackRankin
 
     &_rank {
       position: absolute;
-      top: -0.2rem;
-      left: -0.2rem;
+      top: 0;
+      left: 0;
+      transform: translate(-25%, -25%);
       z-index: 1;
-      width: 1.6rem;
-      height: 1.6rem;
+      width: to-rem(40px);
+      height: to-rem(40px);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border-radius: 999px;
-      background: var(--c-orange);
-      color: $c-white;
-      font-size: 0.8rem;
+      background: #403056;
+      border: solid 1px #8b8b8b;
+      color: var(--c-orange);
+      font-size: fluid-text(20px, 24px);
       font-weight: 700;
     }
 

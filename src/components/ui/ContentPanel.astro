@@ -1,16 +1,19 @@
 ---
 const { title, tags, thumbnail, thumbnailAlt } = Astro.props;
-import { Image } from "astro:assets";
+import { Image, Picture } from "astro:assets";
 import Tag from "../ui/Tag.astro";
 ---
 
 <div class="bl_contentPanel" data-mouse="highlight" data-mouse-scale="3">
   <figure class="bl_contentPanel_thumbnail">
-    <Image
+    <Picture
       src={thumbnail}
+      formats={["avif", "webp"]}
+      widths={[375, 710, 1420]}
+      sizes="(max-width: 768px) 100vw, 710px"
       alt={thumbnailAlt}
       width={710}
-      height={335}
+      height={400}
       loading="lazy"
     />
   </figure>
