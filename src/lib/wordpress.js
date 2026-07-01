@@ -1,97 +1,4 @@
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
-import fs from "fs";
-import path from "path";
-import crypto from "crypto";
-
-const ASSETS_DIR = path.join(process.cwd(), "public", "wordpress-assets");
-
-/**
- * Download external asset and return local path
- */
-async function downloadExternalAsset(url) {
-  if (!url || typeof url !== "string") return url;
-  if (!url.startsWith("http://") && !url.startsWith("https://")) {
-    return url;
-  }
-
-  const wpUrl = import.meta.env.WORDPRESS_API_URL;
-  let wpHost = "";
-  if (wpUrl) {
-    try {
-      wpHost = new URL(wpUrl).host;
-    } catch (e) {}
-  }
-
-  try {
-    const assetUrl = new URL(url);
-    const isWpAsset = (wpHost && assetUrl.host === wpHost) || url.includes("/wp-content/");
-    if (!isWpAsset) {
-      return url;
-    }
-  } catch (e) {
-    return url;
-  }
-
-  try {
-    if (!fs.existsSync(ASSETS_DIR)) {
-      fs.mkdirSync(ASSETS_DIR, { recursive: true });
-    }
-
-    const urlPath = new URL(url).pathname;
-    const ext = path.extname(urlPath) || ".jpg";
-    const hash = crypto.createHash("md5").update(url).digest("hex");
-    const filename = `${hash}${ext}`;
-    const destPath = path.join(ASSETS_DIR, filename);
-    const localUrl = `/wordpress-assets/${filename}`;
-
-    if (fs.existsSync(destPath)) {
-      return localUrl;
-    }
-
-    const res = await fetch(url);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch ${url}: ${res.statusText}`);
-    }
-    const buffer = Buffer.from(await res.arrayBuffer());
-    fs.writeFileSync(destPath, buffer);
-    console.log(`[wordpress-assets] Downloaded: ${url} -> ${localUrl}`);
-    return localUrl;
-  } catch (err) {
-    console.error(`[wordpress-assets] Failed to download asset: ${url}`, err);
-    return url;
-  }
-}
-
-/**
- * Download external assets within HTML and replace their URLs
- */
-async function downloadAssetsInHtml(html) {
-  if (!html) return html;
-
-  const wpUrl = import.meta.env.WORDPRESS_API_URL;
-  let wpHost = "";
-  if (wpUrl) {
-    try {
-      wpHost = new URL(wpUrl).host;
-    } catch (e) {}
-  }
-
-  const urlRegex = /https?:\/\/[^\s"'>]+/g;
-  const matches = html.match(urlRegex) || [];
-  const uniqueUrls = [...new Set(matches)];
-
-  let resultHtml = html;
-  for (const url of uniqueUrls) {
-    const isWpAsset = (wpHost && url.includes(wpHost)) || url.includes("/wp-content/");
-    if (isWpAsset) {
-      const localUrl = await downloadExternalAsset(url);
-      if (localUrl !== url) {
-        resultHtml = resultHtml.split(url).join(localUrl);
-      }
-    }
-  }
-  return resultHtml;
-}
 
 /**
  * WordPress GraphQL API helpers.
@@ -203,11 +110,6 @@ function mapWork(node) {
     thumbnailAlt: featured?.altText ?? "",
     categories,
     tags,
-    mockUpMovie: node.mockUpMovie?.mockupMovie ?? null,
-    mockUpImageTab: node.mockUpImageTab?.mockupImageTab ?? null,
-    mockUpImageSp: node.mockUpImageSp?.mockupImageSp ?? null,
-    mockUpPc: node.mockUpPc?.mockupImagePc ?? null,
-    cssMockupImage: node.cssMockupImage?.cssMockupImage ?? null,
   };
 }
 
@@ -321,14 +223,8 @@ function fetchAllGraphQLWorks() {
       }
     }
   `;
-  _worksListCache = wpGraphQLFetch(query).then(
-    async (data) => {
-      const works = (data.posts?.nodes ?? []).map(mapWork);
-      for (const work of works) {
-        work.thumbnailUrl = await downloadExternalAsset(work.thumbnailUrl);
-      }
-      return works;
-    },
+  _worksListCache = wpGraphQLFetch(query).then((data) =>
+    (data.posts?.nodes ?? []).map(mapWork),
   );
   return _worksListCache;
 }
@@ -419,29 +315,7 @@ async function fetchGraphQLWorkById(id) {
     }
   `;
   const data = await wpGraphQLFetch(query, { id: String(id) });
-  if (!data.post) return null;
-
-  const work = mapWork(data.post);
-  work.thumbnailUrl = await downloadExternalAsset(work.thumbnailUrl);
-  work.content = await downloadAssetsInHtml(work.content);
-
-  if (work.mockUpMovie?.mediaItemUrl) {
-    work.mockUpMovie.mediaItemUrl = await downloadExternalAsset(work.mockUpMovie.mediaItemUrl);
-  }
-  if (work.mockUpImageTab?.mediaItemUrl) {
-    work.mockUpImageTab.mediaItemUrl = await downloadExternalAsset(work.mockUpImageTab.mediaItemUrl);
-  }
-  if (work.mockUpImageSp?.mediaItemUrl) {
-    work.mockUpImageSp.mediaItemUrl = await downloadExternalAsset(work.mockUpImageSp.mediaItemUrl);
-  }
-  if (work.mockUpPc?.mediaItemUrl) {
-    work.mockUpPc.mediaItemUrl = await downloadExternalAsset(work.mockUpPc.mediaItemUrl);
-  }
-  if (work.cssMockupImage?.mediaItemUrl) {
-    work.cssMockupImage.mediaItemUrl = await downloadExternalAsset(work.cssMockupImage.mediaItemUrl);
-  }
-
-  return work;
+  return data.post ? mapWork(data.post) : null;
 }
 
 // カテゴリーキャッシュ
@@ -462,8 +336,8 @@ function fetchGraphQLCategories() {
       }
     }
   `;
-  _categoriesCache = wpGraphQLFetch(query).then(
-    (data) => (data.categories?.nodes ?? []).map(mapCategory),
+  _categoriesCache = wpGraphQLFetch(query).then((data) =>
+    (data.categories?.nodes ?? []).map(mapCategory),
   );
   return _categoriesCache;
 }
@@ -837,14 +711,8 @@ function fetchAllGraphQLBlogPosts() {
       }
     }
   `;
-  _blogPostsListCache = wpGraphQLFetch(query).then(
-    async (data) => {
-      const posts = (data.allWebTips?.nodes ?? []).map(mapWebTips);
-      for (const post of posts) {
-        post.thumbnailUrl = await downloadExternalAsset(post.thumbnailUrl);
-      }
-      return posts;
-    },
+  _blogPostsListCache = wpGraphQLFetch(query).then((data) =>
+    (data.allWebTips?.nodes ?? []).map(mapWebTips),
   );
   return _blogPostsListCache;
 }
@@ -884,13 +752,7 @@ async function fetchGraphQLWebTipById(id) {
     }
   `;
   const data = await wpGraphQLFetch(query, { id: String(id) });
-  if (!data.webTips) return null;
-
-  const post = mapWebTips(data.webTips);
-  post.thumbnailUrl = await downloadExternalAsset(post.thumbnailUrl);
-  post.content = await downloadAssetsInHtml(post.content);
-
-  return post;
+  return data.webTips ? mapWebTips(data.webTips) : null;
 }
 
 // classキャッシュ
@@ -914,8 +776,8 @@ function fetchAllGraphQLClasses() {
       }
     }
   `;
-  _classesCache = wpGraphQLFetch(query).then(
-    (data) => (data.allType?.nodes ?? []).map(mapClass),
+  _classesCache = wpGraphQLFetch(query).then((data) =>
+    (data.allType?.nodes ?? []).map(mapClass),
   );
   return _classesCache;
 }

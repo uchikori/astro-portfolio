@@ -52,6 +52,7 @@ const { works, total, totalPages, currentPage } = await fetchWorks({
                     title={work.title}
                     tags={work.tags?.map((tag) => tag.name) ?? []}
                     thumbnail={work.thumbnailUrl}
+                    thumbnailAlt={work.thumbnailAlt}
                   />
                 </a>
               </li>

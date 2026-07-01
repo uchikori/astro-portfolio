@@ -3,21 +3,27 @@ import { defineConfig } from "astro/config";
 import glslify from "rollup-plugin-glslify";
 import path from "path";
 import { fileURLToPath } from "url";
+import { loadEnv } from "vite";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://astro.build/config
 export default defineConfig({
+  // site: "http://localhost:4321",
   // Astroの標準設定（出力先など）
   outDir: "./dist",
   publicDir: "./public",
   image: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "shin-pf.uchiwa-design.net",
-      },
-    ],
+    domains: ["shin-pf.uchiwa-design.net"],
+    // remotePatterns: [
+    //   {
+    //     protocol: "https",
+    //     hostname: "shin-pf.uchiwa-design.net",
+    //   },
+    // ],
+  },
+  server: {
+    host: true,
   },
 
   // Vite固有の設定はこちらに記述します
