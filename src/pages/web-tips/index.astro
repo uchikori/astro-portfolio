@@ -14,6 +14,7 @@ import {
 } from "../../lib/wordpress";
 import CircleImage from "../../components/webgl/CircleImage.astro";
 import BlogLayout from "../../components/blog/BlogLayout.astro";
+import SEO from "../../components/common/SEO.astro";
 
 const page = 1;
 
@@ -25,7 +26,13 @@ const { posts, total, totalPages, currentPage } = await fetchBlogPosts({
 const categories = await fetchWebTipsClasses();
 ---
 
-<Base title="ブログ記事一覧" pageType="web-tips" bodyClass="web-tips">
+<Base pageType="web-tips" bodyClass="web-tips">
+  <Fragment slot="head">
+    <SEO
+      title="ブログ記事一覧"
+      description="Webサイト制作に関するちょっとしたヒントや、デザインの考え方、日々の出来事などを発信しています。"
+    />
+  </Fragment>
   <div class="hl_contentWidthMiddle">
     <CircleImage image="/img/works/works_bg.webp" />
     <PageWrapper>

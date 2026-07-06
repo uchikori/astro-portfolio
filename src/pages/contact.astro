@@ -1,0 +1,453 @@
+﻿---
+import Base from "../layout/Base.astro";
+import PageHeader from "../layout/PageHeader.astro";
+import PageWrapper from "../layout/PageWrapper.astro";
+import CircleImage from "../components/webgl/CircleImage.astro";
+import ArrowLink from "../components/ui/ArrowLink.astro";
+import Sns from "../components/common/Sns.astro";
+import Policy from "../components/common/Policy.astro";
+import SEO from "../components/common/SEO.astro";
+
+const wordpressApiUrl = import.meta.env.WORDPRESS_API_URL || "";
+const wpBaseUrl = wordpressApiUrl.replace(/\/graphql$/, "");
+const formId = import.meta.env.CONTACT_FORM_ID || "166";
+const unitTag = `wpcf7-f${formId}-p0-o1`;
+const cf7Endpoint = `${wpBaseUrl}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`;
+---
+
+<Base pageType="contact" bodyClass="contact">
+  <Fragment slot="head">
+    <SEO
+      title="お問い合わせ"
+      description="Webサイト立ち上げのご相談、お見積りのご依頼（無料）などお気軽にお問い合わせください"
+    />
+  </Fragment>
+  <div class="hl_contentWidthMiddle">
+    <CircleImage image="/img/about/about_bg.webp" />
+    <PageWrapper>
+      <PageHeader ja="お問い合わせ" en="CONTACT" tag="h1" />
+
+      <main class="ly_pageMain">
+        <div class="bl_contactForm_wrapper">
+          <form
+            id="contact-form"
+            class="bl_contactForm"
+            method="post"
+            novalidate
+          >
+            <input type="hidden" name="_wpcf7" value={formId} />
+            <input type="hidden" name="_wpcf7_unit_tag" value={unitTag} />
+            <input type="hidden" name="_wpcf7_container_post" value="0" />
+
+            <div class="bl_contactForm_group">
+              <label for="your-name">
+                お名前
+                <span class="el_label_required">必須</span>
+              </label>
+              <input
+                type="text"
+                name="your-name"
+                id="your-name"
+                placeholder="山田 太郎"
+                required
+              />
+            </div>
+
+            <div class="bl_contactForm_group">
+              <label for="your-kana">
+                フリガナ
+                <span class="el_label_required">必須</span>
+              </label>
+              <input
+                type="text"
+                name="your-kana"
+                id="your-kana"
+                placeholder="ヤマダ タロウ"
+                required
+              />
+            </div>
+
+            <div class="bl_contactForm_group">
+              <label for="your-company">
+                会社名
+                <span class="el_label_optional">任意</span>
+              </label>
+              <input
+                type="text"
+                name="your-company"
+                id="your-company"
+                placeholder="株式会社〇〇"
+              />
+            </div>
+
+            <div class="bl_contactForm_group">
+              <label for="your-mail">
+                メールアドレス
+                <span class="el_label_required">必須</span>
+              </label>
+              <input
+                type="email"
+                name="your-mail"
+                id="your-mail"
+                placeholder="example@domain.com"
+                required
+              />
+            </div>
+
+            <div class="bl_contactForm_group">
+              <label for="your-menu">
+                お問い合わせ種別
+                <span class="el_label_required">必須</span>
+              </label>
+              <select name="your-menu" id="your-menu" required>
+                <option value="">選択してください</option>
+                <option value="公開中の実績について（削除依頼等）"
+                  >公開中の実績について／削除依頼など</option
+                >
+                <option value="非公開の実績について">その他の制作実績</option>
+                <option value="お仕事依頼のご相談"
+                  >お仕事のご依頼またはご相談</option
+                >
+                <option value="その他ご質問等">その他ご質問</option>
+              </select>
+            </div>
+
+            <div class="bl_contactForm_group">
+              <label for="your-message">
+                メッセージ
+                <span class="el_label_required">必須</span>
+              </label>
+              <textarea
+                name="your-message"
+                id="your-message"
+                placeholder="お問い合わせ内容をご入力ください"
+                required></textarea>
+            </div>
+
+            <div class="bl_contactForm_policy">
+              <Policy />
+              <!-- <h3>プライバシーポリシー・個人情報保護方針</h3>
+              <p>
+                当サイトでは、お問い合わせフォーム等からご提供いただく個人情報を、お問い合わせへの回答や必要なご連絡のためにのみ利用します。
+              </p>
+              <p>
+                <strong>1. 個人情報の取得と利用目的</strong><br />
+                お問い合わせフォームに入力された名前、メールアドレス、その他の情報は、お問い合わせ対応の目的に限って利用します。
+              </p>
+              <p>
+                <strong>2. 個人情報の管理</strong><br />
+                当サイトは、個人情報を正確かつ最新の状態で管理し、不正アクセス、紛失、破損、改ざん、漏えいなどを防ぐために適切な対策を講じます。
+              </p>
+              <p>
+                <strong>3. 第三者への開示・提供の禁止</strong><br />
+                法令に基づく場合を除き、本人の同意なく第三者へ個人情報を開示・提供することはありません。
+              </p>
+              <p>
+                <strong>4. ご本人からの照会・修正・削除</strong><br />
+                本人から個人情報の照会、修正、削除のご希望があった場合は、本人確認のうえ、適切に対応します。
+              </p> -->
+            </div>
+
+            <div class="bl_contactForm_privacy bl_contactForm_group">
+              <div style="display:flex;">
+                <input
+                  type="checkbox"
+                  name="your-accept[]"
+                  id="your-accept"
+                  value="プライバシーポリシーに同意する"
+                  required
+                />
+                <label for="your-accept">
+                  プライバシーポリシーに同意する
+                </label>
+              </div>
+            </div>
+
+            <div class="bl_contactForm_submit">
+              <button type="submit" id="submit-button" disabled>
+                <span class="el_spinner" style="display: none;"></span>
+                <span>送信する</span>
+              </button>
+              <div id="submit-status" class="bl_contactForm_submit_status">
+              </div>
+            </div>
+          </form>
+
+          <div id="submit-success" class="bl_contactForm_success" hidden>
+            <div class="bl_contactForm_success_inner">
+              <p class="bl_contactForm_success_text">
+                お問い合わせ内容を受け付けました。確認のうえ、担当者よりご連絡差し上げます。
+              </p>
+              <!-- <div class="bl_contactForm_success_sns">
+                <p>最新情報はSNSでも発信しています。</p>
+                <Sns alignItems="flex-start" />
+              </div> -->
+            </div>
+          </div>
+
+          <p id="submit-result" class="bl_contactForm_submit_result"></p>
+        </div>
+      </main>
+    </PageWrapper>
+  </div>
+</Base>
+
+<style lang="scss">
+  @use "../styles/utility" as *;
+  @use "../styles/global" as *;
+
+  .bl_contactForm_success {
+    margin-top: to-rem(32px);
+    padding: to-rem(32px);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: #09a433;
+    backdrop-filter: blur(8px);
+    border-radius: 1rem;
+
+    &_inner {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(16px);
+    }
+
+    &_kicker {
+      font-size: to-rem(12px);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    &_title {
+      font-size: fluid-text(24px, 36px);
+      line-height: 1.2;
+    }
+
+    &_text {
+      max-width: 44rem;
+      line-height: 1.8;
+    }
+
+    &_actions {
+      margin-top: to-rem(8px);
+    }
+
+    &_sns {
+      margin-top: to-rem(16px);
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(12px);
+    }
+  }
+</style>
+
+<script define:vars={{ cf7Endpoint }}>
+  // 各フィールドを取得
+  const form = document.getElementById("contact-form");
+  const result = document.getElementById("submit-result");
+  const successMessage = document.getElementById("submit-success");
+  const submitButton = document.getElementById("submit-button");
+  const privacyCheckbox = document.getElementById("your-accept");
+  const requiredFields = Array.from(
+    form?.querySelectorAll(
+      "input[required]:not([type='checkbox']), select[required], textarea[required]",
+    ) || [],
+  );
+
+  // タッチされたフィールドを格納するセット
+  const touchedFields = new Set();
+
+  // エラー要素を格納するマップ
+  const errorElements = new Map();
+
+  // エラー表示エリアを作成
+  const createErrorElement = (field) => {
+    const errorEl = document.createElement("div");
+    errorEl.className = "bl_contactForm_error";
+    errorEl.style.color = "#c53a3a";
+    errorEl.style.fontSize = "0.875rem";
+    errorEl.style.marginTop = "0.375rem";
+    errorEl.setAttribute("role", "alert");
+    // field.insertAdjacentElement("afterend", errorEl);
+    const group = field.closest(".bl_contactForm_group");
+
+    if (group) {
+      group.appendChild(errorEl);
+    }
+    return errorEl;
+  };
+
+  const getFieldErrorMessage = (field) => {
+    const value = field.value.trim();
+
+    if (field.type === "email") {
+      if (!value) return "メールアドレスを入力してください。";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        return "メールアドレスの形式が正しくありません。";
+      }
+      return "";
+    }
+
+    if (field.name === "your-kana") {
+      if (!value) return "フリガナを入力してください。";
+      if (!/^[\u30A0-\u30FF\u3005\u3041-\u309Fー]+$/.test(value)) {
+        return "フリガナはカナで入力してください。";
+      }
+      return "";
+    }
+
+    if (field.tagName === "SELECT") {
+      if (!value) return "お問い合わせ種別を選択してください。";
+      return "";
+    }
+
+    if (field.tagName === "TEXTAREA") {
+      if (!value) return "メッセージを入力してください。";
+      return "";
+    }
+
+    if (!value) return "入力してください。";
+    return "";
+  };
+
+  const validateField = (field, force = false) => {
+    const shouldShowError = force || touchedFields.has(field);
+    const message = shouldShowError ? getFieldErrorMessage(field) : "";
+    const errorEl = errorElements.get(field) || createErrorElement(field);
+
+    errorElements.set(field, errorEl);
+    errorEl.textContent = message;
+    field.setAttribute("aria-invalid", message ? "true" : "false");
+
+    return !message;
+  };
+
+  requiredFields.forEach((field) => {
+    field.addEventListener("input", () => {
+      touchedFields.add(field);
+      validateField(field);
+      updateSubmitState();
+    });
+    field.addEventListener("change", () => {
+      touchedFields.add(field);
+      validateField(field);
+      updateSubmitState();
+    });
+    field.addEventListener("blur", () => {
+      touchedFields.add(field);
+      validateField(field);
+    });
+  });
+
+  let privacyErrorElement = null;
+  if (privacyCheckbox) {
+    privacyErrorElement = document.createElement("div");
+    privacyErrorElement.className = "bl_contactForm_error";
+    privacyErrorElement.style.color = "#c53a3a";
+    privacyErrorElement.style.fontSize = "0.875rem";
+    privacyErrorElement.style.marginTop = "0.375rem";
+    privacyErrorElement.setAttribute("role", "alert");
+
+    const group = privacyCheckbox.closest(".bl_contactForm_group");
+    if (group) {
+      group.appendChild(privacyErrorElement);
+    } else {
+      privacyCheckbox.insertAdjacentElement("afterend", privacyErrorElement);
+    }
+    // const privacyErrorElement =
+    //   errorElements.get(privacyCheckbox) || createErrorElement(privacyCheckbox);
+
+    // errorElements.set(privacyCheckbox, privacyErrorElement);
+
+    privacyCheckbox.addEventListener("change", () => {
+      touchedFields.add(privacyCheckbox);
+      updateSubmitState();
+    });
+  }
+
+  const showFormState = () => {
+    form?.removeAttribute("hidden");
+    successMessage?.setAttribute("hidden", "");
+  };
+
+  const showSuccessState = () => {
+    form?.setAttribute("hidden", "");
+    successMessage?.removeAttribute("hidden");
+  };
+
+  const updateSubmitState = () => {
+    const allValid =
+      requiredFields.every((field) => validateField(field)) &&
+      !!privacyCheckbox?.checked;
+    submitButton?.toggleAttribute("disabled", !allValid);
+
+    if (privacyCheckbox && touchedFields.has(privacyCheckbox)) {
+      privacyErrorElement.textContent = privacyCheckbox.checked
+        ? ""
+        : "プライバシーポリシーに同意してください。";
+    } else if (privacyErrorElement) {
+      privacyErrorElement.textContent = "";
+    }
+  };
+
+  const markAllFieldsTouched = () => {
+    requiredFields.forEach((field) => touchedFields.add(field));
+    if (privacyCheckbox) touchedFields.add(privacyCheckbox);
+  };
+
+  showFormState();
+  updateSubmitState();
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    markAllFieldsTouched();
+    const isFormValid =
+      requiredFields.every((field) => validateField(field, true)) &&
+      !!privacyCheckbox?.checked;
+
+    if (!isFormValid) {
+      result.textContent =
+        "必須項目を入力し、プライバシーポリシーに同意してください。";
+      const firstInvalidField = requiredFields.find(
+        (field) => !validateField(field, true),
+      );
+      firstInvalidField?.focus();
+      updateSubmitState();
+      return;
+    }
+
+    submitButton?.setAttribute("disabled", "true");
+    result.textContent = "";
+
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      const response = await fetch(cf7Endpoint, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.status === "mail_sent") {
+        form.reset();
+        touchedFields.clear();
+        showSuccessState();
+        updateSubmitState();
+        return;
+      } else {
+        console.log("CF7 response:", data);
+        if (data.invalid_fields && data.invalid_fields.length > 0) {
+          console.table(data.invalid_fields);
+        }
+        result.textContent = data.message || "送信に失敗しました。";
+      }
+    } catch (error) {
+      console.error("Contact form submit failed:", error);
+      result.textContent =
+        "送信に失敗しました。時間をおいて再度お試しください。";
+    } finally {
+      updateSubmitState();
+    }
+  });
+</script>

@@ -27,9 +27,16 @@ import gallery18 from "../assets/img/about/gallery_18.webp";
 import gallery19 from "../assets/img/about/gallery_19.webp";
 import gallery20 from "../assets/img/about/gallery_20.webp";
 import Gallery from "../components/ui/Gallery.astro";
+import SEO from "../components/common/SEO.astro";
 ---
 
-<Base title="UCHIWAについて" pageType="about" bodyClass="about">
+<Base pageType="about" bodyClass="about">
+  <Fragment slot="head">
+    <SEO
+      title="UCHIWAについて"
+      description="札幌市の個人事業のWebデザイナー。「UCHIWA Creative Studio」という屋号で道内・道外問わず全国のお客様のWebサイト作りに携わらせて頂いております"
+    />
+  </Fragment>
   <div class="hl_contentWidthMiddle">
     <CircleImage image="/img/about/about_bg.webp" />
     <PageWrapper>

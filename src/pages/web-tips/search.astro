@@ -1,0 +1,140 @@
+---
+import Base from "../../layout/Base.astro";
+import PageWrapper from "../../layout/PageWrapper.astro";
+import PageHeader from "../../layout/PageHeader.astro";
+import BlogLayout from "../../components/blog/BlogLayout.astro";
+import CircleImage from "../../components/webgl/CircleImage.astro";
+import { fetchAllBlogPosts, fetchWebTipsClasses } from "../../lib/wordpress";
+
+const allPosts = await fetchAllBlogPosts();
+const categories = await fetchWebTipsClasses();
+
+const stripHtml = (html: string) =>
+  html ? html.replace(/<[^>]*>?/gm, "") : "";
+
+// クライアント側に渡す検索用データ。HTMLタグを除去して小文字化
+const searchData = allPosts.map((post) => {
+  return {
+    title: (post.title || "").toLowerCase(),
+    content: stripHtml(post.content).toLowerCase(),
+    classes: (post.classes || [])
+      .map((cls) => cls.name.toLowerCase())
+      .join(" "),
+  };
+});
+---
+
+<Base title="検索結果" pageType="web-tips" bodyClass="web-tips search-page">
+  <div class="hl_contentWidthMiddle">
+    <CircleImage image="/img/works/works_bg.webp" />
+    <PageWrapper>
+      <PageHeader
+        ja="検索結果"
+        en="SEARCH"
+        tag="h1"
+        breadcrumbLabel="検索結果"
+      />
+
+      <main class="ly_pageMain">
+        <div id="search-result-message" class="bl_searchMessage font-16-24">
+          検索キーワードを読み込み中...
+        </div>
+
+        <div id="search-results-container">
+          <!-- 初期状態ではJSが処理するまで一覧を非表示にするために opacity: 0 を付与 -->
+          <div
+            id="search-results-wrapper"
+            style="opacity: 0; transition: opacity 0.3s ease;"
+          >
+            <BlogLayout
+              posts={allPosts}
+              categories={categories}
+              currentPage={1}
+              totalPages={1}
+            />
+          </div>
+        </div>
+      </main>
+    </PageWrapper>
+  </div>
+</Base>
+
+<script define:vars={{ searchData }}>
+  document.addEventListener("DOMContentLoaded", () => {
+    //URLから検索キーワードを取得
+    const params = new URLSearchParams(window.location.search);
+
+    //「q」パラメータの値を小文字化して取得
+    const query = params.get("q");
+
+    const resultMessage = document.getElementById("search-result-message");
+    const wrapper = document.getElementById("search-results-wrapper");
+    const items = wrapper?.querySelectorAll(".bl_blogGrid_item") || [];
+    const pagination = wrapper?.querySelector(".bl_pagination");
+
+    // 検索結果ではページネーションを非表示にする
+    if (pagination) {
+      pagination.style.display = "none";
+    }
+
+    //クエリが存在しない場合
+    if (!query || query.trim() === "") {
+      if (resultMessage) {
+        resultMessage.textContent = "検索キーワードが入力されていません。";
+      }
+      //クエリが存在しない場合は非表示にする
+      items.forEach((item) => {
+        item.style.display = "none";
+      });
+      if (wrapper) wrapper.style.opacity = "1";
+      return;
+    }
+
+    // query文字列を小文字に変換し、空白（全角・半角）でキーワードを分割
+    const lowerQuery = query.toLowerCase().trim();
+    const keywords = lowerQuery
+      .split(/[\s\u3000]+/)
+      .filter((kw) => kw.length > 0);
+
+    let hitCount = 0;
+
+    items.forEach((item, index) => {
+      const data = searchData[index];
+
+      // OR検索: いずれかのキーワードが含まれていればヒットとする
+      const isMatch =
+        data &&
+        keywords.some(
+          (kw) =>
+            data.title.includes(kw) ||
+            data.content.includes(kw) ||
+            (data.classes && data.classes.includes(kw)),
+        );
+
+      if (isMatch) {
+        item.style.display = "block";
+        hitCount++;
+      } else {
+        item.style.display = "none";
+      }
+    });
+
+    if (resultMessage) {
+      resultMessage.textContent = `「${query}」の検索結果: ${hitCount}件`;
+    }
+
+    // 処理完了後に一覧を表示
+    if (wrapper) wrapper.style.opacity = "1";
+  });
+</script>
+
+<style lang="scss">
+  @use "../../styles/utility" as *;
+  @use "../../styles/global" as *;
+
+  .bl_searchMessage {
+    margin-bottom: to-rem(32px);
+    color: $c-white;
+    font-weight: 500;
+  }
+</style>

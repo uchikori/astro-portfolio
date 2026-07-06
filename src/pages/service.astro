@@ -18,9 +18,16 @@ import MailIcon from "../assets/img/icon/mail.svg";
 import CalculateIcon from "../assets/img/icon/calculator.svg";
 import Label from "../components/ui/Label.astro";
 import CTA from "../components/sections/CTA.astro";
+import SEO from "../components/common/SEO.astro";
 ---
 
-<Base title="事業内容" pageType="service" bodyClass="service">
+<Base pageType="service" bodyClass="service">
+  <Fragment slot="head">
+    <SEO
+      title="事業内容"
+      description="Webを中心に「コンセプトメイキング」「デザイン」「コーディング」等のサイト制作全般の業務を承っております"
+    />
+  </Fragment>
   <div class="hl_contentWidthMiddle">
     <CircleImage image="/img/service/service_bg.webp" />
     <PageWrapper>

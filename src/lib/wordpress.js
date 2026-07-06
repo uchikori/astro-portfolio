@@ -110,6 +110,10 @@ function mapWork(node) {
     thumbnailAlt: featured?.altText ?? "",
     categories,
     tags,
+    mockupImageSp: node.mockUpImageSp?.mockupImageSp ?? null,
+    mockupImageTab: node.mockUpImageTab?.mockupImageTab ?? null,
+    mockupImagePc: node.mockUpImagePc?.mockupImagePc ?? null,
+    mockupMovie: node.mockupMovie?.mockupMovie ?? null,
   };
 }
 

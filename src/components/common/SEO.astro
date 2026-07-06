@@ -1,0 +1,41 @@
+---
+const {
+  title,
+  description,
+  canonical,
+  imgUrl,
+  robotsText = "index,follow",
+} = Astro.props;
+
+const siteUrl = Astro.site;
+
+const canonicalUrl = canonical
+  ? new URL(canonical, siteUrl).href
+  : new URL(Astro.url.pathname, siteUrl).href;
+
+const ogpImg = imgUrl ? imgUrl : new URL("/img/ogp/ogp.webp", siteUrl).href;
+
+const plainDescription = description
+  ? description.replace(/<[^>]*>?/gm, "").trim()
+  : "";
+---
+
+<title>
+  {title ? `${title} | UCHIWA Creative Studio.` : `UCHIWA Creative Studio.`}
+</title>
+<meta name="description" content={plainDescription} />
+<meta name="robots" content={robotsText} />
+<link rel="canonical" href={canonicalUrl} />
+<meta property="og:site_name" content="UCHIWA Creative Studio." />
+<meta
+  property="og:title"
+  content={title
+    ? `${title} | UCHIWA Creative Studio.`
+    : `UCHIWA Creative Studio.`}
+/>
+<meta property="og:description" content={plainDescription} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:image" content={ogpImg} />
+<meta name="twitter:card" content="summary_large_image" />

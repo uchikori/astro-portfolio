@@ -62,6 +62,10 @@
   table {
     width: 100%;
   }
+  td {
+    vertical-align: top;
+    padding: 0.8em;
+  }
   .has-fixed-layout {
     table-layout: fixed;
     width: 100%;
@@ -81,9 +85,16 @@
         background-color: #f0f0f0;
       }
     }
+  }
+
+  .has-white-background-color {
+    color: var(--c-dark);
+    background-color: #fff;
     td {
-      vertical-align: top;
-      padding: 0.8em;
+      &:first-child {
+        background: #eef7fb;
+        color: #0693e3;
+      }
     }
   }
 }

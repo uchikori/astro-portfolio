@@ -9,9 +9,16 @@ import PlanCard from "../components/ui/PlanCard.astro";
 import Banner from "../components/ui/Banner.astro";
 import MailIcon from "../assets/img/icon/mail.svg";
 import CTA from "../components/sections/CTA.astro";
+import SEO from "../components/common/SEO.astro";
 ---
 
-<Base title="料金表" pageType="price" bodyClass="price">
+<Base pageType="price" bodyClass="price">
+  <Fragment slot="head">
+    <SEO
+      title="料金表"
+      description="Webサイト制作にかかる料金表を掲載しております。ご検討の際の目安にぜひご参考ください。"
+    />
+  </Fragment>
   <div class="hl_contentWidthMiddle">
     <CircleImage image="/img/price/price_bg.webp" />
     <PageWrapper>

@@ -6,10 +6,11 @@ import { fileURLToPath } from "url";
 import { loadEnv } from "vite";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const env = loadEnv(process.env.NODE_ENV, __dirname, "CF_");
 
 // https://astro.build/config
 export default defineConfig({
-  // site: "http://localhost:4321",
+  site: env.CF_PAGES_URL || "https://www.uchiwa-design.net",
   // Astroの標準設定（出力先など）
   outDir: "./dist",
   publicDir: "./public",

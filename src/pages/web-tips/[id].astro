@@ -26,6 +26,8 @@ import "prismjs/components/prism-json.js";
 import "prismjs/components/prism-bash.js";
 import Category from "../../components/ui/Category.astro";
 import Time from "../../components/ui/Time.astro";
+import SEO from "../../components/common/SEO.astro";
+import { getImage } from "astro:assets";
 
 export async function getStaticPaths() {
   // キャッシュから全データを一括取得（ビルド中それぞれ1回のみ API コール）
@@ -107,9 +109,31 @@ function highlightCodeBlocks(html) {
 }
 
 const highlightedContent = highlightCodeBlocks(post.content);
+
+let ogpImageUrl = post.thumbnailUrl;
+if (ogpImageUrl) {
+  try {
+    const optimizedImg = await getImage({
+      src: ogpImageUrl,
+      width: 1200,
+      height: 630,
+      format: "webp",
+    });
+    ogpImageUrl = new URL(optimizedImg.src, Astro.site).href;
+  } catch (error) {
+    console.error("[OGP Image Optimization Error]", error);
+  }
+}
 ---
 
-<Base title={post.title} pageType="web-tips-detail" bodyClass="web-tips-detail">
+<Base pageType="web-tips-detail" bodyClass="web-tips-detail">
+  <Fragment slot="head">
+    <SEO
+      title={post.title}
+      description={post.excerpt}
+      imgUrl={ogpImageUrl}
+    />
+  </Fragment>
   <div class="hl_contentWidthMiddle">
     <CircleImage image="/img/works/works_bg.webp" />
     <PageWrapper>
@@ -468,6 +492,48 @@ const highlightedContent = highlightCodeBlocks(post.content);
           border: none;
           color: inherit;
           font-size: inherit;
+        }
+      }
+
+      :global(blockquote) {
+        padding: to-rem(24px) fluid-text(12px, 24px);
+        border-radius: 8px;
+
+        :global(p) {
+          position: relative;
+          background: $c-white;
+          padding: to-rem(12px) to-rem(16px);
+          border-radius: 6px;
+          color: var(--c-dark);
+          &:before,
+          &:after {
+            display: inline-block;
+            width: to-rem(28px);
+            height: to-rem(28px);
+            position: absolute;
+            font-size: fluid-text(32px, 48px);
+            color: #333;
+          }
+          &:before {
+            content: "\201C";
+            top: 0;
+            left: 0;
+            transform: translate(-30%, -100%);
+          }
+          &:after {
+            content: "\201D";
+
+            top: 100%;
+            right: 0;
+            transform: translate(50%, -100%);
+          }
+        }
+
+        :global(cite) {
+          display: block;
+          margin-top: 1em;
+          color: #555;
+          text-decoration: underline;
         }
       }
 

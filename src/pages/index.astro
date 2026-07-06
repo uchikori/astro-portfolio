@@ -12,9 +12,16 @@ import MailIcon from "../assets/img/icon/mail.svg";
 import CalculateIcon from "../assets/img/icon/calculator.svg";
 import FlickerText from "../components/ui/FlickerText.astro";
 import Marquee from "../components/ui/Marquee.astro";
+import SEO from "../components/common/SEO.astro";
 ---
 
-<Base title="Astro-home" pageType="home" bodyClass="home">
+<Base pageType="home" bodyClass="home">
+  <Fragment slot="head">
+    <SEO
+      description="札幌市の個人事業のWebデザイナー。「UCHIWA Creative Studio」という屋号で道内・道外問わず全国のお客様のWebサイト作りに携わらせて頂いております"
+    />
+  </Fragment>
+
   <Kv />
   <ServiceSec />
   <WorksSec />

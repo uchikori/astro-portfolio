@@ -1,5 +1,10 @@
 ---
-const { title = "Astro", pageType, bodyClass } = Astro.props;
+const {
+  title = "UCHIWA Creative Studio.",
+  pageType,
+  bodyClass,
+  description,
+} = Astro.props;
 import "../styles/style.scss";
 import Loader from "../components/common/Loader.astro";
 import Aside from "../components/common/Aside.astro";
@@ -19,11 +24,6 @@ import LoadPP from "../components/webgl/LoadPP.astro";
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <script src="../scripts/index.js"></script>
-    <title>{title}</title>
-    <meta
-      name="description"
-      content="個人ポートフォリオサイトです。Web制作のスキルや経験を紹介しています。"
-    />
     <link
       rel="preload"
       href="/fonts/Orbitron-Medium.woff2"

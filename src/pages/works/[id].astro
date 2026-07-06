@@ -49,6 +49,8 @@ export async function getStaticPaths() {
 }
 
 const { work, relatedWorks } = Astro.props;
+
+console.log(work.mockupImageSp.mediaItemUrl);
 ---
 
 <Base title={work.title} pageType="works-detail" bodyClass="works-detail">
@@ -122,14 +124,14 @@ const { work, relatedWorks } = Astro.props;
 
           <div class="bl_workDetail_mockup">
             {
-              work.mockUpImageSp?.mediaItemUrl && (
+              work.mockupImageSp?.mediaItemUrl && (
                 <figure>
                   <Picture
-                    src={work.mockUpImageSp.mediaItemUrl}
+                    src={work.mockupImageSp.mediaItemUrl}
                     formats={["avif", "webp"]}
                     widths={[375, 710, 1420, 1920]}
                     sizes="(max-width: 768px) 100vw, 1920px"
-                    alt={work.thumbnailAlt || work.title}
+                    alt={work.mockUpImageSp?.altText || work.title}
                     width={710}
                     height={335}
                     loading="lazy"

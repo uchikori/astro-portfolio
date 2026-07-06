@@ -13,6 +13,7 @@ import {
   getPaginationPaths,
 } from "../../../lib/wordpress";
 import BlogLayout from "../../../components/blog/BlogLayout.astro";
+import SEO from "../../../components/common/SEO.astro";
 
 export async function getStaticPaths() {
   const { totalPages } = await fetchBlogPosts({ page: 1 });
@@ -34,6 +35,12 @@ const categories = await fetchWebTipsClasses();
 ---
 
 <Base title="ブログ記事一覧" pageType="web-tips" bodyClass="web-tips">
+  <Fragment slot="head">
+    <SEO
+      title="ブログ記事一覧"
+      description="Webサイト制作に関するちょっとしたヒントや、デザインの考え方、日々の出来事などを発信しています。"
+    />
+  </Fragment>
   <div class="hl_contentWidthMiddle">
     <PageWrapper>
       <PageHeader ja="ブログ記事一覧" en="BLOG" tag="h1" />
