@@ -4,8 +4,6 @@ import PageWrapper from "../../layout/PageWrapper.astro";
 import PageHeader from "../../layout/PageHeader.astro";
 import BlogSidebar from "../../components/blog/BlogSidebar.astro";
 import {
-  fetchAllBlogIds,
-  fetchBlogPostById,
   fetchAllBlogPostsRaw,
   fetchWebTipsClasses,
   getBlogDetailUrl,
@@ -33,22 +31,18 @@ import OptimizedImage from "../../components/blog/OptimizedImage.astro";
 
 export async function getStaticPaths() {
   // キャッシュから全データを一括取得（ビルド中それぞれ1回のみ API コール）
-  const [ids, allPosts, categories] = await Promise.all([
-    fetchAllBlogIds(),
+  const [allPosts, categories] = await Promise.all([
     fetchAllBlogPostsRaw(),
     fetchWebTipsClasses(),
   ]);
 
-  const paths = await Promise.all(
-    ids.map(async (id) => {
-      const post = await fetchBlogPostById(id);
-      if (!post) return null;
-
+  const paths = allPosts
+    .map((post) => {
       // 関連 posts をキャッシュ済みリストから計算（追加 API コールなし）
       const relatedPosts = sortPostsByDateDesc(
         allPosts.filter(
           (entry) =>
-            entry.id !== id &&
+            entry.id !== post.id &&
             (post.classes ?? []).some((cls) =>
               (entry.classes ?? []).some(
                 (entryCls) => entryCls.slug === cls.slug,
@@ -58,13 +52,12 @@ export async function getStaticPaths() {
       ).slice(0, 3);
 
       return {
-        params: { id: String(id) },
+        params: { id: String(post.id) },
         props: { post, relatedPosts, categories },
       };
-    }),
-  );
+    });
 
-  return paths.filter(Boolean);
+  return paths;
 }
 
 const { post, relatedPosts, categories } = Astro.props;
