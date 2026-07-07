@@ -1,0 +1,44 @@
+---
+/**
+ * WordPress のコンテンツ内 <img> タグを Astro の画像最適化で置き換えるコンポーネント。
+ * astro-remote の Markup components prop から呼ばれることを想定。
+ * 属性 (src, alt, width, height, class 等) は自動で渡される。
+ */
+import { Picture } from "astro:assets";
+
+interface Props {
+  src: string;
+  alt?: string;
+  width?: string | number;
+  height?: string | number;
+  class?: string;
+  [key: string]: any;
+}
+
+const { src, alt = "", width, height, class: className, ...rest } = Astro.props;
+
+// width / height が文字列で来る場合があるので数値に変換
+const w = Number(width) || 800;
+const h = Number(height) || 600;
+
+// data: URI やインラインSVGなど最適化できないものはそのまま表示
+const isOptimizable = src && (src.startsWith("http://") || src.startsWith("https://"));
+---
+
+{
+  isOptimizable ? (
+    <Picture
+      src={src}
+      formats={["avif", "webp"]}
+      widths={[375, 710, 1420]}
+      sizes="(max-width: 768px) 100vw, 710px"
+      alt={alt}
+      width={w}
+      height={h}
+      loading="lazy"
+      class={className}
+    />
+  ) : (
+    <img src={src} alt={alt} width={w} height={h} class={className} {...rest} />
+  )
+}

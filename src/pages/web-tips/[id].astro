@@ -28,6 +28,8 @@ import Category from "../../components/ui/Category.astro";
 import Time from "../../components/ui/Time.astro";
 import SEO from "../../components/common/SEO.astro";
 import { getImage } from "astro:assets";
+import { Markup } from "astro-remote";
+import OptimizedImage from "../../components/blog/OptimizedImage.astro";
 
 export async function getStaticPaths() {
   // キャッシュから全データを一括取得（ビルド中それぞれ1回のみ API コール）
@@ -107,8 +109,12 @@ function highlightCodeBlocks(html) {
     },
   );
 }
-
 const highlightedContent = highlightCodeBlocks(post.content);
+
+// WordPressのimgタグをAstroのPictureコンポーネントにマッピングする
+const customComponents = {
+  img: OptimizedImage,
+};
 
 let ogpImageUrl = post.thumbnailUrl;
 if (ogpImageUrl) {
@@ -128,11 +134,7 @@ if (ogpImageUrl) {
 
 <Base pageType="web-tips-detail" bodyClass="web-tips-detail">
   <Fragment slot="head">
-    <SEO
-      title={post.title}
-      description={post.excerpt}
-      imgUrl={ogpImageUrl}
-    />
+    <SEO title={post.title} description={post.excerpt} imgUrl={ogpImageUrl} />
   </Fragment>
   <div class="hl_contentWidthMiddle">
     <CircleImage image="/img/works/works_bg.webp" />
@@ -190,10 +192,16 @@ if (ogpImageUrl) {
                   <h1 class="bl_blogDetail_title font-32-48">{post.title}</h1>
                 </div>
               </header>
-              <div
+              <!-- <div
                 class="bl_blogDetail_content"
                 set:html={highlightedContent}
-              />
+              /> -->
+              <div class="bl_blogDetail_content">
+                <Markup
+                  components={customComponents}
+                  content={highlightedContent}
+                />
+              </div>
               {
                 relatedPosts.length > 0 && (
                   <section class="bl_blogDetail_related">
