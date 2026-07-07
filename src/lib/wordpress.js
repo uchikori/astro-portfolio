@@ -702,15 +702,11 @@ function fetchAllGraphQLBlogPosts() {
           databaseId
           slug
           title
-          content
+
           excerpt
           date
           modified
-          author {
-            node {
-              name
-            }
-          }
+
           featuredImage {
             node {
               mediaItemUrl

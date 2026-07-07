@@ -9,6 +9,8 @@ import {
   getBlogDetailUrl,
   getBlogCategoryUri,
   sortPostsByDateDesc,
+  fetchAllBlogIds,
+  fetchBlogPostById,
 } from "../../lib/wordpress";
 import Picture from "astro/components/Picture.astro";
 import CircleImage from "../../components/webgl/CircleImage.astro";
@@ -31,18 +33,21 @@ import OptimizedImage from "../../components/blog/OptimizedImage.astro";
 
 export async function getStaticPaths() {
   // キャッシュから全データを一括取得（ビルド中それぞれ1回のみ API コール）
-  const [allPosts, categories] = await Promise.all([
+  const [ids, allPosts, categories] = await Promise.all([
+    fetchAllBlogIds(),
     fetchAllBlogPostsRaw(),
     fetchWebTipsClasses(),
   ]);
 
-  const paths = allPosts
-    .map((post) => {
+  const paths = await Promise.all(
+    ids.map(async (id) => {
+      const post = await fetchBlogPostById(id);
+      if (!post) return null;
       // 関連 posts をキャッシュ済みリストから計算（追加 API コールなし）
       const relatedPosts = sortPostsByDateDesc(
         allPosts.filter(
           (entry) =>
-            entry.id !== post.id &&
+            entry.id !== id &&
             (post.classes ?? []).some((cls) =>
               (entry.classes ?? []).some(
                 (entryCls) => entryCls.slug === cls.slug,
@@ -52,12 +57,13 @@ export async function getStaticPaths() {
       ).slice(0, 3);
 
       return {
-        params: { id: String(post.id) },
+        params: { id: String(id) },
         props: { post, relatedPosts, categories },
       };
-    });
+    }),
+  );
 
-  return paths;
+  return paths.filter(Boolean);
 }
 
 const { post, relatedPosts, categories } = Astro.props;
@@ -235,10 +241,16 @@ const jsonLdString = JSON.stringify(jsonLd);
                 set:html={highlightedContent}
               /> -->
               <div class="bl_blogDetail_content">
-                <Markup
-                  components={customComponents}
-                  content={highlightedContent}
-                />
+                {
+                  highlightedContent ? (
+                    <Markup
+                      components={customComponents}
+                      content={highlightedContent}
+                    />
+                  ) : (
+                    <p>記事がありません。</p>
+                  )
+                }
               </div>
               {
                 relatedPosts.length > 0 && (
