@@ -9,6 +9,7 @@ import {
   fetchWorks,
   getPaginationPaths,
 } from "../../../../../lib/wordpress";
+import SEO from "../../../../../components/common/SEO.astro";
 
 export async function getStaticPaths() {
   const categories = await fetchWorkCategories();
@@ -40,11 +41,13 @@ const { works, total, totalPages, currentPage } = await fetchWorks({
 const categories = await fetchWorkCategories();
 ---
 
-<Base
-  title={`${category.name} | 制作物`}
-  pageType="works"
-  bodyClass="works works-category"
->
+<Base pageType="works" bodyClass="works works-category">
+  <Fragment slot="head">
+    <SEO
+      title={`カテゴリー「${category.name}」 | 制作物`}
+      description={category.description}
+    />
+  </Fragment>
   <div class="hl_contentWidthMiddle">
     <PageWrapper>
       <PageHeader

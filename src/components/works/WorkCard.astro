@@ -2,7 +2,7 @@
 import ContentPanel from "../ui/ContentPanel.astro";
 import { getWorkDetailUrl } from "../../lib/wordpress";
 
-const { work } = Astro.props;
+const { work, index } = Astro.props;
 const detailUrl = getWorkDetailUrl(work.id);
 const tags = [...(work.tags?.map((tag) => tag.name) ?? [])];
 ---
@@ -16,6 +16,7 @@ const tags = [...(work.tags?.map((tag) => tag.name) ?? [])];
           tags={tags}
           thumbnail={work.thumbnailUrl}
           thumbnailAlt={work.thumbnailAlt}
+          index={index}
         />
       ) : (
         <div class="bl_workCard_empty">

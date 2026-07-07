@@ -5,6 +5,7 @@ const {
   canonical,
   imgUrl,
   robotsText = "index,follow",
+  jsonLdString,
 } = Astro.props;
 
 const siteUrl = Astro.site;
@@ -39,3 +40,5 @@ const plainDescription = description
 <meta property="og:locale" content="ja_JP" />
 <meta property="og:image" content={ogpImg} />
 <meta name="twitter:card" content="summary_large_image" />
+<!-- 構造化データ -->
+{jsonLdString && <script type="application/ld+json" set:html={jsonLdString} />}

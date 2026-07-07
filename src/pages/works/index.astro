@@ -6,12 +6,19 @@ import WorksList from "../../components/works/WorksList.astro";
 import CategoryNav from "../../components/works/CategoryNav.astro";
 import { fetchWorkCategories, fetchWorks } from "../../lib/wordpress";
 import CircleImage from "../../components/webgl/CircleImage.astro";
+import SEO from "../../components/common/SEO.astro";
 
 const { works, total, totalPages, currentPage } = await fetchWorks({ page: 1 });
 const categories = await fetchWorkCategories();
 ---
 
-<Base title="制作物一覧" pageType="works" bodyClass="works">
+<Base pageType="works" bodyClass="works">
+  <Fragment slot="head">
+    <SEO
+      title="制作物一覧"
+      description="これまでに手がけてきたWebサイトやデザインの制作実績をご紹介します。お客様の目的や課題に合わせて、 企画・デザイン・構築まで一貫して対応しています。"
+    />
+  </Fragment>
   <div class="hl_contentWidthMiddle">
     <CircleImage image="/img/works/works_bg.webp" />
     <PageWrapper>

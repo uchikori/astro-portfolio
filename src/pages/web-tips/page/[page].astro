@@ -34,7 +34,7 @@ const { posts, total, totalPages, currentPage } = await fetchBlogPosts({
 const categories = await fetchWebTipsClasses();
 ---
 
-<Base title="ブログ記事一覧" pageType="web-tips" bodyClass="web-tips">
+<Base pageType="web-tips" bodyClass="web-tips">
   <Fragment slot="head">
     <SEO
       title="ブログ記事一覧"

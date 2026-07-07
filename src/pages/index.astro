@@ -13,12 +13,48 @@ import CalculateIcon from "../assets/img/icon/calculator.svg";
 import FlickerText from "../components/ui/FlickerText.astro";
 import Marquee from "../components/ui/Marquee.astro";
 import SEO from "../components/common/SEO.astro";
+
+const siteUrl = Astro.site;
+const ogpImg = new URL("/img/ogp/ogp.webp", siteUrl).href;
+
+// 構造化データ
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: "UCHIWA Creative Studio",
+  image: ogpImg,
+  email: "info@uchiwa-design.net",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "札幌市",
+    addressRegion: "北海道",
+    addressCountry: "JP",
+  },
+  openingHoursSpecification: {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    opens: "09:00",
+    closes: "18:00",
+  },
+  priceRange: "￥4,000～￥3,000,000",
+  url: "https://www.uchiwa-design.net",
+  sameAs: [
+    "https://x.com/KoriUchiwa",
+    "https://www.facebook.com/WEBdesigner.uchiwa",
+    "https://www.instagram.com/uchiwa_cs/?hl=ja",
+  ],
+  description:
+    "札幌市の個人事業のWebデザイナー。「UCHIWA Creative Studio」という屋号で道内・道外問わず全国のお客様のWebサイト作りに携わらせて頂いております",
+};
+
+const jsonLdString = JSON.stringify(jsonLd);
 ---
 
 <Base pageType="home" bodyClass="home">
   <Fragment slot="head">
     <SEO
       description="札幌市の個人事業のWebデザイナー。「UCHIWA Creative Studio」という屋号で道内・道外問わず全国のお客様のWebサイト作りに携わらせて頂いております"
+      jsonLdString={jsonLdString}
     />
   </Fragment>
 

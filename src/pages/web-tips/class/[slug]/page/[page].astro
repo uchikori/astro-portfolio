@@ -15,6 +15,7 @@ import {
 import CircleImage from "../../../../../components/webgl/CircleImage.astro";
 import BlogLayout from "../../../../../components/blog/BlogLayout.astro";
 import { getPaginationPaths } from "../../../../../lib/wordpress";
+import SEO from "../../../../../components/common/SEO.astro";
 
 export async function getStaticPaths() {
   const classes = await fetchWebTipsClasses();
@@ -61,6 +62,9 @@ const categories = await fetchWebTipsClasses();
 ---
 
 <Base title="ブログ記事一覧" pageType="web-tips" bodyClass="web-tips">
+  <Fragment slot="head">
+    <SEO title=`カテゴリー「${cls.name}」` ` description={cls.description} />
+  </Fragment>
   <div class="hl_contentWidthMiddle">
     <CircleImage image="/img/works/works_bg.webp" />
     <PageWrapper>

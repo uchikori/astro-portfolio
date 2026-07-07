@@ -130,11 +130,56 @@ if (ogpImageUrl) {
     console.error("[OGP Image Optimization Error]", error);
   }
 }
+
+//構造化データ
+const siteUrl = Astro.site;
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+
+  headline: post.title,
+
+  description: post.excerpt,
+
+  image: [post.thumbnailUrl],
+
+  datePublished: post.date,
+
+  dateModified: post.modified,
+
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": canonicalUrl,
+  },
+
+  author: {
+    "@type": "Person",
+    name: post.author,
+  },
+
+  publisher: {
+    "@type": "Organization",
+    name: "UCHIWA Creative Studio",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://www.uchiwa-design.net/img/logo.webp",
+    },
+  },
+};
+
+const jsonLdString = JSON.stringify(jsonLd);
 ---
 
 <Base pageType="web-tips-detail" bodyClass="web-tips-detail">
   <Fragment slot="head">
-    <SEO title={post.title} description={post.excerpt} imgUrl={ogpImageUrl} />
+    <SEO
+      title={post.title}
+      description={post.excerpt}
+      imgUrl={ogpImageUrl}
+      jsonLdString={jsonLdString}
+    />
   </Fragment>
   <div class="hl_contentWidthMiddle">
     <CircleImage image="/img/works/works_bg.webp" />

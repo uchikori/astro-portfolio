@@ -9,6 +9,7 @@ import {
   fetchWorks,
   getPaginationPaths,
 } from "../../../lib/wordpress";
+import SEO from "../../../components/common/SEO.astro";
 
 export async function getStaticPaths() {
   // 総ページ数を取得する
@@ -33,11 +34,13 @@ const { works, total, totalPages, currentPage } = await fetchWorks({ page });
 const categories = await fetchWorkCategories();
 ---
 
-<Base
-  title={`制作物一覧（${currentPage}ページ目）`}
-  pageType="works"
-  bodyClass="works"
->
+<Base pageType="works" bodyClass="works">
+  <Fragment slot="head">
+    <SEO
+      title={`制作物一覧（${currentPage}ページ目）`}
+      description="これまでに手がけてきたWebサイトやデザインの制作実績をご紹介します。お客様の目的や課題に合わせて、 企画・デザイン・構築まで一貫して対応しています。"
+    />
+  </Fragment>
   <div class="hl_contentWidthMiddle">
     <PageWrapper>
       <PageHeader ja="制作物" en="WORKS" tag="h1" />

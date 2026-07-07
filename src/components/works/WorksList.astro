@@ -21,9 +21,9 @@ const { works, currentPage, totalPages, total, category } = Astro.props;
   {
     works.length > 0 ? (
       <ul class="bl_worksList_grid">
-        {works.map((work) => (
+        {works.map((work, index) => (
           <li class="bl_worksList_item">
-            <WorkCard work={work} />
+            <WorkCard work={work} index={index} />
           </li>
         ))}
       </ul>

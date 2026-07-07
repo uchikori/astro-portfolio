@@ -5,27 +5,76 @@ import CircleImage from "../components/webgl/CircleImage.astro";
 import PageHeader from "../layout/PageHeader.astro";
 import PageWrapper from "../layout/PageWrapper.astro";
 import SectionTitle from "../components/ui/SectionTitle.astro";
-import bgService from "../assets/img/service/service_bg.png";
 import CardWithNumber from "../components/ui/CardWithNumber.astro";
 
 import CheckIcon from "../assets/img/icon/check.svg";
 import FlowItem from "../components/ui/FlowItem.astro";
 import FaqItem from "../components/ui/FaqItem.astro";
 import Icon from "../components/ui/Icon.astro";
-import Banner from "../components/ui/Banner.astro";
-const uniqueId = `clip_${Math.floor(Math.random() * 100000000)}`;
-import MailIcon from "../assets/img/icon/mail.svg";
-import CalculateIcon from "../assets/img/icon/calculator.svg";
 import Label from "../components/ui/Label.astro";
 import CTA from "../components/sections/CTA.astro";
 import SEO from "../components/common/SEO.astro";
+
+const faqs = [
+  {
+    question: "相談だけでも大丈夫ですか?",
+    answer:
+      "はい、ご相談だけでも問題ありません。お聞きしたいお悩みや状況、まだ内容が固まっていなくても丁寧にお伺いいたしますので、まずはお気軽にお問い合わせください。",
+  },
+  {
+    question: "費用はどのタイミングで発生しますか？",
+    answer:
+      "サイトの方向性を整理し、大まかな構成（仕様）が固まって「正式にご契約」となった段階で発生します。初回のご相談や、お見積もり・構成のご提案までは無料で対応しております。費用が発生する前に必ず確認を挟みますので、ご安心ください。",
+  },
+  {
+    question: "更新は自分たちでできますか？",
+    answer:
+      "はい、お知らせやブログなど、ご自身で簡単に更新できるシステム（CMS）を導入可能です。ただし、サイト全体を自由に変更できるようにすると、デザインが崩れる原因や構築コストが高くなるリスクがあります。「どこを自分たちで更新したいか」を事前にすり合わせ、最適な範囲をご提案します。",
+  },
+  {
+    question: "原稿や写真がなくても依頼できますか？",
+    answer:
+      "はい、素材が揃っていない状態でもご依頼いただけます。その場合、フリーの高品質な素材写真を使用するか、プロのカメラマンによる撮影（別途費用）をご提案させていただきます。テキストについてもヒアリングを元にこちらで作成をサポートいたしますので、まずは手ぶらでご相談ください。",
+  },
+  {
+    question: "制作期間はどれくらいですか？",
+    answer:
+      "制作するサイトの規模や機能によって異なります。一般的なコーポレートサイトであれば、およそ1ヶ月〜3ヶ月が目安です。お急ぎの場合や、具体的な公開希望日がある場合は、スケジュールを調整できる場合もございますので事前にご相談ください。",
+  },
+  {
+    question: "公開後のサポートはありますか？",
+    answer:
+      "はい、ご希望に合わせて「月額保守プラン」をご用意しております。定期的なメンテナンスやトラブル対応、軽微な修正などをサポートいたします。なお、保守契約を結ばれていない場合でも対応は可能ですが、その都度スポット（有償）でのご対応となります。",
+  },
+  {
+    question: "集客やSEO対策もお願いできますか？",
+    answer:
+      "基本的なSEO対策（検索エンジンに認識されやすい正しいサイト構造の設計など）は標準で対応しております。ただし、特定のキーワードで上位表示を確約するような「高度なSEOコンサルティング」や「継続的な集客マーケティング」につきましては専門外となるため、専門のパートナー企業様をご紹介するか、要件定義の範囲内でのアドバイスに留めさせていただいております。",
+  },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
+const jsonLdString = JSON.stringify(jsonLd);
 ---
 
 <Base pageType="service" bodyClass="service">
   <Fragment slot="head">
     <SEO
       title="事業内容"
-      description="Webを中心に「コンセプトメイキング」「デザイン」「コーディング」等のサイト制作全般の業務を承っております"
+      description="Webを中心に「コンセプトメイキング」「デザイン」「コーディング」等のサイト制作全般の業務を承っております。"
+      jsonLdString={jsonLdString}
     />
   </Fragment>
   <div class="hl_contentWidthMiddle">
@@ -362,38 +411,11 @@ import SEO from "../components/common/SEO.astro";
           </span>
           <SectionTitle title="よくあるご質問" tag="h2" />
           <ul class="bl_faqList">
-            <FaqItem
-              question="相談だけでも大丈夫ですか?"
-              answer="はい、ご相談だけでも問題ありません。お聞きしたいお悩みや状況、まだ内容が固まっていなくても丁寧にお伺いいたしますので、まずはお気軽にお問い合わせください。"
-            />
-            <FaqItem
-              question="費用はどのタイミングで発生しますか？"
-              answer="サイトの方向性を整理し、大まかな構成（仕様）が固まって「正式にご契約」となった段階で発生します。初回のご相談や、お見積もり・構成のご提案までは無料で対応しております。費用が発生する前に必ず確認を挟みますので、ご安心ください。"
-            />
-            <FaqItem
-              question="どの構築方法を選べばいいか分かりません"
-              answer="お客さまの目的や予算、今後の運用体制に合わせて最適な方法をご提案します。「Webの知識がないから選べない」という状態でも全く問題ありません。ヒアリングを通じて、メリット・デメリットを分かりやすく丁寧にご説明いたします。"
-            />
-            <FaqItem
-              question="更新は自分たちでできますか？"
-              answer="はい、お知らせやブログなど、ご自身で簡単に更新できるシステム（CMS）を導入可能です。ただし、サイト全体を自由に変更できるようにすると、デザインが崩れる原因や構築コストが高くなるリスクがあります。「どこを自分たちで更新したいか」を事前にすり合わせ、最適な範囲をご提案します。"
-            />
-            <FaqItem
-              question="原稿や写真がなくても依頼できますか？"
-              answer="はい、素材が揃っていない状態でもご依頼いただけます。その場合、フリーの高品質な素材写真を使用するか、プロのカメラマンによる撮影（別途費用）をご提案させていただきます。テキストについてもヒアリングを元にこちらで作成をサポートいたしますので、まずは手ぶらでご相談ください。"
-            />
-            <FaqItem
-              question="制作期間はどれくらいですか？"
-              answer="制作するサイトの規模や機能によって異なります。一般的なコーポレートサイトであれば、およそ1ヶ月〜3ヶ月が目安です。お急ぎの場合や、具体的な公開希望日がある場合は、スケジュールを調整できる場合もございますので事前にご相談ください。"
-            />
-            <FaqItem
-              question="公開後のサポートはありますか？"
-              answer="はい、ご希望に合わせて「月額保守プラン」をご用意しております。定期的なメンテナンスやトラブル対応、軽微な修正などをサポートいたします。なお、保守契約を結ばれていない場合でも対応は可能ですが、その都度スポット（有償）でのご対応となります。"
-            />
-            <FaqItem
-              question="集客やSEO対策もお願いできますか？"
-              answer="基本的なSEO対策（検索エンジンに認識されやすい正しいサイト構造の設計など）は標準で対応しております。ただし、特定のキーワードで上位表示を確約するような「高度なSEOコンサルティング」や「継続的な集客マーケティング」につきましては専門外となるため、専門のパートナー企業様をご紹介するか、要件定義の範囲内でのアドバイスに留めさせていただいております。"
-            />
+            {
+              faqs?.map((faq) => {
+                return <FaqItem question={faq.question} answer={faq.answer} />;
+              })
+            }
           </ul>
         </section>
         <CTA />

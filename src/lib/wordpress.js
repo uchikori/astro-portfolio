@@ -106,6 +106,7 @@ function mapWork(node) {
     excerpt: node.excerpt ?? "",
     date: node.date,
     modified: node.modified,
+    robots: node.robots?.robotsText ?? null,
     thumbnailUrl: featured?.sourceUrl ?? null,
     thumbnailAlt: featured?.altText ?? "",
     categories,
@@ -128,6 +129,7 @@ function mapCategory(node) {
     name: decodeHtmlEntities(node.name),
     slug: node.slug,
     count: node.count ?? 0,
+    description: decodeHtmlEntities(node.description ?? ""),
   };
 }
 
@@ -245,6 +247,10 @@ async function fetchGraphQLWorkById(id) {
         excerpt
         date
         modified
+        robots {
+          robotsText
+          fieldGroupName
+        }
         featuredImage {
           node {
             sourceUrl
@@ -336,6 +342,7 @@ function fetchGraphQLCategories() {
           name
           slug
           count
+          description
         }
       }
     }
@@ -577,9 +584,10 @@ function mapWebTips(node) {
     slug: node.slug,
     title: stripHtml(node.title),
     content: node.content ?? "",
-    excerpt: node.excerpt ?? "",
+    excerpt: stripHtml(node.excerpt ?? ""),
     date: node.date,
     modified: node.modified,
+    author: node.author?.node.name ?? "",
     thumbnailUrl: featured?.mediaItemUrl ?? null,
     thumbnailAlt: featured?.altText ?? "",
     classes,
@@ -597,6 +605,7 @@ function mapClass(node) {
     name: decodeHtmlEntities(node.name),
     slug: node.slug,
     count: node.count ?? 0,
+    description: node.description ? decodeHtmlEntities(node.description) : "",
   };
 }
 
@@ -737,6 +746,11 @@ async function fetchGraphQLWebTipById(id) {
         excerpt
         date
         modified
+        author{
+          node{
+            name
+          }
+        }
         featuredImage {
           node {
             mediaItemUrl
@@ -776,6 +790,7 @@ function fetchAllGraphQLClasses() {
           name
           slug
           count
+          description
         }
       }
     }

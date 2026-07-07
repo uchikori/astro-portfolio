@@ -4,7 +4,7 @@ import { getBlogDetailUrl } from "../../lib/wordpress";
 import Category from "../ui/Category.astro";
 import Time from "../ui/Time.astro";
 
-const { post } = Astro.props;
+const { post, tag: Tag = "h3", index } = Astro.props;
 const categories = post.classes ?? [];
 const primaryCategory = categories[0];
 ---
@@ -22,7 +22,7 @@ const primaryCategory = categories[0];
             alt={post.thumbnailAlt || post.title}
             width={710}
             height={400}
-            loading="lazy"
+            loading={index < 2 ? "eager" : "lazy"}
           />
         </figure>
       ) : (
@@ -42,7 +42,7 @@ const primaryCategory = categories[0];
       <Time className="bl_blogCard_date" date={post.date} />
     </div>
 
-    <h3 class="bl_blogCard_title font-16-24">{post.title}</h3>
+    <Tag class="bl_blogCard_title font-16-24">{post.title}</Tag>
   </a>
 </article>
 

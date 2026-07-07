@@ -37,13 +37,17 @@ const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
   class:list={["bl_pagination", marginTop === "lg" && "bl_pagination--lgTop"]}
   aria-label={ariaLabel}
 >
-  <a
-    class:list={["bl_pagination_btn", !prevUrl && "is-disabled"]}
-    href={prevUrl ?? undefined}
-    aria-disabled={!prevUrl}
-  >
-    前へ
-  </a>
+  {
+    prevUrl && (
+      <a
+        class:list={["bl_pagination_btn", !prevUrl && "is-disabled"]}
+        href={prevUrl}
+        aria-disabled={!prevUrl}
+      >
+        前へ
+      </a>
+    )
+  }
 
   <ol class="bl_pagination_list">
     {
@@ -64,13 +68,17 @@ const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
     }
   </ol>
 
-  <a
-    class:list={["bl_pagination_btn", !nextUrl && "is-disabled"]}
-    href={nextUrl ?? undefined}
-    aria-disabled={!nextUrl}
-  >
-    次へ
-  </a>
+  {
+    nextUrl && (
+      <a
+        class:list={["bl_pagination_btn", !nextUrl && "is-disabled"]}
+        href={nextUrl}
+        aria-disabled={!nextUrl}
+      >
+        次へ
+      </a>
+    )
+  }
 </nav>
 
 <style lang="scss">

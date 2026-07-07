@@ -15,6 +15,7 @@ import {
   getWorkCategoryTagUrl,
 } from "../../lib/wordpress";
 import Picture from "astro/components/Picture.astro";
+import SEO from "../../components/common/SEO.astro";
 
 export async function getStaticPaths() {
   // キャッシュから全 works を取得（ビルド中1回のみ API コール）
@@ -51,7 +52,15 @@ export async function getStaticPaths() {
 const { work, relatedWorks } = Astro.props;
 ---
 
-<Base title={work.title} pageType="works-detail" bodyClass="works-detail">
+<Base pageType="works-detail" bodyClass="works-detail">
+  <Fragment slot="head">
+    <SEO
+      title={work.title}
+      description={work.excerpt}
+      imgUrl={work.thumbnailUrl}
+      robotsText={work.robots}
+    />
+  </Fragment>
   <div class="hl_contentWidthMiddle">
     <PageWrapper>
       <PageHeader

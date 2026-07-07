@@ -16,9 +16,9 @@ const { posts, categories, currentPage, totalPages, category } = Astro.props;
 
     <ul class="bl_blogGrid_list">
       {
-        posts.map((post) => (
+        posts.map((post, index) => (
           <li class="bl_blogGrid_item">
-            <BlogCard post={post} />
+            <BlogCard post={post} tag="h2" index={index} />
           </li>
         ))
       }

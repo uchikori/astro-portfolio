@@ -1,5 +1,5 @@
 ---
-const { title, tags, thumbnail, thumbnailAlt } = Astro.props;
+const { title, tags, thumbnail, thumbnailAlt, index } = Astro.props;
 import { Image, Picture } from "astro:assets";
 import Tag from "../ui/Tag.astro";
 ---
@@ -14,7 +14,7 @@ import Tag from "../ui/Tag.astro";
       alt={thumbnailAlt}
       width={710}
       height={400}
-      loading="lazy"
+      loading={index < 3 ? "eager" : "lazy"}
     />
   </figure>
   <ul class="bl_contentPanel_tags">

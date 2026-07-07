@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 astro dev --host",
+    "dev": "cross-env astro dev --host",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
