@@ -3,6 +3,7 @@ import BlogSidebar from "./BlogSidebar.astro";
 import Pagination from "../ui/Pagination.astro";
 import BlogCard from "./BlogCard.astro";
 import { getBlogListUrl } from "../../lib/wordpress";
+import BlogAdsence from "./BlogAdsence.astro";
 const { posts, categories, currentPage, totalPages, category } = Astro.props;
 ---
 
@@ -24,19 +25,7 @@ const { posts, categories, currentPage, totalPages, category } = Astro.props;
       }
     </ul>
 
-    <div class="bl_blogAdsence">
-      <div class="hl_adsence">
-        <ins
-          class="adsbygoogle"
-          style="display:block"
-          data-ad-format="autorelaxed"
-          data-ad-client="ca-pub-3842486595943279"
-          data-ad-slot="1692299501"></ins>
-        <script is:inline>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-      </div>
-    </div>
+    <BlogAdsence />
 
     <Pagination
       currentPage={currentPage}

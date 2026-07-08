@@ -107,13 +107,17 @@ const highlightedContent = highlightCodeBlocks(post.content);
 // astro-remote内部のultrahtmlがパースエラーを起こしてビルドがクラッシュするため、
 // 事前にパーステストを行い、失敗した場合は標準の set:html にフォールバックする
 import { parse } from "ultrahtml";
+import BlogAdsence from "../../components/blog/BlogAdsence.astro";
 
 let isValidHtml = true;
 if (highlightedContent) {
   try {
     await parse(highlightedContent);
   } catch (error) {
-    console.warn(`[astro-remote parse error on post ID: ${post.id}]:`, error.message);
+    console.warn(
+      `[astro-remote parse error on post ID: ${post.id}]:`,
+      error.message,
+    );
     isValidHtml = false;
   }
 }
@@ -258,6 +262,9 @@ const jsonLdString = JSON.stringify(jsonLd);
                   )
                 }
               </div>
+
+              <BlogAdsence />
+
               {
                 relatedPosts.length > 0 && (
                   <section class="bl_blogDetail_related">
