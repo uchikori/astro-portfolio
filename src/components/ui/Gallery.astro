@@ -19,36 +19,37 @@ const { className = "" } = Astro.props;
 
 <script>
   const initLightbox = () => {
-    console.log('[Lightbox] Initializing lightbox...');
-    const galleries = document.querySelectorAll('.bl_gallery');
-    console.log(`[Lightbox] Found ${galleries.length} galleries.`);
+    const galleries = document.querySelectorAll(".bl_gallery");
 
     galleries.forEach((gallery, gIndex) => {
       // Find the associated modal by scanning forward siblings
       let nextEl = gallery.nextElementSibling;
-      while (nextEl && !nextEl.classList.contains('bl_lightbox')) {
+      while (nextEl && !nextEl.classList.contains("bl_lightbox")) {
         nextEl = nextEl.nextElementSibling;
       }
       const modal = nextEl as HTMLElement;
       if (!modal) {
-        console.error('[Lightbox] Modal not found for gallery index:', gIndex);
+        console.error("[Lightbox] Modal not found for gallery index:", gIndex);
         return;
       }
-      console.log('[Lightbox] Modal found successfully. Appending to body...');
-      
+
       // Move modal to document.body to escape GSAP ScrollSmoother's transform container
       document.body.appendChild(modal);
 
-      const lightboxImg = modal.querySelector('.bl_lightbox_img') as HTMLImageElement;
-      const lightboxCaption = modal.querySelector('.bl_lightbox_caption') as HTMLElement;
-      const closeBtn = modal.querySelector('.bl_lightbox_close') as HTMLElement;
-      const prevBtn = modal.querySelector('.bl_lightbox_prev') as HTMLElement;
-      const nextBtn = modal.querySelector('.bl_lightbox_next') as HTMLElement;
+      const lightboxImg = modal.querySelector(
+        ".bl_lightbox_img",
+      ) as HTMLImageElement;
+      const lightboxCaption = modal.querySelector(
+        ".bl_lightbox_caption",
+      ) as HTMLElement;
+      const closeBtn = modal.querySelector(".bl_lightbox_close") as HTMLElement;
+      const prevBtn = modal.querySelector(".bl_lightbox_prev") as HTMLElement;
+      const nextBtn = modal.querySelector(".bl_lightbox_next") as HTMLElement;
 
       let currentIndex = -1;
 
       // Helper to dynamically get images inside this gallery
-      const getImages = () => Array.from(gallery.querySelectorAll('img'));
+      const getImages = () => Array.from(gallery.querySelectorAll("img"));
 
       function openLightbox(index: number, activeImgs: HTMLImageElement[]) {
         currentIndex = index;
@@ -58,10 +59,10 @@ const { className = "" } = Astro.props;
         lightboxImg.src = img.currentSrc || img.src;
         lightboxImg.alt = img.alt;
         lightboxCaption.textContent = img.alt || `Image ${currentIndex + 1}`;
-        
-        modal.classList.add('is_active');
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling background
+
+        modal.classList.add("is_active");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden"; // Prevent scrolling background
       }
 
       function changeImage(newIndex: number) {
@@ -70,53 +71,55 @@ const { className = "" } = Astro.props;
         const nextImg = activeImgs[newIndex];
         if (!nextImg) return;
 
-        lightboxImg.classList.add('is_switching');
+        lightboxImg.classList.add("is_switching");
 
         setTimeout(() => {
           currentIndex = newIndex;
           lightboxImg.src = nextImg.currentSrc || nextImg.src;
           lightboxImg.alt = nextImg.alt;
-          lightboxCaption.textContent = nextImg.alt || `Image ${currentIndex + 1}`;
+          lightboxCaption.textContent =
+            nextImg.alt || `Image ${currentIndex + 1}`;
 
           const handleLoad = () => {
-            lightboxImg.classList.remove('is_switching');
-            lightboxImg.removeEventListener('load', handleLoad);
+            lightboxImg.classList.remove("is_switching");
+            lightboxImg.removeEventListener("load", handleLoad);
           };
 
           if (lightboxImg.complete) {
-            lightboxImg.classList.remove('is_switching');
+            lightboxImg.classList.remove("is_switching");
           } else {
-            lightboxImg.addEventListener('load', handleLoad);
+            lightboxImg.addEventListener("load", handleLoad);
           }
         }, 150); // 150ms matches the fade-out duration
       }
 
       function closeLightbox() {
-        modal.classList.remove('is_active');
-        modal.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-        lightboxImg.classList.remove('is_switching');
+        modal.classList.remove("is_active");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        lightboxImg.classList.remove("is_switching");
       }
 
       function showNext() {
         const activeImgs = getImages();
-        const nextIndex = currentIndex < activeImgs.length - 1 ? currentIndex + 1 : 0;
+        const nextIndex =
+          currentIndex < activeImgs.length - 1 ? currentIndex + 1 : 0;
         changeImage(nextIndex);
       }
 
       function showPrev() {
         const activeImgs = getImages();
-        const prevIndex = currentIndex > 0 ? currentIndex - 1 : activeImgs.length - 1;
+        const prevIndex =
+          currentIndex > 0 ? currentIndex - 1 : activeImgs.length - 1;
         changeImage(prevIndex);
       }
 
       // Event delegation for clicks on gallery images
-      gallery.addEventListener('click', (e) => {
+      gallery.addEventListener("click", (e) => {
         const target = e.target as HTMLElement;
-        const img = target.closest('img');
+        const img = target.closest("img");
         if (!img) return;
 
-        console.log('[Lightbox] Image clicked:', img.src);
         const activeImgs = getImages();
         const index = activeImgs.indexOf(img);
         if (index !== -1) {
@@ -124,35 +127,38 @@ const { className = "" } = Astro.props;
         }
       });
 
-      closeBtn.addEventListener('click', closeLightbox);
-      prevBtn.addEventListener('click', (e) => {
+      closeBtn.addEventListener("click", closeLightbox);
+      prevBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         showPrev();
       });
-      nextBtn.addEventListener('click', (e) => {
+      nextBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         showNext();
       });
 
       // Close when clicking outside the content
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal || e.target === modal.querySelector('.bl_lightbox_content')) {
+      modal.addEventListener("click", (e) => {
+        if (
+          e.target === modal ||
+          e.target === modal.querySelector(".bl_lightbox_content")
+        ) {
           closeLightbox();
         }
       });
 
       // Keyboard navigation
-      document.addEventListener('keydown', (e) => {
-        if (!modal.classList.contains('is_active')) return;
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowRight') showNext();
-        if (e.key === 'ArrowLeft') showPrev();
+      document.addEventListener("keydown", (e) => {
+        if (!modal.classList.contains("is_active")) return;
+        if (e.key === "Escape") closeLightbox();
+        if (e.key === "ArrowRight") showNext();
+        if (e.key === "ArrowLeft") showPrev();
       });
     });
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initLightbox);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initLightbox);
   } else {
     initLightbox();
   }
@@ -173,8 +179,11 @@ const { className = "" } = Astro.props;
       cursor: pointer;
       overflow: hidden;
       border-radius: to-rem(8px);
-      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), filter 0.3s ease, box-shadow 0.3s ease;
-      
+      transition:
+        transform 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+        filter 0.3s ease,
+        box-shadow 0.3s ease;
+
       &:hover {
         transform: scale(1.03) translateY(-4px);
         filter: brightness(1.1);
@@ -226,7 +235,9 @@ const { className = "" } = Astro.props;
     object-fit: contain;
     border-radius: to-rem(8px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-    transition: opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1), transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+    transition:
+      opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+      transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
     opacity: 1;
     transform: scale(1);
 

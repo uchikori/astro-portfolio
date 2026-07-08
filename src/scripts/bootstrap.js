@@ -29,12 +29,6 @@ export async function init() {
     await gui.init();
   }
 
-  if (navigator.gpu === undefined) {
-    console.log("WebGPU is not available");
-  } else {
-    console.log("WebGPU is available");
-  }
-
   //viewportを初期化
   viewport.init(canvas);
 
@@ -74,8 +68,6 @@ export async function init() {
   addGUI();
 
   // const pages = import.meta.glob("./page/*.js", { eager: true });
-
-  // console.log(pages);
 
   // const loadPage = async (name) => {
   //   const module = pages[`./page/${name}.js`];

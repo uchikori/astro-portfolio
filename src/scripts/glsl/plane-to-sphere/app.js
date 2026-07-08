@@ -105,7 +105,7 @@ async function init() {
       return arry;
     }
 
-    console.log(delayVertices);
+    // console.log(delayVertices);
 
     geometry.setAttribute(
       "aDelay",
@@ -189,7 +189,7 @@ async function init() {
     new THREE.InstancedBufferAttribute(instanceUVs, 2),
   );
 
-  console.log(instancedMesh);
+  // console.log(instancedMesh);
 
   // Uniform
   const uTex = await loadTex("/img/output1.jpg");
@@ -314,7 +314,7 @@ async function init() {
 
 function printMat(targetMatrix, col = 4, label = "") {
   const mat1D = targetMatrix?.elements ?? targetMatrix?.array ?? targetMatrix;
-  console.log(mat1D);
+  // console.log(mat1D);
   if ((!mat1D) instanceof Array) return;
   setTimeout(() => {
     // 非同期でマトリクスが更新されるため、非同期で実行
@@ -326,10 +326,10 @@ function printMat(targetMatrix, col = 4, label = "") {
       lastArry.push(v);
       return arry2D;
     }, []);
-    console.log(
-      `%c${label}`,
-      "font-size: 1.3em; color: red; background-color: #e4e4e4;",
-    );
+    // console.log(
+    //   `%c${label}`,
+    //   "font-size: 1.3em; color: red; background-color: #e4e4e4;",
+    // );
     console.table(mat2D);
   });
 }

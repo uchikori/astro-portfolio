@@ -434,7 +434,6 @@ const cf7Endpoint = `${wpBaseUrl}/wp-json/contact-form-7/v1/contact-forms/${form
         updateSubmitState();
         return;
       } else {
-        console.log("CF7 response:", data);
         if (data.invalid_fields && data.invalid_fields.length > 0) {
           console.table(data.invalid_fields);
         }
