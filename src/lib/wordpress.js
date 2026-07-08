@@ -879,6 +879,61 @@ export async function fetchBlogPostById(id) {
 }
 
 /**
+ * 全ての web-tips をコンテンツ付きで取得する（getStaticPaths用）
+ * @returns {Promise<Array>}
+ */
+export async function fetchAllBlogPostsWithContent() {
+  if (!isWordPressConfigured()) {
+    return [];
+  }
+
+  const query = `
+    query GetWebTipsWithContent {
+      allWebTips(first: 1000) {
+        nodes {
+          databaseId
+          slug
+          title
+          content
+          excerpt
+          date
+          modified
+          author {
+            node {
+              name
+            }
+          }
+          featuredImage {
+            node {
+              mediaItemUrl
+              altText
+            }
+          }
+          terms {
+            nodes {
+              databaseId
+              name
+              slug
+              taxonomyName
+              count
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const data = await wpGraphQLFetch(query);
+    return (data.allWebTips?.nodes ?? []).map(mapWebTips);
+  } catch (error) {
+    console.error("[wordpress] GraphQL fetchAllBlogPostsWithContent error:", error);
+    return [];
+  }
+}
+
+
+/**
  * web-tips のカテゴリを取得する
  * @returns {Promise<Array>}
  */

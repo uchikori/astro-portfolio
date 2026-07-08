@@ -4,13 +4,11 @@ import PageWrapper from "../../layout/PageWrapper.astro";
 import PageHeader from "../../layout/PageHeader.astro";
 import BlogSidebar from "../../components/blog/BlogSidebar.astro";
 import {
-  fetchAllBlogPostsRaw,
   fetchWebTipsClasses,
   getBlogDetailUrl,
   getBlogCategoryUri,
   sortPostsByDateDesc,
-  fetchAllBlogIds,
-  fetchBlogPostById,
+  fetchAllBlogPostsWithContent,
 } from "../../lib/wordpress";
 import Picture from "astro/components/Picture.astro";
 import CircleImage from "../../components/webgl/CircleImage.astro";
@@ -32,38 +30,33 @@ import { Markup } from "astro-remote";
 import OptimizedImage from "../../components/blog/OptimizedImage.astro";
 
 export async function getStaticPaths() {
-  // キャッシュから全データを一括取得（ビルド中それぞれ1回のみ API コール）
-  const [ids, allPosts, categories] = await Promise.all([
-    fetchAllBlogIds(),
-    fetchAllBlogPostsRaw(),
+  // キャッシュから全データを一括取得（記事の中身も含むため API コールは計2回で完結）
+  const [allPostsWithContent, categories] = await Promise.all([
+    fetchAllBlogPostsWithContent(),
     fetchWebTipsClasses(),
   ]);
 
-  const paths = await Promise.all(
-    ids.map(async (id) => {
-      const post = await fetchBlogPostById(id);
-      if (!post) return null;
-      // 関連 posts をキャッシュ済みリストから計算（追加 API コールなし）
-      const relatedPosts = sortPostsByDateDesc(
-        allPosts.filter(
-          (entry) =>
-            entry.id !== id &&
-            (post.classes ?? []).some((cls) =>
-              (entry.classes ?? []).some(
-                (entryCls) => entryCls.slug === cls.slug,
-              ),
+  const paths = allPostsWithContent.map((post) => {
+    // 関連 posts を計算（追加 API コールなし）
+    const relatedPosts = sortPostsByDateDesc(
+      allPostsWithContent.filter(
+        (entry) =>
+          entry.id !== post.id &&
+          (post.classes ?? []).some((cls) =>
+            (entry.classes ?? []).some(
+              (entryCls) => entryCls.slug === cls.slug,
             ),
-        ),
-      ).slice(0, 3);
+          ),
+      ),
+    ).slice(0, 3);
 
-      return {
-        params: { id: String(id) },
-        props: { post, relatedPosts, categories },
-      };
-    }),
-  );
+    return {
+      params: { id: String(post.id) },
+      props: { post, relatedPosts, categories },
+    };
+  });
 
-  return paths.filter(Boolean);
+  return paths;
 }
 
 const { post, relatedPosts, categories } = Astro.props;
@@ -109,6 +102,21 @@ function highlightCodeBlocks(html) {
   );
 }
 const highlightedContent = highlightCodeBlocks(post.content);
+
+// WordPressからのHTMLに不正な記述（未定義のタグや属性など）が含まれている場合、
+// astro-remote内部のultrahtmlがパースエラーを起こしてビルドがクラッシュするため、
+// 事前にパーステストを行い、失敗した場合は標準の set:html にフォールバックする
+import { parse } from "ultrahtml";
+
+let isValidHtml = true;
+if (highlightedContent) {
+  try {
+    await parse(highlightedContent);
+  } catch (error) {
+    console.warn(`[astro-remote parse error on post ID: ${post.id}]:`, error.message);
+    isValidHtml = false;
+  }
+}
 
 // WordPressのimgタグをAstroのPictureコンポーネントにマッピングする
 const customComponents = {
@@ -236,19 +244,17 @@ const jsonLdString = JSON.stringify(jsonLd);
                   <h1 class="bl_blogDetail_title font-32-48">{post.title}</h1>
                 </div>
               </header>
-              <!-- <div
-                class="bl_blogDetail_content"
-                set:html={highlightedContent}
-              /> -->
               <div class="bl_blogDetail_content">
                 {
-                  highlightedContent ? (
+                  !highlightedContent ? (
+                    <p>記事がありません。</p>
+                  ) : isValidHtml ? (
                     <Markup
                       components={customComponents}
                       content={highlightedContent}
                     />
                   ) : (
-                    <p>記事がありません。</p>
+                    <Fragment set:html={highlightedContent} />
                   )
                 }
               </div>
