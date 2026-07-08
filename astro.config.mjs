@@ -4,6 +4,7 @@ import glslify from "rollup-plugin-glslify";
 import path from "path";
 import { fileURLToPath } from "url";
 import { loadEnv } from "vite";
+import sitemap from "@astrojs/sitemap";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const env = loadEnv(process.env.NODE_ENV, __dirname, "CF_");
@@ -26,6 +27,7 @@ export default defineConfig({
   server: {
     host: true,
   },
+  integrations: [sitemap()],
 
   // Vite固有の設定はこちらに記述します
   vite: {
