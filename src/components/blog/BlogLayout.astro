@@ -4,6 +4,7 @@ import Pagination from "../ui/Pagination.astro";
 import BlogCard from "./BlogCard.astro";
 import { getBlogListUrl } from "../../lib/wordpress";
 import BlogAdsence from "./BlogAdsence.astro";
+import GlassBox from "../ui/GlassBox.astro";
 const { posts, categories, currentPage, totalPages, category } = Astro.props;
 ---
 
@@ -25,7 +26,9 @@ const { posts, categories, currentPage, totalPages, category } = Astro.props;
       }
     </ul>
 
-    <BlogAdsence />
+    <GlassBox>
+      <BlogAdsence />
+    </GlassBox>
 
     <Pagination
       currentPage={currentPage}
@@ -68,6 +71,9 @@ const { posts, categories, currentPage, totalPages, category } = Astro.props;
   .bl_blogGrid {
     width: calc(800 / 1280) * 100%;
     flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: to-rem(32px);
     @include mq("lg") {
       width: 100%;
     }

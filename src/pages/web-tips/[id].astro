@@ -28,6 +28,9 @@ import SEO from "../../components/common/SEO.astro";
 import { getImage } from "astro:assets";
 import { Markup } from "astro-remote";
 import OptimizedImage from "../../components/blog/OptimizedImage.astro";
+import { parse } from "ultrahtml";
+import BlogAdsence from "../../components/blog/BlogAdsence.astro";
+import BlogAdsenceDisplay from "../../components/blog/BlogAdsenceDisplay.astro";
 
 export async function getStaticPaths() {
   // キャッシュから全データを一括取得（記事の中身も含むため API コールは計2回で完結）
@@ -106,8 +109,6 @@ const highlightedContent = highlightCodeBlocks(post.content);
 // WordPressからのHTMLに不正な記述（未定義のタグや属性など）が含まれている場合、
 // astro-remote内部のultrahtmlがパースエラーを起こしてビルドがクラッシュするため、
 // 事前にパーステストを行い、失敗した場合は標準の set:html にフォールバックする
-import { parse } from "ultrahtml";
-import BlogAdsence from "../../components/blog/BlogAdsence.astro";
 
 let isValidHtml = true;
 if (highlightedContent) {
@@ -248,6 +249,7 @@ const jsonLdString = JSON.stringify(jsonLd);
                   <h1 class="bl_blogDetail_title font-32-48">{post.title}</h1>
                 </div>
               </header>
+              <BlogAdsenceDisplay />
               <div class="bl_blogDetail_content">
                 {
                   !highlightedContent ? (
@@ -262,8 +264,6 @@ const jsonLdString = JSON.stringify(jsonLd);
                   )
                 }
               </div>
-
-              <BlogAdsence />
 
               {
                 relatedPosts.length > 0 && (
@@ -317,6 +317,8 @@ const jsonLdString = JSON.stringify(jsonLd);
                   </section>
                 )
               }
+
+              <BlogAdsence />
             </div>
           </article>
           <div class="bl_blogDetailSidebar">

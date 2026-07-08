@@ -3,6 +3,7 @@ import Picture from "astro/components/Picture.astro";
 import { getBlogDetailUrl } from "../../lib/wordpress";
 import { getBlogCategoryUri } from "../../lib/wordpress";
 import { fetchPageViews } from "../../lib/wordpress";
+import BlogAdsenceSidebar from "./BlogAdsenceSidebar.astro";
 
 const { categories = [], rankingPosts: fallbackRankingPosts = [] } =
   Astro.props;
@@ -130,6 +131,10 @@ const rankingPosts =
         ))
       }
     </ol>
+  </section>
+
+  <section class="bl_blogSidebar_box">
+    <BlogAdsenceSidebar />
   </section>
 </aside>
 
