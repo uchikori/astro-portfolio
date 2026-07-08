@@ -182,7 +182,7 @@ const { works, total, totalPages, currentPage } = await fetchWorks({
         width: 100%;
       }
     }
-    ::global(.bl_works_title) {
+    :global(.bl_works_title) {
       @include mq("xl") {
         order: 1;
       }
@@ -275,20 +275,20 @@ const { works, total, totalPages, currentPage } = await fetchWorks({
       &_pagination {
         display: flex;
         gap: to-rem(10px);
-        ::global(.swiper-pagination-bullet) {
+        :global(.swiper-pagination-bullet) {
           display: block;
           width: to-rem(40px);
           height: 4px;
           background-color: var(--c-text);
         }
-        ::global(.swiper-pagination-bullet-active) {
+        :global(.swiper-pagination-bullet-active) {
           display: block;
           width: to-rem(64px);
           height: 4px;
           background-color: $c-orange;
         }
       }
-      ::global(.swiper-notification) {
+      :global(.swiper-notification) {
         display: none;
       }
     }

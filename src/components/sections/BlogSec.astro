@@ -130,7 +130,7 @@ const { posts, total, totalPages, currentPage } = await fetchBlogPosts({
       align-items: flex-end;
       gap: fluid-text(30px, 100px);
       @include mq("lg") {
-        ::global(.el_link) {
+        :global(.el_link) {
           display: none;
         }
       }
@@ -148,7 +148,7 @@ const { posts, total, totalPages, currentPage } = await fetchBlogPosts({
         display: block;
       }
     }
-    ::global(.el_bilingualBtn) {
+    :global(.el_bilingualBtn) {
       margin-top: fluid-text(30px, 80px);
     }
   }

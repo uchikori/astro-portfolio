@@ -7,14 +7,10 @@ const {
 } = Astro.props;
 import "../styles/style.scss";
 import Loader from "../components/common/Loader.astro";
-import Aside from "../components/common/Aside.astro";
-import Video from "../components/ui/Video.astro";
 import Header from "../components/common/Header.astro";
-import Menu from "../components/common/Menu.astro";
-import Nav from "../components/common/Nav.astro";
 import Footer from "../components/common/Footer.astro";
-import FresnelBG from "../components/webgl/FresnelBG.astro";
 import LoadPP from "../components/webgl/LoadPP.astro";
+import { ClientRouter } from "astro:transitions";
 ---
 
 <html lang="ja">
@@ -60,9 +56,7 @@ import LoadPP from "../components/webgl/LoadPP.astro";
         </div>
       </div>
     </div>
-  </body>
-
-  <style lang="scss">
+  </body><style lang="scss">
     @use "../styles/global" as *;
     @use "sass:math";
 
