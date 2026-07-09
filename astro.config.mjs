@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { loadEnv } from "vite";
 import sitemap from "@astrojs/sitemap";
+import vercel from "@astrojs/vercel";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const env = loadEnv(process.env.NODE_ENV, __dirname, "CF_");
@@ -15,6 +16,7 @@ export default defineConfig({
   // Astroの標準設定（出力先など）
   outDir: "./dist",
   publicDir: "./public",
+  adapter: vercel(),
   image: {
     domains: ["shin-pf.uchiwa-design.net"],
     // remotePatterns: [

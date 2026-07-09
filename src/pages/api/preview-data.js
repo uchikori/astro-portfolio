@@ -1,10 +1,21 @@
-export default async function handler(req, res) {
+// ----------------------------------
+// 記事のプレビューデータを取得するAPI
+// ----------------------------------
+
+// サーバーサイドレンダリングを指定
+export const prerender = false;
+
+// GETメソッドのハンドラ
+export const GET = async ({ request, url }) => {
   //1. クエリパラメータから記事IDを取得
-  const { id } = req.query;
+  const id = url.searchParams.get("id");
 
   // 記事IDがなければ400エラー
   if (!id) {
-    return res.status(400).json({ error: "Missing id" });
+    return new Response(JSON.stringify({ error: "Missing id" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   const WP_USER = import.meta.env.WORDPRESS_USER;
@@ -42,9 +53,16 @@ export default async function handler(req, res) {
   // GraphQLでエラーが出た場合
   if (statusData.errors) {
     console.error(statusData.errors);
-    return res
-      .status(500)
-      .json({ error: "Status fetch failed", details: statusData.errors });
+    return new Response(
+      JSON.stringify({
+        error: "Status fetch failed",
+        details: statusData.errors,
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
   }
 
   // 投稿のステータス(publish or draft)
@@ -52,7 +70,10 @@ export default async function handler(req, res) {
 
   // 投稿のステータスが取得できない場合はエラー
   if (!postStatus) {
-    return res.status(404).json({ error: "Post not found" });
+    return new Response(JSON.stringify({ error: "Post not found" }), {
+      status: 404,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   // ----------------------------
@@ -118,17 +139,25 @@ export default async function handler(req, res) {
     // ... (GraphQLエラーチェック) ...
     if (data.errors) {
       console.error("GraphQL Error:", data.errors);
-      return res
-        .status(500)
-        .json({ error: "GraphQL query failed", details: data.errors });
+      return new Response(
+        JSON.stringify({ error: "GraphQL query failed", details: data.errors }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
     }
 
-    // const data = await response.json();
-
     //フロントエンドにデータを返す
-    res.status(200).json(data.data.webTips);
+    return new Response(JSON.stringify(data.data.webTips), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (e) {
     console.error(e);
-    res.status(500).json({ error: "Failed to fetch data" });
+    return new Response(JSON.stringify({ error: "Failed to fetch data" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
-}
+};

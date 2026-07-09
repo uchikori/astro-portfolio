@@ -1,0 +1,632 @@
+---
+import Base from "../layout/Base.astro";
+import PageWrapper from "../layout/PageWrapper.astro";
+import PageHeader from "../layout/PageHeader.astro";
+import BlogSidebar from "../components/blog/BlogSidebar.astro";
+import {
+  fetchWebTipsClasses,
+  getBlogDetailUrl,
+  getBlogCategoryUri,
+  sortPostsByDateDesc,
+  fetchAllBlogPostsWithContent,
+} from "../lib/wordpress";
+import Picture from "astro/components/Picture.astro";
+import CircleImage from "../components/webgl/CircleImage.astro";
+
+// Prism.js for server-side code highlighting
+import Prism from "prismjs";
+import "prismjs/themes/prism-tomorrow.css";
+import "prismjs/components/prism-javascript.js";
+import "prismjs/components/prism-typescript.js";
+import "prismjs/components/prism-css.js";
+import "prismjs/components/prism-markup.js"; // HTML/XML
+import "prismjs/components/prism-json.js";
+import "prismjs/components/prism-bash.js";
+import Category from "../components/ui/Category.astro";
+import Time from "../components/ui/Time.astro";
+import SEO from "../components/common/SEO.astro";
+import { getImage } from "astro:assets";
+import { Markup } from "astro-remote";
+import OptimizedImage from "../components/blog/OptimizedImage.astro";
+import { parse } from "ultrahtml";
+
+// サーバーサイドレンダリングを指定することで、動的なAPI通信を可能にする
+export const prerender = false;
+
+// URLから記事IDを取得
+const id = Astro.url.searchParams.get("id");
+
+let post = null;
+
+//IDが取得出来たら
+if (id) {
+  try {
+    // IDをAPIに渡し、記事データを取得
+    const response = await fetch(
+      new URL(`/api/preview-data?id=${id}`, Astro.url.origin),
+    );
+
+    // レスポンスが正常かチェック
+    if (response.ok) {
+      // JSONをパースしてpostに格納
+      post = await response.json();
+    } else {
+      console.error("プレビューデータの取得に失敗しました");
+    }
+  } catch (error) {
+    console.error("プレビューAPI呼び出しエラー", error);
+  }
+}
+
+// サーバーサイドでコードブロックをハイライトする関数
+function highlightCodeBlocks(html) {
+  if (!html) return "";
+
+  return html.replace(
+    /<pre[^>]*><code\s*(?:class="(?:language-)?([^"]+)")?>([\s\S]*?)<\/code><\/pre>/gi,
+    (match, lang, code) => {
+      // エスケープされた文字をデコード
+      const decodedCode = code
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'");
+
+      const language = lang ? lang.toLowerCase() : "clike";
+      let highlighted = decodedCode;
+
+      try {
+        if (Prism.languages[language]) {
+          highlighted = Prism.highlight(
+            decodedCode,
+            Prism.languages[language],
+            language,
+          );
+        } else {
+          highlighted = Prism.highlight(
+            decodedCode,
+            Prism.languages.clike,
+            "clike",
+          );
+        }
+      } catch (e) {
+        console.error(`[Prism Highlight Error] language: ${language}`, e);
+      }
+
+      return `<pre class="language-${language}"><code class="language-${language}">${highlighted}</code></pre>`;
+    },
+  );
+}
+
+//コードブロックをハイライトしたHTML
+let highlightedContent = "";
+
+if (post && post.content) {
+  highlightedContent = highlightCodeBlocks(post.content);
+}
+
+// WordPressからのHTMLに不正な記述（未定義のタグや属性など）が含まれている場合、
+// astro-remote内部のultrahtmlがパースエラーを起こしてビルドがクラッシュするため、
+// 事前にパーステストを行い、失敗した場合は標準の set:html にフォールバックする
+
+let isValidHtml = true;
+if (highlightedContent) {
+  try {
+    await parse(highlightedContent);
+  } catch (error) {
+    console.warn(
+      `[astro-remote parse error on post ID: ${post?.id}]:`,
+      error.message,
+    );
+    isValidHtml = false;
+  }
+}
+// WordPressのimgタグをAstroのPictureコンポーネントにマッピングする
+const customComponents = {
+  img: OptimizedImage,
+};
+
+let ogpImageUrl = post?.thumbnailUrl;
+if (ogpImageUrl) {
+  try {
+    const optimizedImg = await getImage({
+      src: ogpImageUrl,
+      width: 1200,
+      height: 630,
+      format: "webp",
+    });
+    ogpImageUrl = new URL(optimizedImg.src, Astro.site).href;
+  } catch (error) {
+    console.error("[OGP Image Optimization Error]", error);
+  }
+}
+---
+
+<Base pageType="web-tips-detail" bodyClass="web-tips-detail">
+  <div class="hl_contentWidthMiddle">
+    <CircleImage image="/img/works/works_bg.webp" />
+    <PageWrapper>
+      <PageHeader
+        breadcrumbLabel={post ? post.title : "プレビュー"}
+        bilingualTitle={false}
+      />
+
+      <main class="ly_pageMain">
+        {
+          post ? (
+            <div class="bl_blogDetailLayout">
+              <article class="bl_blogDetail">
+                {post.thumbnailUrl && (
+                  <figure class="bl_blogDetail_hero">
+                    <Picture
+                      src={post.thumbnailUrl}
+                      formats={["avif", "webp"]}
+                      widths={[375, 710, 1420, 1920]}
+                      sizes="(max-width: 768px) 100vw, 1920px"
+                      alt={post.thumbnailAlt || post.title}
+                      width={1280}
+                      height={720}
+                      loading="eager"
+                    />
+                  </figure>
+                )}
+
+                <div class="bl_blogDetail_box">
+                  <header class="bl_blogDetail_header">
+                    <div class="bl_blogDetail_meta">
+                      {post.classes?.[0] && (
+                        <Category
+                          categoryName={post.classes[0].name}
+                          hasLink={true}
+                          categoryPath={getBlogCategoryUri(
+                            post.classes[0].slug,
+                          )}
+                        />
+                      )}
+
+                      <div class="bl_blogDetail_times">
+                        <span class="bl_blogDetail_time" aria-label="公開日">
+                          公開日：
+                          <Time date={post.date} hasIcon={false} />
+                        </span>
+
+                        {post.modified !== post.date && (
+                          <span class="bl_blogDetail_time" aria-label="更新日">
+                            更新日：
+                            <Time date={post.modified} hasIcon={false} />
+                          </span>
+                        )}
+                      </div>
+                      <h1 class="bl_blogDetail_title font-32-48">
+                        {post.title}
+                      </h1>
+                    </div>
+                  </header>
+                  <div class="bl_blogDetail_content">
+                    {!highlightedContent ? (
+                      <p>記事がありません。</p>
+                    ) : isValidHtml ? (
+                      <Markup
+                        components={customComponents}
+                        content={highlightedContent}
+                      />
+                    ) : (
+                      <Fragment set:html={highlightedContent} />
+                    )}
+                  </div>
+                </div>
+              </article>
+              <div class="bl_blogDetailSidebar" />
+            </div>
+          ) : (
+            <div class="bl_blogDetailLayout">
+              <p>
+                プレビューIDが指定されていないか、データの取得に失敗しました。
+              </p>
+            </div>
+          )
+        }
+      </main>
+    </PageWrapper>
+  </div>
+</Base>
+<style lang="scss">
+  @use "../styles/utility" as *;
+  @use "../styles/global" as *;
+
+  .ly_pageMain {
+    margin-top: to-rem(40px);
+  }
+
+  .bl_blogDetailLayout {
+    margin-inline: auto;
+    max-width: to-rem(1200px);
+    display: flex;
+    gap: to-rem(32px);
+    align-items: start;
+    justify-content: space-between;
+
+    @include mq("lg") {
+      flex-direction: column;
+      gap: to-rem(64px);
+    }
+  }
+
+  .bl_blogDetail {
+    min-width: 0;
+    // padding: to-rem(24px);
+    border-radius: to-rem(16px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    width: calc(800 / 1280) * 100%;
+    flex-shrink: 0;
+    @include mq("lg") {
+      width: 100%;
+    }
+
+    &_box {
+      padding: fluid-text(16px, 40px);
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(40px);
+    }
+
+    &_header {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(16px);
+    }
+
+    &_meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: to-rem(16px);
+      flex-wrap: wrap;
+    }
+
+    &_category {
+      display: inline-flex;
+      align-items: center;
+      padding: to-rem(4px) to-rem(10px);
+      border-radius: 999px;
+      background: var(--c-orange);
+      color: $c-white;
+      font-size: 0.75rem;
+      line-height: 1;
+    }
+
+    &_times {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: to-rem(16px);
+    }
+
+    &_time {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    &_date {
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    &_title {
+      margin: 0;
+      line-height: 1.35;
+      color: $c-white;
+    }
+
+    &_hero {
+      margin: 0 0 to-rem(24px);
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: to-rem(16px) to-rem(16px) 0 0;
+
+      :global(picture),
+      :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &_content {
+      line-height: 2;
+      // color: $c-white;
+
+      // :global(h2) {
+      //   margin-top: 2em;
+      //   margin-bottom: 0.8em;
+      //   padding-left: to-rem(12px);
+      //   border-left: 4px solid var(--c-orange);
+      //   font-size: fluid-text(24px, 32px);
+      // }
+
+      // :global(h3) {
+      //   margin-top: 1.8em;
+      //   margin-bottom: 0.8em;
+      //   font-size: fluid-text(18px, 24px);
+      // }
+
+      // :global(p),
+      // :global(li) {
+      //   color: rgba(255, 255, 255, 0.88);
+      // }
+
+      // :global(ul) {
+      //   padding-left: 1.2em;
+      // }
+
+      // :global(img) {
+      //   max-width: 100%;
+      //   height: auto;
+      // }
+
+      // :global(a) {
+      //   color: var(--c-orange);
+      //   text-decoration: underline;
+      // }
+
+      :global(h2) {
+        font-size: fluid-text(24px, 32px);
+        background: linear-gradient(45deg, #ed9723 0%, #d75e5e 100%);
+        padding: to-rem(12px) fluid-text(12px, 24px);
+        line-height: 1.5;
+        font-weight: 500;
+        color: $c-white;
+        position: relative;
+        &:before {
+          content: "";
+          display: block;
+          width: 0;
+          height: 0;
+          border-right: fluid-text(16px, 24px) solid #744300;
+          border-bottom: fluid-text(16px, 24px) solid transparent;
+          position: absolute;
+          top: 100%;
+          left: 0;
+        }
+      }
+
+      :global(h3) {
+        font-size: fluid-text(18px, 24px);
+        color: $c-white;
+        position: relative;
+
+        padding: to-rem(6px) to-rem(14px);
+        &:before {
+          content: "";
+          display: block;
+          width: to-rem(4px);
+          height: 100%;
+          background: var(--c-orange);
+          border-radius: 999px;
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+      }
+
+      :global(h4) {
+        font-size: fluid-text(18px, 22px);
+        color: $c-white;
+        position: relative;
+        padding-bottom: to-rem(10px);
+        border-bottom: solid 1px var(--c-text);
+      }
+
+      :global(p) {
+        color: $c-white;
+        line-height: 1.8;
+      }
+
+      :global(a) {
+        color: inherit;
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      :global(img) {
+        width: auto;
+      }
+
+      :global(ul) {
+        // color: $c-white;
+        // background: #e5e5e5;
+        padding: fluid-text(12px, 16px) 2em;
+      }
+      :global(li) {
+        list-style-type: auto;
+        list-style-position: outside;
+        padding: 0.5em 0;
+      }
+
+      :global(pre) {
+        background: rgba(20, 20, 20, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: to-rem(20px) !important;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-family: "Fira Code", "Courier New", Courier, monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-top: 1.8em;
+        margin-bottom: 1.8em;
+
+        :global(code) {
+          background: none;
+          padding: 0;
+          border-radius: 0;
+          border: none;
+          color: inherit;
+          font-size: inherit;
+        }
+      }
+
+      :global(blockquote) {
+        padding: to-rem(24px) fluid-text(12px, 24px);
+        border-radius: 8px;
+
+        :global(p) {
+          position: relative;
+          background: $c-white;
+          padding: to-rem(12px) to-rem(16px);
+          border-radius: 6px;
+          color: var(--c-dark);
+          &:before,
+          &:after {
+            display: inline-block;
+            width: to-rem(28px);
+            height: to-rem(28px);
+            position: absolute;
+            font-size: fluid-text(32px, 48px);
+            color: #333;
+          }
+          &:before {
+            content: "\201C";
+            top: 0;
+            left: 0;
+            transform: translate(-30%, -100%);
+          }
+          &:after {
+            content: "\201D";
+
+            top: 100%;
+            right: 0;
+            transform: translate(50%, -100%);
+          }
+        }
+
+        :global(cite) {
+          display: block;
+          margin-top: 1em;
+          color: #555;
+          text-decoration: underline;
+        }
+      }
+
+      :global(code) {
+        font-family: "Fira Code", "Courier New", Courier, monospace;
+        font-size: 0.9em;
+      }
+
+      /* インラインコード用のスタイル */
+      :global(p code),
+      :global(li code) {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--c-orange);
+        padding: 0.25em 0.5em;
+        border-radius: 4px;
+        font-size: 0.85em;
+      }
+
+      :global(> *) {
+        margin-top: 1.8em;
+      }
+
+      /**WordPressで設定した独自パターン用 */
+      :global(.box01) {
+        :global(.box-title) {
+          font-size: fluid-text(16px, 20px);
+          padding: to-rem(6px) fluid-text(12px, 24px);
+          color: $c-white;
+          background: var(--c-orange);
+          border-radius: to-rem(12px) to-rem(12px) 0 0;
+          display: inline-block;
+        }
+        :global(ul) {
+          margin-top: 0;
+          border: solid 2px var(--c-orange);
+          padding: fluid-text(12px, 16px);
+          padding-left: 2em;
+          background: $c-white;
+          color: var(--c-dark);
+        }
+        :global(li) {
+          list-style-type: auto;
+          list-style-position: outside;
+        }
+      }
+    }
+
+    &_related {
+      margin-top: to-rem(32px);
+      padding-top: to-rem(24px);
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    &_relatedTitle {
+      margin: 0 0 to-rem(16px);
+    }
+
+    &_relatedList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: to-rem(16px);
+    }
+
+    &_relatedLink {
+      display: grid;
+      grid-template-columns: to-rem(220px) minmax(0, 1fr);
+      gap: to-rem(16px);
+      color: inherit;
+      text-decoration: none;
+      padding: to-rem(12px);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      @include mq("md") {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    &_relatedThumb {
+      aspect-ratio: 312 / 175;
+      border-radius: 4px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+
+      :global(picture),
+      :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &_relatedBody {
+      display: flex;
+      flex-direction: column;
+      gap: to-rem(8px);
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    &_relatedPostTitle {
+      font-weight: 500;
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    &Sidebar {
+      width: 300px;
+      @include mq("lg") {
+        width: 100%;
+      }
+    }
+  }
+</style>
