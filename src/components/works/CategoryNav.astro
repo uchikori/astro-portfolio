@@ -56,6 +56,10 @@ const { categories, currentSlug } = Astro.props;
       list-style: none;
       padding: 0;
       margin: 0;
+
+      @include mq("sm") {
+        justify-content: flex-start;
+      }
     }
 
     &_link {

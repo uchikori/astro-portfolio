@@ -123,9 +123,7 @@ const rankingPosts =
               ) : (
                 <div class="bl_blogSidebar_rankingThumb bl_blogSidebar_rankingThumb--empty" />
               )}
-              <span class="bl_blogSidebar_rankingTitle font-12-16">
-                {post.title}
-              </span>
+              <span class="bl_blogSidebar_rankingTitle">{post.title}</span>
             </a>
           </li>
         ))
@@ -239,14 +237,10 @@ const rankingPosts =
       display: flex;
       flex-direction: column;
       gap: fluid-text(24px, 40px);
-      @include mq("lg") {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      @include mq("sm") {
-        grid-template-columns: 1fr;
-      }
+      // @include mq("lg") {
+      //   display: grid;
+      //   grid-template-columns: repeat(2, minmax(0, 1fr));
+      // }
     }
 
     &_rankingItem {
@@ -259,8 +253,8 @@ const rankingPosts =
       left: 0;
       transform: translate(-25%, -25%);
       z-index: 1;
-      width: to-rem(40px);
-      height: to-rem(40px);
+      width: fluid-text(24px, 40px, 375px, 1280px);
+      height: fluid-text(24px, 40px, 375px, 1280px);
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -268,7 +262,7 @@ const rankingPosts =
       background: #403056;
       border: solid 1px #8b8b8b;
       color: var(--c-orange);
-      font-size: fluid-text(20px, 24px);
+      font-size: fluid-text(16px, 24px, 375px, 1280px);
       font-weight: 700;
     }
 
@@ -278,6 +272,9 @@ const rankingPosts =
       gap: to-rem(10px);
       color: inherit;
       text-decoration: none;
+      @include mq("lg") {
+        display: flex;
+      }
     }
 
     &_rankingThumb {
@@ -285,6 +282,10 @@ const rankingPosts =
       overflow: hidden;
       border-radius: 4px;
       background: rgba(255, 255, 255, 0.08);
+      @include mq("lg") {
+        width: 40%;
+        flex-shrink: 0;
+      }
 
       :global(picture),
       :global(img) {
@@ -307,6 +308,10 @@ const rankingPosts =
     &_rankingTitle {
       color: rgba(255, 255, 255, 0.86);
       line-height: 1.6;
+      font-size: to-rem(16px);
+      @include mq("lg") {
+        font-size: fluid-text(12px, 24px, 375px, 960px);
+      }
     }
   }
 </style>
