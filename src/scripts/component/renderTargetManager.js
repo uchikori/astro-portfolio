@@ -50,7 +50,7 @@ class RenderTargetManager {
     };
 
     // デバイスピクセル比を考慮してサイズを計算
-    const dpr = 1;
+    const dpr = window.devicePixelRatio;
     const width = rect.width * dpr;
     const height = rect.height * dpr;
 

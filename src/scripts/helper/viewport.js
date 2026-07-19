@@ -30,7 +30,7 @@ function init(canvas, cameraZ = 2000, near = 1500, far = 4000) {
   //radianを角度に変換
   viewport.fov = viewport.rad * (180 / Math.PI);
 
-  viewport.devicePixelRatio = 1;
+  viewport.devicePixelRatio = window.devicePixelRatio;
 
   // viewport.initの呼び出しが初回の場合
   if (!initialized) {
