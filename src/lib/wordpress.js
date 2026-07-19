@@ -927,11 +927,13 @@ export async function fetchAllBlogPostsWithContent() {
     const data = await wpGraphQLFetch(query);
     return (data.allWebTips?.nodes ?? []).map(mapWebTips);
   } catch (error) {
-    console.error("[wordpress] GraphQL fetchAllBlogPostsWithContent error:", error);
+    console.error(
+      "[wordpress] GraphQL fetchAllBlogPostsWithContent error:",
+      error,
+    );
     return [];
   }
 }
-
 
 /**
  * web-tips のカテゴリを取得する
