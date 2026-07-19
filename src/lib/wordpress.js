@@ -1176,15 +1176,14 @@ export async function fetchPageViews() {
     // 上位5件のIDを取得する
     const topEntries = rankingEntries.slice(0, 5);
 
-    // 各記事の詳細を取得する
-    const posts = await Promise.all(
-      topEntries.map(async (entry) => {
-        const post = await fetchGraphQLWebTipById(entry.id);
-        if (!post) return null;
-        // pageViews を付与して返す
-        return { ...post, pageViews: entry.pageViews };
-      }),
-    );
+    // 各記事の詳細を取得する (直列に処理してWordPressへの同時リクエスト負荷を下げる)
+    const posts = [];
+    for (const entry of topEntries) {
+      const post = await fetchGraphQLWebTipById(entry.id);
+      if (post) {
+        posts.push({ ...post, pageViews: entry.pageViews });
+      }
+    }
 
     // null を除外して返す
     return posts.filter(Boolean);
