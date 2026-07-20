@@ -8,7 +8,8 @@ import {
   getBlogDetailUrl,
   getBlogCategoryUri,
   sortPostsByDateDesc,
-  fetchAllBlogPostsWithContent,
+  fetchAllBlogPosts,
+  fetchBlogPostById,
 } from "../../lib/wordpress";
 import Picture from "astro/components/Picture.astro";
 import CircleImage from "../../components/webgl/CircleImage.astro";
@@ -33,16 +34,16 @@ import BlogAdsence from "../../components/blog/BlogAdsence.astro";
 import BlogAdsenceDisplay from "../../components/blog/BlogAdsenceDisplay.astro";
 
 export async function getStaticPaths() {
-  // キャッシュから全データを一括取得（記事の中身も含むため API コールは計2回で完結）
-  const [allPostsWithContent, categories] = await Promise.all([
-    fetchAllBlogPostsWithContent(),
+  // キャッシュから全データを一括取得（記事の中身を含まないためメモリを圧迫しない）
+  const [allPosts, categories] = await Promise.all([
+    fetchAllBlogPosts(),
     fetchWebTipsClasses(),
   ]);
 
-  const paths = allPostsWithContent.map((post) => {
+  const paths = allPosts.map((post) => {
     // 関連 posts を計算（追加 API コールなし）
     const relatedPosts = sortPostsByDateDesc(
-      allPostsWithContent.filter(
+      allPosts.filter(
         (entry) =>
           entry.id !== post.id &&
           (post.classes ?? []).some((cls) =>
@@ -62,7 +63,11 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { post, relatedPosts, categories } = Astro.props;
+const { post: minimalPost, relatedPosts, categories } = Astro.props;
+
+// 各ページの生成時に、そのページに必要なコンテンツ付きデータを個別に取得する
+// minimalPost.id に基づいて取得し、取得失敗時は minimalPost (コンテンツなし) でフォールバック
+const post = await fetchBlogPostById(minimalPost.id) || minimalPost;
 
 // サーバーサイドでコードブロックをハイライトする関数
 function highlightCodeBlocks(html) {
