@@ -139,7 +139,7 @@ function mapCategory(node) {
  * @param {*} variables GraphQL の変数
  * @returns
  */
-async function wpGraphQLFetch(query, variables = {}) {
+async function wpGraphQLFetch(query, variables = {}, retries = 3) {
   // API のベース URL を取得する
   const url = getApiBaseUrl();
   // URL が未設定ならエラーにする
@@ -159,29 +159,67 @@ async function wpGraphQLFetch(query, variables = {}) {
     headers.Authorization = `Basic ${btoa(`${authUser}:${authPass}`)}`;
   }
 
-  // GraphQL エンドポイントへリクエストする
-  const response = await fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify({ query, variables }),
-  });
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      // GraphQL エンドポイントへリクエストする
+      const response = await fetch(url, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ query, variables }),
+      });
 
-  // HTTP エラーは例外にする
-  if (!response.ok) {
-    throw new Error(
-      `WordPress GraphQL error: ${response.status} ${response.statusText} (${url})`,
-    );
+      // HTTP エラーは例外にする
+      if (!response.ok) {
+        throw new Error(
+          `WordPress GraphQL error: ${response.status} ${response.statusText} (${url})`,
+        );
+      }
+
+      // レスポンス JSON を読む
+      const result = await response.json();
+      // GraphQL エラーも例外にする
+      if (result.errors) {
+        throw new Error(`GraphQL Query Errors: ${JSON.stringify(result.errors)}`);
+      }
+
+      // data を返す
+      return result.data;
+    } catch (error) {
+      if (attempt === retries - 1) {
+        throw error;
+      }
+      console.warn(`[wordpress] GraphQL fetch error, retrying (${attempt + 1}/${retries})...`, error.message);
+      // リトライ前に待機する（1秒、2秒...と増やす）
+      await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
+    }
+  }
+}
+
+/**
+ * GraphQLから全件をページネーションで取得する汎用関数
+ */
+async function fetchAllWithPagination(query, connectionName, variables = {}, first = 100) {
+  let allNodes = [];
+  let hasNextPage = true;
+  let after = null;
+
+  while (hasNextPage) {
+    const data = await wpGraphQLFetch(query, { ...variables, first, after });
+    const connection = data[connectionName];
+    
+    if (connection?.nodes) {
+      allNodes.push(...connection.nodes);
+    }
+    
+    if (connection?.pageInfo) {
+      hasNextPage = connection.pageInfo.hasNextPage;
+      after = connection.pageInfo.endCursor;
+    } else {
+      hasNextPage = false;
+    }
   }
 
-  // レスポンス JSON を読む
-  const result = await response.json();
-  // GraphQL エラーも例外にする
-  if (result.errors) {
-    throw new Error(`GraphQL Query Errors: ${JSON.stringify(result.errors)}`);
-  }
-
-  // data を返す
-  return result.data;
+  return allNodes;
 }
 
 // ビルド時のモジュールレベルキャッシュ（同一プロセス内で1回だけ API を呼ぶ）
@@ -191,8 +229,12 @@ let _worksListCache = null;
 function fetchAllGraphQLWorks() {
   if (_worksListCache) return _worksListCache;
   const query = `
-    query GetWorks {
-      posts(first: 100) {
+    query GetWorks($first: Int!, $after: String) {
+      posts(first: $first, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
         nodes {
           databaseId
           slug
@@ -229,8 +271,8 @@ function fetchAllGraphQLWorks() {
       }
     }
   `;
-  _worksListCache = wpGraphQLFetch(query).then((data) =>
-    (data.posts?.nodes ?? []).map(mapWork),
+  _worksListCache = fetchAllWithPagination(query, "posts", {}, 100).then((nodes) =>
+    nodes.map(mapWork),
   );
   return _worksListCache;
 }
@@ -696,8 +738,12 @@ let _blogPostsListCache = null;
 function fetchAllGraphQLBlogPosts() {
   if (_blogPostsListCache) return _blogPostsListCache;
   const query = `
-    query GetWebTips {
-      allWebTips(first: 1000) {
+    query GetWebTips($first: Int!, $after: String) {
+      allWebTips(first: $first, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
         nodes {
           databaseId
           slug
@@ -726,8 +772,8 @@ function fetchAllGraphQLBlogPosts() {
       }
     }
   `;
-  _blogPostsListCache = wpGraphQLFetch(query).then((data) =>
-    (data.allWebTips?.nodes ?? []).map(mapWebTips),
+  _blogPostsListCache = fetchAllWithPagination(query, "allWebTips", {}, 100).then((nodes) =>
+    nodes.map(mapWebTips),
   );
   return _blogPostsListCache;
 }
@@ -888,8 +934,12 @@ export async function fetchAllBlogPostsWithContent() {
   }
 
   const query = `
-    query GetWebTipsWithContent {
-      allWebTips(first: 1000) {
+    query GetWebTipsWithContent($first: Int!, $after: String) {
+      allWebTips(first: $first, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
         nodes {
           databaseId
           slug
@@ -924,8 +974,8 @@ export async function fetchAllBlogPostsWithContent() {
   `;
 
   try {
-    const data = await wpGraphQLFetch(query);
-    return (data.allWebTips?.nodes ?? []).map(mapWebTips);
+    const nodes = await fetchAllWithPagination(query, "allWebTips", {}, 100);
+    return nodes.map(mapWebTips);
   } catch (error) {
     console.error(
       "[wordpress] GraphQL fetchAllBlogPostsWithContent error:",
