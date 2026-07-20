@@ -22,7 +22,11 @@ const plainDescription = description
 ---
 
 <title>
-  {title ? `${title} | UCHIWA Creative Studio.` : `UCHIWA Creative Studio.`}
+  {
+    title
+      ? `${title} | UCHIWA Creative Studio.`
+      : `UCHIWA Creative Studio. | 札幌のWebデザイン・Web制作・3D演出`
+  }
 </title>
 <meta name="description" content={plainDescription} />
 <meta name="robots" content={robotsText} />
