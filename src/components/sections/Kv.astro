@@ -30,7 +30,12 @@ import ArrowLink from "../ui/ArrowLink.astro";
   <div class="bl_hero_cover">
     <div class="bl_hero_inner hl_contentWidth">
       <div class="bl_hero_content">
-        <p class="bl_hero_title hl_accentFont">
+        <p
+          data-scroll-trigger="transformSide"
+          data-transform-direction="left"
+          data-transform-trigger=".bl_hero_cover"
+          class="bl_hero_title hl_accentFont"
+        >
           PASSION BECOMES<br />
           <FlickerText text="DESIGN." class="hl_accentColor" />
           <br />DESIGN BECOMES<br />
@@ -43,6 +48,8 @@ import ArrowLink from "../ui/ArrowLink.astro";
         />
         <div
           class="bl_hero_object js_hero_object"
+          data-scroll-trigger="rotate3dObject"
+          data-rotate-trigger=".bl_hero_cover"
           data-webgl="normal"
           data-model="/model/logo.glb"
           data-render-material="standard"
@@ -53,7 +60,12 @@ import ArrowLink from "../ui/ArrowLink.astro";
           data-rotation-z="5"
         >
         </div>
-        <p class="bl_hero_text">
+        <p
+          class="bl_hero_text"
+          data-scroll-trigger="transformSide"
+          data-transform-direction="right"
+          data-transform-trigger=".bl_hero_cover"
+        >
           好きという気持ちを原動力に、<br
           />誰かの心を動かすデザインをつくっています。
         </p>

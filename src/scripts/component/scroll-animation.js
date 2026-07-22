@@ -18,6 +18,8 @@ const ACTIONS = {
   header,
   reversal,
   ripple,
+  transformSide,
+  rotate3dObject,
 };
 
 let startTrigger = null;
@@ -326,6 +328,95 @@ async function ripple(el) {
     },
     onLeaveBack() {
       removePass();
+    },
+  });
+}
+
+/**
+ * 横にスライドアウトするアニメーション
+ * data-transform-direction属性でスライドする方向（"left" または "right"）を指定できます。
+ * @param {*} el
+ */
+function transformSide(el) {
+  const direction = INode.getDS(el, "transformDirection") || "right";
+  const triggerSelector = INode.getDS(el, "transformTrigger");
+  const triggerEl = triggerSelector ? INode.qs(triggerSelector) : el;
+
+  gsap.to(el, {
+    x: () => {
+      const rect = el.getBoundingClientRect();
+      if (direction === "left") {
+        // 要素の右端が画面左端(0)を通り越すための移動量
+        return -rect.right;
+      } else {
+        // 要素の左端が画面右端を通り越すための移動量
+        return window.innerWidth - rect.left;
+      }
+    },
+    scrollTrigger: {
+      trigger: triggerEl,
+      start: "top top",
+      end: "bottom top",
+      scrub: true,
+      invalidateOnRefresh: true, // 画面リサイズ時に移動量を再計算する
+    },
+  });
+}
+
+/**
+ * 3d objectの回転アニメーション
+ * data-scroll-rotation-x/y/z でスクロール時の追加回転量（度数法）を指定可能。
+ * @param {*} el
+ */
+function rotate3dObject(el) {
+  const proxy = { progress: 0 };
+
+  // data-rotate-trigger または data-transform-trigger で任意のトリガー要素を指定
+  const triggerSelector = INode.getDS(el, "rotateTrigger") || INode.getDS(el, "transformTrigger");
+  const triggerEl = triggerSelector ? INode.qs(triggerSelector) : el;
+
+  // data-scroll-start, data-scroll-end で開始・終了位置を任意に指定可能
+  const startPos = INode.getDS(el, "scrollStart") || "top top";
+  const endPos = INode.getDS(el, "scrollEnd") || "bottom top";
+
+  gsap.to(proxy, {
+    progress: 1,
+    scrollTrigger: {
+      trigger: triggerEl,
+      start: startPos,
+      end: endPos,
+      scrub: true,
+      onUpdate: () => {
+        const o = world.getObjByEl(el);
+        if (!o) return;
+
+        // ベースの回転量（度数法）
+        const rx = parseFloat(INode.getDS(el, "rotationX")) || 0;
+        const ry = parseFloat(INode.getDS(el, "rotationY")) || 0;
+        const rz = parseFloat(INode.getDS(el, "rotationZ")) || 0;
+
+        // スクロールで追加する回転量（デフォルトはY軸に360度）
+        const scrollRx = parseFloat(INode.getDS(el, "scrollRotationX")) || 0;
+        const scrollRy = INode.getDS(el, "scrollRotationY")
+          ? parseFloat(INode.getDS(el, "scrollRotationY"))
+          : 360;
+        const scrollRz = parseFloat(INode.getDS(el, "scrollRotationZ")) || 0;
+
+        const toRad = Math.PI / 180;
+        const currentRx = (rx + scrollRx * proxy.progress) * toRad;
+        const currentRy = (ry + scrollRy * proxy.progress) * toRad;
+        const currentRz = (rz + scrollRz * proxy.progress) * toRad;
+
+        if (o.targetInfo?.scene) {
+          o.targetInfo.scene.traverse((obj) => {
+            if (obj.isGroup && obj.name.includes("Scene")) {
+              obj.rotation.set(currentRx, currentRy, currentRz);
+            }
+          });
+        } else if (o.mesh) {
+          o.mesh.rotation.set(currentRx, currentRy, currentRz);
+        }
+      },
     },
   });
 }
