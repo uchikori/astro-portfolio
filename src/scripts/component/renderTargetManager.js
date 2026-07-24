@@ -57,7 +57,7 @@ class RenderTargetManager {
     // レンダーターゲットを作成
     targetInfo.renderTarget = new RenderTarget(width, height, {
       format: RGBAFormat, // RGBAフォーマットで透明をサポート
-      // samples: 4, // アンチエイリアス（MSAA）を有効にする
+      samples: 4, // アンチエイリアス（MSAA）を有効にする
     });
     // targetInfo.renderTarget = new RenderTarget(3840, 3840, {
     //   format: RGBAFormat, // RGBAフォーマットで透明をサポート
