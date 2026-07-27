@@ -33,7 +33,41 @@ export default async function ({
 
   // mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
   loader.addLoadingAnimation(loadAnimation);
+  // initTocAccordion();
 }
+
+// function initTocAccordion() {
+//   const containers = document.querySelectorAll("#ez-toc-container");
+//   containers.forEach((container) => {
+//     const title = container.querySelector(".ez-toc-title-container");
+//     const list = container.querySelector("nav") || container.querySelector("ul");
+//     if (!title || !list) return;
+
+//     // Wrap list in a grid-transition element
+//     const wrapper = document.createElement("div");
+//     wrapper.style.display = "grid";
+//     wrapper.style.gridTemplateRows = "0fr";
+//     wrapper.style.transition = "grid-template-rows 0.3s ease, margin-top 0.3s ease";
+
+//     const inner = document.createElement("div");
+//     inner.style.overflow = "hidden";
+
+//     list.parentNode.insertBefore(wrapper, list);
+//     wrapper.appendChild(inner);
+//     inner.appendChild(list);
+
+//     title.addEventListener("click", () => {
+//       container.classList.toggle("is-open");
+//       if (container.classList.contains("is-open")) {
+//         wrapper.style.gridTemplateRows = "1fr";
+//         wrapper.style.marginTop = "24px";
+//       } else {
+//         wrapper.style.gridTemplateRows = "0fr";
+//         wrapper.style.marginTop = "0px";
+//       }
+//     });
+//   });
+// }
 
 function loadAnimation(tl) {
   // エレメントを取得

@@ -116,6 +116,7 @@ export async function init() {
 
   await loader.letsBegin();
 
+
   //ロード完了後のアクション
   mouse.makeVisible();
 }

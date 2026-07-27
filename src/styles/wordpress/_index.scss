@@ -6,6 +6,28 @@
   border-radius: to-rem(8px);
   .ez-toc-title-container {
     margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+
+    &::after {
+      content: "";
+      display: block;
+      width: to-rem(24px);
+      height: to-rem(24px);
+      background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="%23ed9723" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  &.is-open {
+    .ez-toc-title-container::after {
+      transform: rotate(180deg);
+    }
   }
 
   .ez-toc-title {
@@ -150,4 +172,14 @@
     line-height: 1.6;
     margin: 0;
   }
+}
+
+.is-layout-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5em;
+}
+
+.are-vertically-aligned-top {
+  align-items: flex-start;
 }
