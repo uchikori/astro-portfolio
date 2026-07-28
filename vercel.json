@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/web-tips/1970/",
+      "destination": "/web-tips/1582",
+      "permanent": true
+    }
+  ]
+}
