@@ -19,6 +19,8 @@ const ogpImg = imgUrl ? imgUrl : new URL("/img/ogp/ogp.webp", siteUrl).href;
 const plainDescription = description
   ? description.replace(/<[^>]*>?/gm, "").trim()
   : "";
+
+console.log(jsonLdString);
 ---
 
 <title>

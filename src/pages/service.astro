@@ -55,15 +55,84 @@ const faqs = [
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((faq) => ({
-    "@type": "Question",
-    name: faq.question,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: faq.answer,
+  "@graph": [
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
     },
-  })),
+    {
+      "@type": "Service",
+      name: "Web制作・運用サポート",
+      provider: {
+        "@type": "Organization",
+        name: "UCHIWA Creative Studio.",
+        url: Astro.site ? new URL("/", Astro.site).href : "https://www.uchiwa-design.net/"
+      },
+      description: "Webサイトのコンセプト設計・情報設計からUI/UXデザイン、Three.jsを用いた3D実装、WordPress構築、運用・改善まで行います。",
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "提供サービス",
+        itemListElement: [
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "コーポレートサイト制作",
+              description: "はじめてのホームページ制作やリニューアルに。更新しやすく、社内で運用できるサイトを構築します。"
+            }
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "高速サイト構築（Jamstack / Headless CMS）",
+              description: "表示速度・セキュリティ・保守性に優れた次世代型Webサイト。改ざんリスクを抑えながら、CMSによる更新も可能です。"
+            }
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "ECサイト制作（Welcart）",
+              description: "Shopifyの月額費用や販売手数料を抑え、自社に最適化したオリジナルECサイトを構築します。"
+            }
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "運用・改善サポート",
+              description: "公開後の更新方法レクチャーや改善提案までサポートします。Webサイトを“作って終わり”にしません。"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: Astro.site ? new URL("/", Astro.site).href : "https://www.uchiwa-design.net/",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "事業内容",
+          item: Astro.site ? new URL(Astro.url.pathname, Astro.site).href : "https://www.uchiwa-design.net/service",
+        },
+      ],
+    },
+  ],
 };
 
 const jsonLdString = JSON.stringify(jsonLd);
