@@ -10,6 +10,7 @@ import Loader from "../components/common/Loader.astro";
 import Header from "../components/common/Header.astro";
 import Footer from "../components/common/Footer.astro";
 import LoadPP from "../components/webgl/LoadPP.astro";
+import Analytics from "@vercel/analytics/astro";
 ---
 
 <html lang="ja">
@@ -55,6 +56,8 @@ import LoadPP from "../components/webgl/LoadPP.astro";
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3842486595943279"
       crossorigin="anonymous"></script>
     <!-- End google Adsence -->
+
+    <Analytics />
   </head>
   <body class={bodyClass}>
     <!-- Google Tag Manager (noscript) -->
