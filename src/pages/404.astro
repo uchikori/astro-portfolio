@@ -1,0 +1,75 @@
+---
+import Base from "../layout/Base.astro";
+import SEO from "../components/common/SEO.astro";
+import ArrowLink from "../components/ui/ArrowLink.astro";
+
+const title = "404 NOT FOUND - お探しのページは見つかりませんでした";
+---
+
+<Base pageType="notfound" bodyClass="notfound">
+  <Fragment slot="head">
+    <SEO title={title} description="404 NOT FOUND" />
+  </Fragment>
+
+  <div class="bl_notfound">
+    <div id="notfound-anchor" style="position: absolute; top: 45%; left: 50%; width: 0; height: 0; visibility: hidden;"></div>
+    <div class="bl_notfound_inner">
+      <p class="bl_notfound_text">
+        NOT FOUND
+      </p>
+      
+      <div class="bl_notfound_btn">
+        <ArrowLink href="/" text="TOPへ戻る" fontSize="1rem" />
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style lang="scss">
+  @use "../styles/utility" as *;
+  @use "../styles/global" as *;
+
+  .bl_notfound {
+    width: 100vw;
+    height: 100vh;
+    height: 100lvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+
+    &_inner {
+      text-align: center;
+      position: absolute;
+      bottom: 15%; // 画面下部に配置して404と被らないようにする
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      pointer-events: none;
+      width: 100%;
+    }
+
+    &_title {
+      font-size: fluid-text(100px, 240px);
+      line-height: 1;
+      margin: 0;
+      color: transparent; // WebGLで描画する場合は透明
+      // fallback
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+    }
+
+    &_text {
+      font-size: fluid-text(16px, 24px);
+      letter-spacing: 0.2em;
+      margin-top: 1rem;
+      font-family: $accent-font;
+    }
+
+    &_btn {
+      margin-top: 4rem;
+      pointer-events: auto;
+      display: inline-block;
+    }
+  }
+</style>
