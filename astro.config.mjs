@@ -13,6 +13,7 @@ const env = loadEnv(process.env.NODE_ENV, __dirname, "CF_");
 // https://astro.build/config
 export default defineConfig({
   site: env.CF_PAGES_URL || "https://www.uchiwa-design.net",
+  trailingSlash: "always",
   // Astroの標準設定（出力先など）
   outDir: "./dist",
   publicDir: "./public",

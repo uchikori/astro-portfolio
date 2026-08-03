@@ -530,9 +530,9 @@ export function getPaginationPaths(totalPages) {
  */
 export function getWorksBasePath(categorySlug) {
   if (categorySlug) {
-    return `/works/category/${categorySlug}`;
+    return `/works/category/${categorySlug}/`;
   }
-  return "/works";
+  return "/works/";
 }
 
 /**
@@ -541,14 +541,14 @@ export function getWorksBasePath(categorySlug) {
 export function getWorksListUrl(page, categorySlug) {
   const base = getWorksBasePath(categorySlug);
   if (page <= 1) return base;
-  return `${base}/page/${page}`;
+  return `${base}page/${page}/`;
 }
 
 /**
  * Work 詳細の URL を返す
  */
 export function getWorkDetailUrl(id) {
-  return `/works/${id}`;
+  return `/works/${id}/`;
 }
 
 /**
@@ -562,7 +562,7 @@ export function getWorkCategoryUrl(slug, page = 1) {
  * カテゴリータグの URL を返す
  */
 export function getWorkCategoryTagUrl(slug) {
-  return `/works/category/${slug}`;
+  return `/works/category/${slug}/`;
 }
 
 /**
@@ -1072,9 +1072,9 @@ export async function fetchRelatedBlogPostsByTags(postId, limit = 3) {
  */
 export function getBlogBasePath(categorySlug) {
   if (categorySlug) {
-    return `/web-tips/class/${categorySlug}`;
+    return `/web-tips/class/${categorySlug}/`;
   }
-  return "/web-tips";
+  return "/web-tips/";
 }
 
 /**
@@ -1085,7 +1085,7 @@ export function getBlogBasePath(categorySlug) {
 export function getBlogListUrl(page, categorySlug) {
   const base = getBlogBasePath(categorySlug);
   if (page <= 1) return base;
-  return `${base}/page/${page}`;
+  return `${base}page/${page}/`;
 }
 
 /**
@@ -1094,7 +1094,7 @@ export function getBlogListUrl(page, categorySlug) {
  * @returns {string}
  */
 export function getBlogDetailUrl(id) {
-  return `/web-tips/${id}`;
+  return `/web-tips/${id}/`;
 }
 
 /**
