@@ -43,6 +43,8 @@ const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
         class:list={["bl_pagination_btn", !prevUrl && "is-disabled"]}
         href={prevUrl}
         aria-disabled={!prevUrl}
+        data-mouse="stuck"
+        data-mouse-shape="element"
       >
         前へ
       </a>
@@ -60,6 +62,8 @@ const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
             ]}
             href={getPageUrl(page)}
             aria-current={page === currentPage ? "page" : undefined}
+            data-mouse="stuck"
+            data-mouse-shape="element"
           >
             {page}
           </a>
@@ -74,6 +78,8 @@ const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
         class:list={["bl_pagination_btn", !nextUrl && "is-disabled"]}
         href={nextUrl}
         aria-disabled={!nextUrl}
+        data-mouse="stuck"
+        data-mouse-shape="element"
       >
         次へ
       </a>

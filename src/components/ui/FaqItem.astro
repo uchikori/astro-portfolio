@@ -12,7 +12,11 @@ const { question, answer } = Astro.props;
     <summary class="bl_faqList_summary">
       <span class="bl_faqList_summary_num hl_accentFont font-24-32"></span>
       <h3 class="bl_faqList_summary_title font-16-20">{question}</h3>
-      <span class="bl_faqList_summary_arrow">
+      <span
+        class="bl_faqList_summary_arrow"
+        data-mouse="stuck"
+        data-mouse-shape="element"
+      >
         <svg
           width="13"
           height="8"

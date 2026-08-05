@@ -125,37 +125,72 @@ import Menu from "./Menu.astro";
     <nav class="bl_header_nav bl_globalNav font-16-18 hl_smHidden">
       <ul class="bl_globalNav_list">
         <li class="bl_globalNav_item">
-          <a href="/" class="bl_globalNav_link">
+          <a
+            href="/"
+            class="bl_globalNav_link"
+            data-mouse="stuck"
+            data-mouse-shape="element"
+          >
             <span class="bl_globalNav_label">ホーム</span>
           </a>
         </li>
         <li class="bl_globalNav_item">
-          <a href="/about/" class="bl_globalNav_link">
+          <a
+            href="/about/"
+            class="bl_globalNav_link"
+            data-mouse="stuck"
+            data-mouse-shape="element"
+          >
             <span class="bl_globalNav_label">UCHIWAについて</span>
           </a>
         </li>
         <li class="bl_globalNav_item">
-          <a href="/service/" class="bl_globalNav_link">
+          <a
+            href="/service/"
+            class="bl_globalNav_link"
+            data-mouse="stuck"
+            data-mouse-shape="element"
+          >
             <span class="bl_globalNav_label">事業内容</span>
           </a>
         </li>
         <li class="bl_globalNav_item">
-          <a href="/price/" class="bl_globalNav_link">
+          <a
+            href="/price/"
+            class="bl_globalNav_link"
+            data-mouse="stuck"
+            data-mouse-shape="element"
+          >
             <span class="bl_globalNav_label">料金表</span>
           </a>
         </li>
         <li class="bl_globalNav_item">
-          <a href="/works/" class="bl_globalNav_link">
+          <a
+            href="/works/"
+            class="bl_globalNav_link"
+            data-mouse="stuck"
+            data-mouse-shape="element"
+          >
             <span class="bl_globalNav_label">制作実績</span>
           </a>
         </li>
         <li class="bl_globalNav_item">
-          <a href="/web-tips/" class="bl_globalNav_link">
+          <a
+            href="/web-tips/"
+            class="bl_globalNav_link"
+            data-mouse="stuck"
+            data-mouse-shape="element"
+          >
             <span class="bl_globalNav_label">ブログ</span>
           </a>
         </li>
         <li class="bl_globalNav_item">
-          <a href="/contact/" class="bl_globalNav_link">
+          <a
+            href="/contact/"
+            class="bl_globalNav_link"
+            data-mouse="stuck"
+            data-mouse-shape="element"
+          >
             <span class="bl_globalNav_label">お問い合わせ</span>
           </a>
         </li>
@@ -230,12 +265,14 @@ import Menu from "./Menu.astro";
     &_list {
       display: flex;
       align-items: center;
-      gap: to-rem(32px);
+      // gap: to-rem(32px);
     }
     &_link {
       position: relative;
       color: var(--c-dark);
       text-decoration: none;
+      padding: to-rem(6px) to-rem(14px);
+      border-radius: 100vh;
 
       &::after {
         content: "";

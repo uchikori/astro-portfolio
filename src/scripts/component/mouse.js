@@ -47,6 +47,10 @@ function init(hideDefaultCursor = false, applyStyle = true) {
     x: viewport.width / 2,
     y: viewport.height / 2,
     r: 40,
+    width: 80,
+    height: 80,
+    radius: 40,
+    cursorShape: "circle",
     fill: "#ffffff",
     fillOpacity: 0,
     strokeWidth: 1,
@@ -57,7 +61,15 @@ function init(hideDefaultCursor = false, applyStyle = true) {
   //
   Object.assign(current, initial);
   Object.assign(target, initial);
-  Object.assign(delta, { x: 0, y: 0, scale: 1, fillOpacity: 0 });
+  Object.assign(delta, {
+    x: 0,
+    y: 0,
+    scale: 1,
+    fillOpacity: 0,
+    width: 0,
+    height: 0,
+    radius: 0,
+  });
 
   // タッチデバイスの場合はデフォルトカーソルを表示
   mouse.hideDefaultCursor = utils.isTouchDevices ? false : hideDefaultCursor;
@@ -71,6 +83,7 @@ function init(hideDefaultCursor = false, applyStyle = true) {
   const circles = INode.qsAll("circle", DOM.svg);
   DOM.outerCircle = circles[0];
   DOM.innerCircle = circles[1];
+  DOM.outerRect = INode.qs(".el_mousePointer_outerRect", DOM.svg);
 
   // グローバルコンテナを取得
   DOM.globalContainer = INode.getElement("#globalContainer");
@@ -103,6 +116,9 @@ function _updateValue() {
   delta.scale = target.scale - current.scale;
   //現在位置から移動先への塗りつぶし濃度のベクトル
   delta.fillOpacity = target.fillOpacity - current.fillOpacity;
+  delta.width = target.width - current.width;
+  delta.height = target.height - current.height;
+  delta.radius = target.radius - current.radius;
 
   //現在位置に移動先への移動ベクトルを足して移動させる
   current.x += delta.x * mouse.speed;
@@ -111,6 +127,9 @@ function _updateValue() {
   current.scale += delta.scale * mouse.speed;
   //現在位置に移動先への塗りつぶし濃度のベクトルを足して移動させる
   current.fillOpacity += delta.fillOpacity * mouse.speed;
+  current.width += delta.width * mouse.speed;
+  current.height += delta.height * mouse.speed;
+  current.radius += delta.radius * mouse.speed;
 
   // マウスの移動量を計算して値を小さくする
   let distort =
@@ -135,6 +154,20 @@ function _updateStyle() {
   DOM.outerCircle.setAttribute("cx", current.x);
   DOM.outerCircle.setAttribute("cy", current.y);
   DOM.outerCircle.setAttribute("fill-opacity", current.fillOpacity);
+
+  const isElementShape = target.cursorShape === "element";
+  DOM.outerCircle.style.visibility = isElementShape ? "hidden" : "visible";
+  DOM.outerRect.style.visibility = isElementShape ? "visible" : "hidden";
+
+  if (isElementShape) {
+    DOM.outerRect.setAttribute("x", current.x - current.width / 2);
+    DOM.outerRect.setAttribute("y", current.y - current.height / 2);
+    DOM.outerRect.setAttribute("width", current.width);
+    DOM.outerRect.setAttribute("height", current.height);
+    DOM.outerRect.setAttribute("rx", current.radius);
+    DOM.outerRect.setAttribute("ry", current.radius);
+    DOM.outerRect.setAttribute("fill-opacity", current.fillOpacity);
+  }
 
   // transform-originを円の中心に設定
   DOM.outerCircle.style.transformOrigin = `${current.x}px ${current.y}px`;
@@ -172,6 +205,20 @@ function _createCustomCursor() {
             stroke-width="${current.strokeWidth}"
             style="transform-origin:${current.x}px ${current.y}px"
           ></circle>
+          <rect
+            class="el_mousePointer_outerRect"
+            x="${current.x - current.width / 2}"
+            y="${current.y - current.height / 2}"
+            width="${current.width}"
+            height="${current.height}"
+            rx="${current.radius}"
+            ry="${current.radius}"
+            fill="${current.fill}"
+            fill-opacity="${current.fillOpacity}"
+            stroke="${current.fill}"
+            stroke-width="${current.strokeWidth}"
+            visibility="hidden"
+          ></rect>
           <circle
             class="el_mousePointer_inner"
             r="3"
@@ -291,7 +338,12 @@ function resize() {
 function isUpdate() {
   return (
     Math.abs(current.x - target.x) > 1e-4 ||
-    Math.abs(current.y - target.y) > 1e-4
+    Math.abs(current.y - target.y) > 1e-4 ||
+    Math.abs(current.scale - target.scale) > 1e-4 ||
+    Math.abs(current.fillOpacity - target.fillOpacity) > 1e-4 ||
+    Math.abs(current.width - target.width) > 1e-4 ||
+    Math.abs(current.height - target.height) > 1e-4 ||
+    Math.abs(current.radius - target.radius) > 1e-4
   );
 }
 

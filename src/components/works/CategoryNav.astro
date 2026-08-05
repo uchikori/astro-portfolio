@@ -14,6 +14,8 @@ const { categories, currentSlug } = Astro.props;
           !currentSlug && "bl_categoryNav_link--active",
         ]}
         aria-current={!currentSlug ? "page" : undefined}
+        data-mouse="stuck"
+        data-mouse-shape="element"
       >
         すべて
       </a>
@@ -30,6 +32,8 @@ const { categories, currentSlug } = Astro.props;
                 isActive && "bl_categoryNav_link--active",
               ]}
               aria-current={isActive ? "page" : undefined}
+              data-mouse="stuck"
+              data-mouse-shape="element"
             >
               {category.name}
               <span class="bl_categoryNav_count">({category.count})</span>

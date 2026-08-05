@@ -92,6 +92,8 @@ if (manualItems && manualItems.length > 0) {
               "bl_breadcrumb_item",
               item.isCurrent && "bl_breadcrumb_item--current",
             ]}
+            data-mouse="stuck"
+            data-mouse-shape="element"
           >
             {item.isCurrent ? (
               <span aria-current="page" class="font-12-16">

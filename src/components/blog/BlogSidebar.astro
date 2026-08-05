@@ -64,7 +64,11 @@ const rankingPosts =
       {
         categories.map((category) => (
           <li>
-            <a href={getBlogCategoryUri(category.slug)}>
+            <a
+              href={getBlogCategoryUri(category.slug)}
+              data-mouse="stuck"
+              data-mouse-shape="element"
+            >
               <span class="bl_blogSidebar_categoryName">{category.name}</span>
               <span class="bl_blogSidebar_categoryCount">{category.count}</span>
             </a>
@@ -200,7 +204,7 @@ const rankingPosts =
     &_categories {
       display: flex;
       flex-direction: column;
-      gap: to-rem(14px);
+      gap: to-rem(4px);
       list-style: none;
       padding: 0;
       margin: 0;
@@ -211,6 +215,8 @@ const rankingPosts =
         justify-content: space-between;
         gap: to-rem(16px);
         color: $c-white;
+        border-radius: 100vh;
+        padding: to-rem(8px);
 
         .bl_blogSidebar_categoryCount {
           min-width: 1.8rem;

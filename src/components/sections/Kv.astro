@@ -32,7 +32,7 @@ import ArrowLink from "../ui/ArrowLink.astro";
       <div class="bl_hero_content">
         <p
           data-scroll-trigger="transformSide"
-          data-transform-direction="left"
+          data-transform-direction="right"
           data-transform-trigger=".bl_hero_cover"
           class="bl_hero_title hl_accentFont"
         >
@@ -60,15 +60,36 @@ import ArrowLink from "../ui/ArrowLink.astro";
           data-rotation-z="5"
         >
         </div>
-        <p
+        <div
           class="bl_hero_text"
           data-scroll-trigger="transformSide"
-          data-transform-direction="right"
+          data-transform-direction="left"
           data-transform-trigger=".bl_hero_cover"
         >
-          好きという気持ちを原動力に、<br
-          />誰かの心を動かすデザインをつくっています。
-        </p>
+          <p class="bl_hero_text_label hl_accentFont">
+            札幌発・全国対応 / Web制作
+          </p>
+          <h1 class="bl_hero_text_heading">
+            事業の価値を伝え、<br />公開後も運用しやすいWebサイトを。
+          </h1>
+          <p class="bl_hero_text_description">
+            中小企業・店舗・個人事業のWebサイトを、企画・デザイン・実装から公開後の改善まで一貫して支援します。
+          </p>
+          <div class="bl_hero_text_actions">
+            <a
+              href="/contact/"
+              class="bl_hero_text_primary"
+              data-mouse="stuck"
+              data-mouse-shape="element">相談・見積もりを依頼する</a
+            >
+            <a
+              href="/works/"
+              class="bl_hero_text_secondary"
+              data-mouse="stuck"
+              data-mouse-shape="element">制作実績を見る</a
+            >
+          </div>
+        </div>
       </div>
       <div class="bl_hero_sub">
         <div class="bl_hero_sub_grid">
@@ -189,13 +210,20 @@ import ArrowLink from "../ui/ArrowLink.astro";
       }
     }
     &_title {
-      grid-column: 1 / 7; /* 1列目から5列目まで */
-      grid-row: 3 / 7; /* 2行目から9行目まで */
-      font-size: fluid-text(30px, 56px, 375px, 1920px);
-      // white-space: nowrap;
+      grid-column: 8 / -1;
+      grid-row: 9 / -1;
+      align-self: end;
+      justify-self: end;
+      z-index: 2;
+      // max-width: 22rem;
+      font-size: fluid-text(22px, 32px, 375px, 1920px);
+      line-height: 1.35;
 
       @include mq(lg) {
-        order: 2;
+        order: 4;
+        width: 100%;
+        // max-width: 30rem;
+        margin-top: to-rem(40px);
       }
     }
     &_object {
@@ -217,13 +245,77 @@ import ArrowLink from "../ui/ArrowLink.astro";
       }
     }
     &_text {
-      grid-column: 8 / -1;
-      grid-row: 11 / -1;
-      align-self: end;
-      justify-self: end;
-      font-size: fluid-text(16px, 24px, 375px, 1920px);
+      grid-column: 1 / 5;
+      grid-row: 3 / 10;
+      align-self: center;
+      // justify-self: start;
+      z-index: 2;
+      // max-width: 28rem;
+
+      &_label {
+        margin-bottom: to-rem(10px);
+        color: $c-orange;
+        font-size: to-rem(12px);
+        letter-spacing: 0.12em;
+      }
+
+      &_heading {
+        margin: 0;
+        color: $c-white;
+        font-size: fluid-text(22px, 48px, 375px, 1920px);
+        line-height: 1.45;
+        letter-spacing: 0.02em;
+      }
+
+      &_description {
+        margin-top: to-rem(10px);
+        color: $c-white;
+        font-size: fluid-text(12px, 15px, 375px, 1920px);
+        line-height: 1.7;
+      }
+
+      &_actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: to-rem(12px);
+        margin-top: to-rem(18px);
+      }
+
+      &_primary,
+      &_secondary {
+        display: inline-flex;
+        min-height: to-rem(44px);
+        align-items: center;
+        justify-content: center;
+        padding: to-rem(12px) to-rem(24px);
+        border: 1px solid $c-white;
+        border-radius: 100vh;
+        color: $c-white;
+        font-size: fluid-text(12px, 16px); // font-size: to-rem(16px);
+        font-weight: 700;
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease;
+      }
+
+      &_primary {
+        border-color: $c-orange;
+        background: $c-orange;
+        color: $c-dark;
+        font-weight: 700;
+      }
+
+      @media (hover: hover) {
+        &_primary:hover,
+        &_secondary:hover {
+          background: $c-white;
+          color: $c-dark;
+        }
+      }
+
       @include mq(lg) {
-        order: 3;
+        order: 2;
+        width: 100%;
         margin-top: to-rem(24px);
         align-self: start;
       }
