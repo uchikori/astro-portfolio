@@ -1,6 +1,7 @@
 import { initDistortionPass } from "#/glsl/distortion-text/pass";
 import { initMouseParticles } from "#/glsl/mouse-particles";
 import { initRipplePass } from "#/glsl/ripple";
+import { initLightbox } from "#/component/lightbox";
 
 let world = null;
 let mouse = null;
@@ -34,7 +35,9 @@ export default async function ({
   // mountScrollHandler(".bl_reflect_slider", ".bl_reflect", ".bl_reflect_ul");
   loader.addLoadingAnimation(loadAnimation);
   initTocAccordion();
+  initLightbox(".bl_blogDetail_content");
 }
+
 
 function initTocAccordion() {
   const containers = document.querySelectorAll("#ez-toc-container");

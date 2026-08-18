@@ -632,3 +632,15 @@ if (ogpImageUrl) {
     }
   }
 </style>
+<script>
+  import { initLightbox } from "../scripts/component/lightbox.js";
+  // SSRページではbootstrapのページスクリプトよりも先にDOMが準備される保証がないため、
+  // DOMContentLoaded後に確実にlightboxを初期化する
+  document.addEventListener("DOMContentLoaded", () => {
+    initLightbox(".bl_blogDetail_content");
+  });
+  // すでにDOMContentLoadedが発火済みの場合にも対応
+  if (document.readyState !== "loading") {
+    initLightbox(".bl_blogDetail_content");
+  }
+</script>

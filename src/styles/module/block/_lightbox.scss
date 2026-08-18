@@ -1,0 +1,114 @@
+/* ─────────────────────────────────────────────
+   Lightbox – 記事内画像の拡大表示オーバーレイ
+   ───────────────────────────────────────────── */
+
+.bl_lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: none;
+  place-items: center;
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  transition:
+    background 0.3s ease,
+    backdrop-filter 0.3s ease;
+  cursor: zoom-out;
+
+  /* ── 状態 ────────────────────────────────── */
+  &.is-active {
+    display: grid;
+  }
+
+  &.is-visible {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+  }
+
+  /* ── 閉じるボタン ────────────────────────── */
+  &_close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.8);
+    transition:
+      opacity 0.3s ease 0.1s,
+      transform 0.3s ease 0.1s,
+      background 0.2s ease,
+      border-color 0.2s ease;
+
+    .is-visible & {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(255, 255, 255, 0.6);
+      outline-offset: 2px;
+    }
+  }
+
+  /* ── 画像 ────────────────────────────────── */
+  &_img {
+    max-width: 90vw;
+    max-height: 85vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+    cursor: default;
+    opacity: 0;
+    transform: scale(0.92);
+    transition:
+      opacity 0.3s ease 0.05s,
+      transform 0.3s ease 0.05s;
+
+    .is-visible & {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* ── キャプション ────────────────────────── */
+  &_caption {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 80vw;
+    padding: 8px 20px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.15s;
+
+    .is-visible & {
+      opacity: 1;
+    }
+  }
+}
