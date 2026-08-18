@@ -2,6 +2,9 @@
 import { getWorkCategoryUrl } from "../../lib/wordpress";
 
 const { categories, currentSlug } = Astro.props;
+const visibleCategories = (categories ?? []).filter(
+  (category) => Number(category.count) > 0,
+);
 ---
 
 <nav class="bl_categoryNav" aria-label="制作物カテゴリー">
@@ -21,7 +24,7 @@ const { categories, currentSlug } = Astro.props;
       </a>
     </li>
     {
-      categories.map((category) => {
+      visibleCategories.map((category) => {
         const isActive = currentSlug === category.slug;
         return (
           <li class="bl_categoryNav_item">
