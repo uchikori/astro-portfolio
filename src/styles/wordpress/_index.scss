@@ -183,3 +183,24 @@
 .are-vertically-aligned-top {
   align-items: flex-start;
 }
+
+.wp-block-button {
+  &__width-100 {
+    width: 100%;
+  }
+  a {
+    text-decoration: none;
+  }
+}
+
+.has-text-align-center {
+  text-align: center;
+}
+
+.has-text-align-right {
+  text-align: right;
+}
+
+.has-text-align-left {
+  text-align: left;
+}
